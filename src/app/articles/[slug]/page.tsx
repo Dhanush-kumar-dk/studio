@@ -1,0 +1,69 @@
+import { articles } from '@/lib/data';
+import { notFound } from 'next/navigation';
+import Image from 'next/image';
+import { Badge } from '@/components/ui/badge';
+import { Calendar, User } from 'lucide-react';
+import SummarizeButton from '@/components/summarize-button';
+import ReadingHistoryTracker from '@/components/reading-history-tracker';
+
+type ArticlePageProps = {
+  params: {
+    slug: string;
+  };
+};
+
+export async function generateStaticParams() {
+  return articles.map((article) => ({
+    slug: article.slug,
+  }));
+}
+
+export default function ArticlePage({ params }: ArticlePageProps) {
+  const article = articles.find((a) => a.slug === params.slug);
+
+  if (!article) {
+    notFound();
+  }
+
+  return (
+    <>
+      <article className="container mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
+        <div className="mb-8">
+          <Badge variant="secondary" className="mb-4">{article.category}</Badge>
+          <h1 className="font-headline text-3xl font-extrabold tracking-tight md:text-5xl">
+            {article.title}
+          </h1>
+          <div className="mt-4 flex items-center space-x-4 text-sm text-muted-foreground">
+            <div className="flex items-center gap-2">
+              <User className="h-4 w-4" />
+              <span>{article.author}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Calendar className="h-4 w-4" />
+              <span>{new Date(article.publishedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="relative mb-8 h-64 w-full overflow-hidden rounded-lg md:h-96">
+          <Image
+            src={article.imageUrl}
+            alt={article.title}
+            fill
+            className="object-cover"
+            priority
+            data-ai-hint={article.imageHint}
+          />
+        </div>
+        
+        <div className="prose prose-lg dark:prose-invert max-w-none prose-p:leading-relaxed prose-headings:font-headline">
+          <div className="mb-8 flex justify-end">
+            <SummarizeButton articleContent={article.content} />
+          </div>
+          <div dangerouslySetInnerHTML={{ __html: article.content }} />
+        </div>
+      </article>
+      <ReadingHistoryTracker articleId={article.id} />
+    </>
+  );
+}

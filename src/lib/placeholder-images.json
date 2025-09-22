@@ -1,3 +1,64 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "1",
+      "description": "A futuristic city skyline with flying vehicles.",
+      "imageUrl": "https://picsum.photos/seed/tech-future/1200/800",
+      "imageHint": "futuristic city"
+    },
+    {
+      "id": "2",
+      "description": "A government building with pillars.",
+      "imageUrl": "https://picsum.photos/seed/politics-building/600/400",
+      "imageHint": "government building"
+    },
+    {
+      "id": "3",
+      "description": "A soccer player kicking a ball in a stadium.",
+      "imageUrl": "https://picsum.photos/seed/sports-soccer/600/400",
+      "imageHint": "soccer player"
+    },
+    {
+      "id": "4",
+      "description": "A world map with interconnected lines.",
+      "imageUrl": "https://picsum.photos/seed/world-news/600/400",
+      "imageHint": "world map"
+    },
+    {
+      "id": "5",
+      "description": "A programmer coding on a laptop.",
+      "imageUrl": "https://picsum.photos/seed/tech-code/600/400",
+      "imageHint": "coding laptop"
+    },
+    {
+      "id": "6",
+      "description": "Politicians debating at a podium.",
+      "imageUrl": "https://picsum.photos/seed/politics-debate/600/400",
+      "imageHint": "political debate"
+    },
+    {
+      "id": "7",
+      "description": "A basketball player dunking a ball.",
+      "imageUrl": "https://picsum.photos/seed/sports-basketball/600/400",
+      "imageHint": "basketball dunk"
+    },
+    {
+      "id": "8",
+      "description": "Abstract image of global data networks.",
+      "imageUrl": "https://picsum.photos/seed/global-data/600/400",
+      "imageHint": "global network"
+    },
+    {
+      "id": "9",
+      "description": "Close-up of a microchip.",
+      "imageUrl": "https://picsum.photos/seed/tech-chip/600/400",
+      "imageHint": "microchip circuit"
+    },
+    {
+      "id": "10",
+      "description": "A voting booth with a ballot box.",
+      "imageUrl": "https://picsum.photos/seed/politics-vote/600/400",
+      "imageHint": "voting booth"
+    }
+  ]
 }
