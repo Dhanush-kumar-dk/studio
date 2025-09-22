@@ -23,7 +23,6 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { useToast } from '@/hooks/use-toast';
 
@@ -31,24 +30,29 @@ type UserTableProps = {
   users: User[];
 };
 
+type ActionType = 'make' | 'remove';
+
 export default function UserTable({ users: initialUsers }: UserTableProps) {
   const [users, setUsers] = useState(initialUsers);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [actionType, setActionType] = useState<ActionType>('make');
   const [isAlertOpen, setIsAlertOpen] = useState(false);
   const { toast } = useToast();
 
-  const handleMakeAdminClick = (user: User) => {
+  const handleRoleChangeClick = (user: User, type: ActionType) => {
     setSelectedUser(user);
+    setActionType(type);
     setIsAlertOpen(true);
   };
 
-  const handleConfirmAdmin = () => {
+  const handleConfirmRoleChange = () => {
     if (selectedUser) {
-      setUsers(users.map(u => u.id === selectedUser.id ? { ...u, role: 'Admin' } : u));
+      const newRole = actionType === 'make' ? 'Admin' : 'Subscriber';
+      setUsers(users.map(u => u.id === selectedUser.id ? { ...u, role: newRole } : u));
       toast({
         title: "Success",
-        description: `${selectedUser.name} has been made an admin.`,
-      })
+        description: `${selectedUser.name}'s role has been updated to ${newRole}.`,
+      });
     }
     setIsAlertOpen(false);
     setSelectedUser(null);
@@ -61,6 +65,10 @@ export default function UserTable({ users: initialUsers }: UserTableProps) {
     }
     return name[0];
   }
+
+  const dialogDescription = actionType === 'make' 
+    ? `You are about to make ${selectedUser?.name} an admin. Do you want to continue?`
+    : `You are about to remove admin privileges from ${selectedUser?.name}. Do you want to continue?`;
 
   return (
     <>
@@ -93,11 +101,19 @@ export default function UserTable({ users: initialUsers }: UserTableProps) {
                   </Badge>
                 </TableCell>
                 <TableCell>
-                  {user.role !== 'Admin' && (
+                  {user.role === 'Admin' ? (
+                     <Button
+                      variant="destructive"
+                      size="sm"
+                      onClick={() => handleRoleChangeClick(user, 'remove')}
+                    >
+                      Remove Admin
+                    </Button>
+                  ) : (
                     <Button
                       variant="outline"
                       size="sm"
-                      onClick={() => handleMakeAdminClick(user)}
+                      onClick={() => handleRoleChangeClick(user, 'make')}
                     >
                       Make Admin
                     </Button>
@@ -113,14 +129,14 @@ export default function UserTable({ users: initialUsers }: UserTableProps) {
           <AlertDialogHeader>
             <AlertDialogTitle>Are you sure?</AlertDialogTitle>
             <AlertDialogDescription>
-              You are about to make {selectedUser?.name} an admin. Do you want to continue?
+              {dialogDescription}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel onClick={() => setSelectedUser(null)}>No</AlertDialogCancel>
             <AlertDialogAction
-              onClick={handleConfirmAdmin}
-              className="bg-green-600 hover:bg-green-700"
+              onClick={handleConfirmRoleChange}
+              className={actionType === 'make' ? "bg-green-600 hover:bg-green-700" : ""}
             >
               Yes
             </AlertDialogAction>
