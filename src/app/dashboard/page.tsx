@@ -13,11 +13,8 @@ import {
 import {
   Bell,
   CircleHelp,
-  CreditCard,
   Home,
   LayoutGrid,
-  MessageSquareWarning,
-  Phone,
   Settings,
   User,
 } from 'lucide-react';
@@ -58,24 +55,6 @@ export default function DashboardPage() {
                 <SidebarMenuButton href="#" tooltip="Accounts">
                   <User />
                   Accounts
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton href="#" tooltip="Mobile">
-                  <Phone />
-                  Mobile
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton href="#" tooltip="Payments">
-                  <CreditCard />
-                  Payments
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton href="#" tooltip="Complaints">
-                  <MessageSquareWarning />
-                  Complaints
                 </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>
