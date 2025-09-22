@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from "react";
@@ -38,9 +39,10 @@ const mockData = {
 
 type ProfileFormProps = {
   initialData?: typeof mockData;
+  isCurrentUser?: boolean;
 }
 
-export default function ProfileForm({ initialData = mockData }: ProfileFormProps) {
+export default function ProfileForm({ initialData = mockData, isCurrentUser = false }: ProfileFormProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const { toast } = useToast();
@@ -59,7 +61,7 @@ export default function ProfileForm({ initialData = mockData }: ProfileFormProps
   const handleSave = async () => {
     setIsSaving(true);
     const currentUser = auth.currentUser;
-    if (currentUser) {
+    if (currentUser && isCurrentUser) {
         try {
             await updateProfile(currentUser, {
                 displayName: `${userData.firstName} ${userData.lastName}`.trim(),
@@ -84,7 +86,9 @@ export default function ProfileForm({ initialData = mockData }: ProfileFormProps
   };
   
   const handleEdit = () => {
-    setIsEditing(true);
+    if(isCurrentUser) {
+        setIsEditing(true);
+    }
   };
 
 
@@ -175,6 +179,7 @@ export default function ProfileForm({ initialData = mockData }: ProfileFormProps
                 )}
             </div>
           </CardContent>
+          {isCurrentUser && (
            <CardFooter className="flex justify-end gap-2">
                 {isEditing ? (
                   <>
@@ -188,6 +193,7 @@ export default function ProfileForm({ initialData = mockData }: ProfileFormProps
                   <Button onClick={handleEdit}>Edit Profile</Button>
                 )}
             </CardFooter>
+          )}
         </Card>
     </div>
   );

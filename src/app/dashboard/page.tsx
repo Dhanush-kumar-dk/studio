@@ -17,29 +17,28 @@ export default function DashboardPage() {
 
   useEffect(() => {
     if (user) {
-      const userExists = displayUsers.some(u => u.id === user.uid);
-      if (!userExists) {
-        const newUser: User = {
+      setDisplayUsers(prevUsers => {
+        const userExists = prevUsers.some(u => u.id === user.uid);
+        if (!userExists) {
+          const newUser: User = {
             id: user.uid,
             name: user.displayName || user.email || 'Anonymous',
             email: user.email || '',
-            role: 'Subscriber', 
+            role: 'Subscriber',
             avatarUrl: user.photoURL || `https://picsum.photos/seed/${user.uid}/40/40`,
-        };
-        const updatedUsers = [newUser, ...displayUsers];
-        setDisplayUsers(updatedUsers);
-      } else {
-        // If user exists, check if avatarUrl needs updating (e.g. after a Google login)
-        const updatedUsers = displayUsers.map(u => {
-          if (u.id === user.uid && u.avatarUrl !== user.photoURL && user.photoURL) {
-            return { ...u, avatarUrl: user.photoURL };
-          }
-          return u;
-        });
-        setDisplayUsers(updatedUsers);
-      }
+          };
+          return [newUser, ...prevUsers];
+        } else {
+          return prevUsers.map(u => {
+            if (u.id === user.uid && user.photoURL && u.avatarUrl !== user.photoURL) {
+              return { ...u, avatarUrl: user.photoURL, name: user.displayName || u.name };
+            }
+            return u;
+          });
+        }
+      });
     }
-  }, [user, displayUsers]);
+  }, [user]);
 
   if (loading) {
       return (
@@ -51,8 +50,6 @@ export default function DashboardPage() {
 
   const handleUsersChange = (updatedUsers: User[]) => {
     setDisplayUsers(updatedUsers);
-    // In a real app, you would also update the original `users` array or a database.
-    // For this prototype, we just update the state to reflect changes.
   }
 
   return (
