@@ -1,7 +1,6 @@
 import LoginForm from '@/components/login-form';
 import Header from '@/components/header';
 import Footer from '@/components/footer';
-import Newsletter from '@/components/newsletter';
 
 export default function LoginPage() {
   return (
@@ -12,7 +11,6 @@ export default function LoginPage() {
           <LoginForm />
         </div>
       </main>
-      <Newsletter />
       <Footer />
     </>
   );

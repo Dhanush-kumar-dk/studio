@@ -52,7 +52,7 @@ export default function LoginForm() {
             title: 'Logged in!',
             description: 'You have successfully logged in with Google.',
           });
-          router.push('/dashboard');
+          router.push('/');
           router.refresh();
         }
       } catch (error: any) {
@@ -80,7 +80,7 @@ export default function LoginForm() {
         title: 'Logged in!',
         description: 'You have successfully logged in.',
       });
-      router.push('/dashboard');
+      router.push('/');
       router.refresh();
     } catch (error) {
       console.error('Login failed:', error);
