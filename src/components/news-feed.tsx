@@ -9,8 +9,34 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Badge } from './ui/badge';
 import { Skeleton } from './ui/skeleton';
+import { Card, CardContent } from "@/components/ui/card"
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel"
 
 const categories = ['All', 'Politics', 'Sports', 'Technology', 'World'];
+
+// Function to shuffle an array
+const shuffle = (array: any[]) => {
+    let currentIndex = array.length, randomIndex;
+  
+    // While there remain elements to shuffle.
+    while (currentIndex > 0) {
+      // Pick a remaining element.
+      randomIndex = Math.floor(Math.random() * currentIndex);
+      currentIndex--;
+  
+      // And swap it with the current element.
+      [array[currentIndex], array[randomIndex]] = [
+        array[randomIndex], array[currentIndex]];
+    }
+  
+    return array;
+}
 
 export default function NewsFeed({ articles }: { articles: Article[] }) {
   const searchParams = useSearchParams();
@@ -29,18 +55,30 @@ export default function NewsFeed({ articles }: { articles: Article[] }) {
     });
   };
 
+  const carouselArticles = useMemo(() => {
+    const uniqueCategories = [...new Set(articles.map(a => a.category))];
+    const shuffledArticles = shuffle([...articles]);
+    const carouselItems = uniqueCategories.map(category => {
+        return shuffledArticles.find(article => article.category === category);
+    }).filter((a): a is Article => !!a);
+
+    return shuffle(carouselItems).slice(0, 5);
+  }, [articles]);
+
   const filteredArticles = useMemo(() => {
     return articles
+      .filter((article) =>
+        !carouselArticles.some(ca => ca.id === article.id)
+      )
       .filter((article) =>
         selectedCategory === 'All' ? true : article.category === selectedCategory
       )
       .filter((article) =>
         article.title.toLowerCase().includes(searchQuery.toLowerCase())
       );
-  }, [articles, selectedCategory, searchQuery]);
+  }, [articles, selectedCategory, searchQuery, carouselArticles]);
 
-  const featuredArticle = filteredArticles.length > 0 ? filteredArticles[0] : null;
-  const gridArticles = filteredArticles.length > 1 ? filteredArticles.slice(1) : [];
+  const gridArticles = filteredArticles;
 
   const isLoading = isPending;
 
@@ -74,42 +112,56 @@ export default function NewsFeed({ articles }: { articles: Article[] }) {
         <TabsContent value={selectedCategory} className="mt-6">
           {isLoading ? (
             renderSkeletons()
-          ) : filteredArticles.length === 0 ? (
-            <div className="flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-muted-foreground/30 bg-muted/50 py-24 text-center">
-                <h3 className="text-2xl font-semibold tracking-tight">No articles found</h3>
-                <p className="mt-2 text-muted-foreground">
-                    Try adjusting your search or filters.
-                </p>
-            </div>
           ) : (
             <>
-              {featuredArticle && (
-                <div className="group relative mb-8 overflow-hidden rounded-lg bg-card shadow-lg transition-shadow duration-300 hover:shadow-xl">
-                  <Link href={`/articles/${featuredArticle.slug}`}>
-                    <div className="relative h-64 md:h-96">
-                      <Image
-                        src={featuredArticle.imageUrl}
-                        alt={featuredArticle.title}
-                        fill
-                        className="object-cover transition-transform duration-300 group-hover:scale-105"
-                        priority
-                        data-ai-hint={featuredArticle.imageHint}
-                      />
-                       <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
-                    </div>
-                    <div className="absolute bottom-0 p-6 text-white">
-                       <Badge variant="secondary" className="mb-2">{featuredArticle.category}</Badge>
-                      <h2 className="font-headline text-2xl font-bold md:text-4xl">{featuredArticle.title}</h2>
-                      <p className="mt-2 hidden text-lg text-slate-300 md:block">{featuredArticle.excerpt}</p>
-                    </div>
-                  </Link>
-                </div>
+              {carouselArticles.length > 0 && (
+                 <Carousel className="w-full mb-8"
+                    opts={{
+                        loop: true,
+                    }}
+                    >
+                    <CarouselContent>
+                        {carouselArticles.map((article) => (
+                        <CarouselItem key={article.id}>
+                            <div className="group relative overflow-hidden rounded-lg bg-card shadow-lg transition-shadow duration-300 hover:shadow-xl">
+                                <Link href={`/articles/${article.slug}`}>
+                                    <div className="relative h-64 md:h-96">
+                                    <Image
+                                        src={article.imageUrl}
+                                        alt={article.title}
+                                        fill
+                                        className="object-cover transition-transform duration-300 group-hover:scale-105"
+                                        priority
+                                        data-ai-hint={article.imageHint}
+                                    />
+                                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
+                                    </div>
+                                    <div className="absolute bottom-0 p-6 text-white">
+                                    <Badge variant="secondary" className="mb-2">{article.category}</Badge>
+                                    <h2 className="font-headline text-2xl font-bold md:text-4xl">{article.title}</h2>
+                                    <p className="mt-2 hidden text-lg text-slate-300 md:block">{article.excerpt}</p>
+                                    </div>
+                                </Link>
+                            </div>
+                        </CarouselItem>
+                        ))}
+                    </CarouselContent>
+                    <CarouselPrevious className="absolute left-4 top-1/2 -translate-y-1/2" />
+                    <CarouselNext className="absolute right-4 top-1/2 -translate-y-1/2" />
+                </Carousel>
               )}
-              {gridArticles.length > 0 && (
+              {gridArticles.length > 0 ? (
                 <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
                   {gridArticles.map((article) => (
                     <ArticleCard key={article.id} article={article} />
                   ))}
+                </div>
+              ) : (
+                 <div className="flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-muted-foreground/30 bg-muted/50 py-24 text-center">
+                    <h3 className="text-2xl font-semibold tracking-tight">No articles found</h3>
+                    <p className="mt-2 text-muted-foreground">
+                        Try adjusting your search or filters.
+                    </p>
                 </div>
               )}
             </>
