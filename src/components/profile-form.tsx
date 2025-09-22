@@ -70,14 +70,6 @@ export default function ProfileForm() {
             <div className="flex-1 space-y-3">
               <div className="flex flex-col items-center gap-4 sm:flex-row">
                 <h2 className="text-2xl font-bold">{userData.username}</h2>
-                {isEditing ? (
-                  <div className="flex gap-2">
-                    <Button variant="outline" onClick={() => setIsEditing(false)}>Cancel</Button>
-                    <Button onClick={handleSave}>Save Profile</Button>
-                  </div>
-                ) : (
-                  <Button onClick={handleEdit}>Edit Profile</Button>
-                )}
               </div>
               <p className="max-w-xl text-center text-muted-foreground sm:text-left">{userData.bio}</p>
             </div>
@@ -169,6 +161,16 @@ export default function ProfileForm() {
                 )}
             </div>
           </CardContent>
+           <CardFooter className="flex justify-end gap-2">
+                {isEditing ? (
+                  <>
+                    <Button variant="outline" onClick={() => setIsEditing(false)}>Cancel</Button>
+                    <Button onClick={handleSave}>Save Profile</Button>
+                  </>
+                ) : (
+                  <Button onClick={handleEdit}>Edit Profile</Button>
+                )}
+            </CardFooter>
         </Card>
     </div>
   );
