@@ -27,7 +27,7 @@ import {
 import { createArticle } from '@/app/actions';
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Loader2 } from 'lucide-react';
+import { Loader2, X } from 'lucide-react';
 
 const formSchema = z.object({
   title: z.string().min(10, 'Title must be at least 10 characters.'),
@@ -74,6 +74,8 @@ export default function CreateArticleForm() {
         setImageUrl(watchedImageUrl);
       }, 500);
       return () => clearTimeout(timer);
+    } else if(!watchedImageUrl) {
+        setImageUrl('');
     }
   }, [watchedImageUrl, form]);
 
@@ -270,6 +272,16 @@ export default function CreateArticleForm() {
                 {imageUrl ? (
                     <div className="relative aspect-video w-full">
                         <Image src={imageUrl} alt="Featured image preview" fill className="rounded-md object-cover" />
+                        <Button
+                            type="button"
+                            variant="destructive"
+                            size="icon"
+                            className="absolute bottom-2 right-2 h-7 w-7"
+                            onClick={() => form.setValue('imageUrl', '')}
+                        >
+                            <X className="h-4 w-4" />
+                            <span className="sr-only">Remove image</span>
+                        </Button>
                     </div>
                 ) : (
                     <div className="flex aspect-video w-full items-center justify-center rounded-md border-2 border-dashed bg-muted">
