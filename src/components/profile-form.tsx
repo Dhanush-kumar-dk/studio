@@ -30,9 +30,7 @@ export default function ProfileForm() {
     role: "subscriber",
     lastName: "Rodriguez",
     email: "gene.rodrig@gmail.com",
-    whatsapp: "@gene-rod",
     website: "gene-roding.webflow.io",
-    telegram: "@gene-rod",
     bio: "Albert Einstein was a German mathematician and physicist who developed the special and general theories of relativity. In 1921, he won the Nobel Prize for physics for his explanation of the photoelectric effect. In the following decade.",
   });
 
@@ -119,27 +117,11 @@ export default function ProfileForm() {
                 )}
               </div>
               <div>
-                <Label htmlFor="whatsapp">WhatsApp</Label>
-                {isEditing ? (
-                    <Input id="whatsapp" value={userData.whatsapp} onChange={handleInputChange} />
-                ) : (
-                    <p className="mt-1 text-sm text-muted-foreground">{userData.whatsapp}</p>
-                )}
-              </div>
-              <div>
                 <Label htmlFor="website">Website</Label>
                 {isEditing ? (
                     <Input id="website" value={userData.website} onChange={handleInputChange} />
                 ) : (
                     <p className="mt-1 text-sm text-muted-foreground">{userData.website}</p>
-                )}
-              </div>
-              <div>
-                <Label htmlFor="telegram">Telegram</Label>
-                {isEditing ? (
-                    <Input id="telegram" value={userData.telegram} onChange={handleInputChange} />
-                ) : (
-                    <p className="mt-1 text-sm text-muted-foreground">{userData.telegram}</p>
                 )}
               </div>
             </div>
