@@ -40,7 +40,7 @@ export async function createArticle(input: CreateArticleInput) {
             imageUrl: input.imageUrl || `https://picsum.photos/seed/${finalSlug}/1200/800`,
             imageHint: 'new article',
             excerpt: input.excerpt,
-            content: `<p>${input.content.replace(/\n/g, '</p><p>')}</p>`,
+            content: input.content,
             author: input.author,
             publishedAt: new Date().toISOString(),
             focusKeywords: input.focusKeywords.split(',').map(k => k.trim()),
