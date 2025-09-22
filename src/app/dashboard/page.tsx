@@ -55,17 +55,13 @@ export default function DashboardPage() {
                 Dashboard
               </SidebarMenuButton>
             </SidebarMenuItem>
-          </SidebarMenu>
-          <SidebarGroup>
-            <SidebarMenu>
-              <SidebarMenuItem>
+             <SidebarMenuItem>
                 <SidebarMenuButton href="#" tooltip="Accounts">
                   <User />
                   Accounts
                 </SidebarMenuButton>
               </SidebarMenuItem>
-            </SidebarMenu>
-          </SidebarGroup>
+          </SidebarMenu>
         </SidebarContent>
         <SidebarHeader>
         </SidebarHeader>

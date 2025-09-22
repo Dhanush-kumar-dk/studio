@@ -48,17 +48,13 @@ import {
                   Dashboard
                 </SidebarMenuButton>
               </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton href="#" tooltip="Accounts">
+                  <User />
+                  Accounts
+                </SidebarMenuButton>
+              </SidebarMenuItem>
             </SidebarMenu>
-            <SidebarGroup>
-              <SidebarMenu>
-                <SidebarMenuItem>
-                  <SidebarMenuButton href="#" tooltip="Accounts">
-                    <User />
-                    Accounts
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              </SidebarMenu>
-            </SidebarGroup>
           </SidebarContent>
           <SidebarHeader>
              <SidebarMenu>
