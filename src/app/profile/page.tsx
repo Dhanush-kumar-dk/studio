@@ -6,10 +6,10 @@ export default function ProfilePage() {
              <Card>
                 <CardHeader>
                     <CardTitle>Profile</CardTitle>
-                    <CardDescription>This is your profile page. More settings will be available soon.</CardDescription>
+                    <CardDescription>This is your profile page. You can manage your profile settings here.</CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <p>Welcome to your profile!</p>
+                    <p>Profile settings will go here.</p>
                 </CardContent>
             </Card>
         </div>

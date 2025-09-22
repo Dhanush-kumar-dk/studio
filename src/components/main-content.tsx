@@ -7,16 +7,14 @@ import Footer from './footer';
 
 export default function MainContent({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
-    const showHeader = !pathname.startsWith('/dashboard') && !pathname.startsWith('/settings');
-    const showFooter = !pathname.startsWith('/dashboard') && !pathname.startsWith('/settings');
-    const showContactForm = (pathname === '/' || pathname.startsWith('/articles/')) && !pathname.startsWith('/dashboard') && !pathname.startsWith('/settings');
+    const isDashboardRoute = pathname.startsWith('/dashboard');
 
     return (
         <>
-            {showHeader && <Header />}
+            {!isDashboardRoute && <Header />}
             <main className="flex-1">{children}</main>
-            {showContactForm && <Contact />}
-            {showFooter && <Footer />}
+            {!isDashboardRoute && <Contact />}
+            {!isDashboardRoute && <Footer />}
         </>
     );
 }
