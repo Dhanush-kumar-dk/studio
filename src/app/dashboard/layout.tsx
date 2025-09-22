@@ -47,19 +47,17 @@ import Logo from '@/components/logo';
                     </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                    <Link href="/profile">
+                        <User />
+                        Accounts
+                    </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
             </SidebarMenu>
           </SidebarContent>
           <SidebarFooter>
-            <SidebarMenu>
-                <SidebarMenuItem>
-                    <SidebarMenuButton asChild>
-                        <Link href="/profile">
-                            <Settings />
-                            Settings
-                        </Link>
-                    </SidebarMenuButton>
-                </SidebarMenuItem>
-            </SidebarMenu>
           </SidebarFooter>
         </Sidebar>
         <SidebarInset>
