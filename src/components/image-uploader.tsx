@@ -49,12 +49,16 @@ export default function ImageUploader({ children, onUploadComplete }: ImageUploa
   const handleUpload = async () => {
     if (typeof (cropperRef.current as any)?.cropper !== 'undefined') {
       setIsLoading(true);
-      const croppedCanvas = (cropperRef.current as any)?.cropper.getCroppedCanvas();
+      const croppedCanvas = (cropperRef.current as any)?.cropper.getCroppedCanvas({
+        width: 256,
+        height: 256,
+      });
+
       if (!croppedCanvas) {
         setIsLoading(false);
         return;
       }
-      const dataUrl = croppedCanvas.toDataURL();
+      const dataUrl = croppedCanvas.toDataURL('image/jpeg', 0.9);
       
       const user = auth.currentUser;
       if (!user) {
