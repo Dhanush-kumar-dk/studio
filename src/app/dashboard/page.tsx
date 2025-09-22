@@ -103,15 +103,17 @@ export default function DashboardPage() {
           <div className="flex items-center justify-between">
             <h2 className="text-2xl font-bold tracking-tight">Users</h2>
              <div className="relative w-full max-w-sm">
-                <Input
-                  type="search"
-                  name="search"
-                  placeholder="Search by email..."
-                  className="pl-10"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
-                <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
+                  <Input
+                    type="search"
+                    name="search"
+                    placeholder="Search by email..."
+                    className="pl-10"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                  />
+                </div>
               </div>
           </div>
           <div className="mt-6">

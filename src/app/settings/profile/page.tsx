@@ -21,7 +21,7 @@ import {
   } from 'lucide-react';
   import ProfileSettings from '@/components/profile-settings';
   import { Button } from '@/components/ui/button';
-  import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+  import UserNav from '@/components/user-nav';
   import Link from 'next/link';
   import Logo from '@/components/logo';
   
@@ -89,21 +89,10 @@ import {
                 <Bell className="h-5 w-5" />
                 <span className="sr-only">Toggle notifications</span>
               </Button>
-              <Avatar className="h-8 w-8">
-                <AvatarImage src="https://picsum.photos/seed/sami/40/40" />
-                <AvatarFallback>SR</AvatarFallback>
-              </Avatar>
+              <UserNav />
             </div>
           </header>
           <main className="flex-1 p-4 md:p-6">
-            <div className="flex items-center justify-between">
-              <h2 className="text-2xl font-bold tracking-tight">Users</h2>
-               <div className="flex items-center gap-2">
-                <Button variant="outline">All Users</Button>
-                <Button variant="ghost">Settings</Button>
-                <Button>Add New User</Button>
-              </div>
-            </div>
             <div className="mt-6">
               <ProfileSettings />
             </div>
