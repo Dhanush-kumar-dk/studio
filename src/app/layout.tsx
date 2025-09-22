@@ -8,8 +8,8 @@ import { ThemeProvider } from '@/components/theme-provider';
 import MainContent from '@/components/main-content';
 
 export const metadata: Metadata = {
-  title: 'NewsFlash',
-  description: 'Your daily flash of news, summarized.',
+  title: 'Debt & Dominion',
+  description: 'Navigating the worlds of finance and power.',
 };
 
 export default function RootLayout({

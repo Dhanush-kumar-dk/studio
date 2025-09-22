@@ -35,7 +35,7 @@ export default function Header() {
       <div className="container flex h-16 items-center justify-between">
         <Link href="/" className="flex items-center gap-2">
           <Flame className="h-7 w-7 text-primary" />
-          <span className="text-xl font-bold tracking-tight">NewsFlash</span>
+          <span className="text-xl font-bold tracking-tight">Debt & Dominion</span>
         </Link>
 
         <div className="flex flex-1 items-center justify-end gap-4">

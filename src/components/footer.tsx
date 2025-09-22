@@ -9,10 +9,10 @@ export default function Footer() {
           <div>
             <div className="flex items-center gap-2">
               <Flame className="h-7 w-7 text-primary" />
-              <span className="text-xl font-bold">NewsFlash</span>
+              <span className="text-xl font-bold">Debt & Dominion</span>
             </div>
             <p className="mt-4 text-muted-foreground">
-              Your daily flash of news, summarized by AI. We bring you the most important stories, distilled for clarity and speed.
+              Navigating the complex worlds of finance and power with clarity and insight.
             </p>
           </div>
           <div className="md:justify-self-center">
@@ -29,8 +29,8 @@ export default function Footer() {
             <ul className="mt-4 space-y-2">
               <li className="flex items-center gap-2">
                 <Mail className="h-5 w-5 text-muted-foreground" />
-                <a href="mailto:contact@newsflash.com" className="text-muted-foreground hover:text-primary">
-                  contact@newsflash.com
+                <a href="mailto:contact@debtanddominion.com" className="text-muted-foreground hover:text-primary">
+                  contact@debtanddominion.com
                 </a>
               </li>
               <li className="flex items-center gap-2">
@@ -43,7 +43,7 @@ export default function Footer() {
           </div>
         </div>
         <div className="mt-8 border-t pt-6 text-center text-sm text-muted-foreground">
-          <p>&copy; {new Date().getFullYear()} NewsFlash. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} Debt & Dominion. All rights reserved.</p>
         </div>
       </div>
     </footer>
