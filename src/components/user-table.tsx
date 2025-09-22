@@ -25,7 +25,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
-import { useToast } from './ui/use-toast';
+import { useToast } from '@/hooks/use-toast';
 
 type UserTableProps = {
   users: User[];
