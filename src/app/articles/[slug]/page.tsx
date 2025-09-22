@@ -2,9 +2,12 @@ import { articles } from '@/lib/data';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import { Badge } from '@/components/ui/badge';
-import { Calendar, User } from 'lucide-react';
+import { Calendar, Pencil } from 'lucide-react';
 import SummarizeButton from '@/components/summarize-button';
 import DeleteArticleButton from '@/components/delete-article-button';
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 type ArticlePageProps = {
   params: {
@@ -35,7 +38,10 @@ export default function ArticlePage({ params }: ArticlePageProps) {
           </h1>
           <div className="mt-4 flex items-center space-x-4 text-sm text-muted-foreground">
             <div className="flex items-center gap-2">
-              <User className="h-4 w-4" />
+              <Avatar className="h-6 w-6">
+                <AvatarImage src={article.authorImageUrl} alt={article.author} />
+                <AvatarFallback>{article.author.charAt(0)}</AvatarFallback>
+              </Avatar>
               <span>{article.author}</span>
             </div>
             <div className="flex items-center gap-2">
@@ -58,14 +64,18 @@ export default function ArticlePage({ params }: ArticlePageProps) {
         
         <div className="prose prose-lg dark:prose-invert max-w-none prose-p:leading-relaxed prose-headings:font-headline">
           <div className="mb-8 flex justify-end gap-2">
+            <Button asChild variant="outline" size="icon">
+                <Link href={`/edit-post/${article.slug}`}>
+                    <Pencil className="h-4 w-4" />
+                    <span className="sr-only">Edit Article</span>
+                </Link>
+            </Button>
             <SummarizeButton articleContent={article.content} />
+            <DeleteArticleButton articleId={article.id} />
           </div>
           <div dangerouslySetInnerHTML={{ __html: article.content }} />
         </div>
 
-        <div className="mt-8 flex justify-end">
-            <DeleteArticleButton articleId={article.id} />
-        </div>
       </article>
     </>
   );

@@ -16,6 +16,7 @@ export const articles: Article[] = [
       <p>However, the rise of AI also brings challenges. Questions about job displacement, ethical considerations, and data privacy need to be addressed. As we move forward, it's crucial to have a public dialogue about the kind of future we want to build with AI.</p>
     `,
     author: 'Jane Doe',
+    authorImageUrl: 'https://picsum.photos/seed/jane-doe/40/40',
     publishedAt: '2024-05-20',
     focusKeywords: ['AI', 'Technology', 'Future'],
     metaDescription: 'Explore the future of artificial intelligence and its impact on various sectors over the next decade. What can we expect from AI advancements?',
@@ -34,6 +35,7 @@ export const articles: Article[] = [
       <p>Negotiations are expected to be tense, with developed and developing nations often at odds over who should bear the costs of transitioning to a green economy. "We are at a pivotal moment in human history," said a lead negotiator. "The decisions we make this week will affect generations to come."</p>
     `,
     author: 'John Smith',
+    authorImageUrl: 'https://picsum.photos/seed/john-smith/40/40',
     publishedAt: '2024-05-19',
     focusKeywords: ['Climate Change', 'Global Summit', 'Politics'],
     metaDescription: 'World leaders convene for a crucial summit on climate change to negotiate a new international treaty. The future of our planet hangs in the balance.',
@@ -52,6 +54,7 @@ export const articles: Article[] = [
       <p>The stadium erupted as the final whistle blew, and the small town of Leicester celebrated a victory that seemed impossible. "We believed in ourselves," said the team captain. "This is for all the fans who have supported us through thick and thin."</p>
     `,
     author: 'Emily White',
+    authorImageUrl: 'https://picsum.photos/seed/emily-white/40/40',
     publishedAt: '2024-05-18',
     focusKeywords: ['Championship', 'Upset', 'Sports'],
     metaDescription: 'The Leicester Foxes achieve a historic victory against the Manchester Giants, winning the national championship in a stunning upset.',
@@ -70,6 +73,7 @@ export const articles: Article[] = [
       <p>While this is not definitive proof of past life on Mars, it is the strongest evidence yet. "It's a major milestone in our exploration of the Red Planet," said Dr. Anya Sharma, lead scientist on the mission. "We are getting closer to answering the age-old question: are we alone in the universe?"</p>
     `,
     author: 'David Chen',
+    authorImageUrl: 'https://picsum.photos/seed/david-chen/40/40',
     publishedAt: '2024-05-17',
     focusKeywords: ['Mars', 'NASA', 'Space'],
     metaDescription: 'NASA\'s Perseverance rover discovers ancient organic molecules on Mars, a significant step forward in the search for extraterrestrial life.',
@@ -88,6 +92,7 @@ export const articles: Article[] = [
       <p>Now, a team of researchers has designed a new type of qubit that is much more robust. This breakthrough could accelerate the development of quantum computers and unlock their potential in fields like medicine, materials science, and artificial intelligence.</p>
     `,
     author: 'Maria Garcia',
+    authorImageUrl: 'https://picsum.photos/seed/maria-garcia/40/40',
     publishedAt: '2024-05-16',
     focusKeywords: ['Quantum Computing', 'Technology', 'Science'],
     metaDescription: 'A major breakthrough in quantum computing promises more stable and error-free quantum chips, accelerating the path to practical quantum computers.',
@@ -106,6 +111,7 @@ export const articles: Article[] = [
       <p>Key issues that dominated the election included the economy, healthcare, and immigration. The results indicate that voters are looking for pragmatic solutions and are tired of partisan bickering. The next two years will be a test of whether politicians can work together to address the country's pressing challenges.</p>
     `,
     author: 'Michael Brown',
+    authorImageUrl: 'https://picsum.photos/seed/michael-brown/40/40',
     publishedAt: '2024-05-15',
     focusKeywords: ['Elections', 'Politics', 'Government'],
     metaDescription: 'An in-depth analysis of the recent midterm election results and their implications for the future political landscape.',
@@ -124,6 +130,7 @@ export const articles: Article[] = [
       <p>Carter's performance was the culmination of years of hard work and dedication. "I've dreamed of this moment since I was a kid," he said, draped in his country's flag. "I hope this inspires others to chase their dreams, no matter how big."</p>
     `,
     author: 'Sarah Lee',
+    authorImageUrl: 'https://picsum.photos/seed/sarah-lee/40/40',
     publishedAt: '2024-05-14',
     focusKeywords: ['Olympics', 'World Record', 'Sports'],
     metaDescription: 'A rising star athlete shatters the 100m sprint world record at the Olympic Games with a breathtaking performance.',
@@ -142,6 +149,7 @@ export const articles: Article[] = [
       <p>Central banks face a difficult balancing act: taming inflation without triggering a recession. Geopolitical conflicts continue to disrupt energy and food markets, while the transition to a post-pandemic world is still fraught with challenges. "We are not out of the woods yet," said the IMF's chief economist.</p>
     `,
     author: 'Thomas Wilson',
+    authorImageUrl: 'https://picsum.photos/seed/thomas-wilson/40/40',
     publishedAt: '2024-05-13',
     focusKeywords: ['Economy', 'Global Outlook', 'Finance'],
     metaDescription: 'The global economic outlook for the second half of 2024 shows cautious optimism, but significant risks from inflation and geopolitics remain.',
@@ -160,6 +168,7 @@ export const articles: Article[] = [
       <p>Innovations include bioplastics made from algae, smart grids that optimize energy consumption, and direct air capture systems that remove CO2 from the atmosphere. While technology alone cannot solve the climate crisis, it is an essential part of the solution.</p>
     `,
     author: 'Isabella Rossi',
+    authorImageUrl: 'https://picsum.photos/seed/isabella-rossi/40/40',
     publishedAt: '2024-05-12',
     focusKeywords: ['Sustainable Tech', 'Green Tech', 'Innovation'],
     metaDescription: 'Discover the latest innovations in sustainable technology, from biodegradable electronics to carbon capture, and their potential to create a greener planet.',
@@ -178,6 +187,7 @@ export const articles: Article[] = [
       <p>Privacy advocates have hailed the law as a major victory for consumers. "For too long, our personal data has been exploited without our consent," said a leading advocate. "This law puts power back in the hands of individuals."</p>
     `,
     author: 'Ben Carter',
+    authorImageUrl: 'https://picsum.photos/seed/ben-carter/40/40',
     publishedAt: '2024-05-11',
     focusKeywords: ['Data Privacy', 'Legislation', 'Security'],
     metaDescription: 'A new comprehensive data privacy law gives consumers more control over their personal information, marking a major victory for privacy advocates.',

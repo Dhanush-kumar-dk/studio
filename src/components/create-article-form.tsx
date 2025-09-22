@@ -24,10 +24,11 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import { createArticle } from '@/app/actions';
+import { createArticle, updateArticle } from '@/app/actions';
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Loader2, X } from 'lucide-react';
+import type { Article } from '@/lib/types';
 
 const formSchema = z.object({
   title: z.string().min(10, 'Title must be at least 10 characters.'),
@@ -41,23 +42,28 @@ const formSchema = z.object({
   excerpt: z.string().min(20, 'Excerpt must be at least 20 characters.'),
 });
 
-export default function CreateArticleForm() {
+type CreateArticleFormProps = {
+    article?: Article;
+}
+
+export default function CreateArticleForm({ article }: CreateArticleFormProps) {
   const router = useRouter();
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const isEditMode = !!article;
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      title: '',
-      imageUrl: '',
-      content: '',
-      focusKeywords: '',
-      slug: '',
-      metaDescription: '',
-      author: 'Anonymous',
-      category: 'Technology',
-      excerpt: '',
+      title: article?.title || '',
+      imageUrl: article?.imageUrl || '',
+      content: article?.content.replace(/<[^>]+>/g, '') || '', // Strip html for textarea
+      focusKeywords: article?.focusKeywords.join(', ') || '',
+      slug: article?.slug || '',
+      metaDescription: article?.metaDescription || '',
+      author: article?.author || 'Anonymous',
+      category: article?.category || 'Technology',
+      excerpt: article?.excerpt || '',
     },
   });
 
@@ -66,10 +72,10 @@ export default function CreateArticleForm() {
     name: 'imageUrl',
   });
 
-  const [imageUrl, setImageUrl] = useState('');
+  const [imageUrl, setImageUrl] = useState(article?.imageUrl || '');
   
   useEffect(() => {
-    if (watchedImageUrl && form.getFieldState('imageUrl').isDirty && !form.getFieldState('imageUrl').error) {
+    if (watchedImageUrl && (form.getFieldState('imageUrl').isDirty || isEditMode) && !form.getFieldState('imageUrl').error) {
       const timer = setTimeout(() => {
         setImageUrl(watchedImageUrl);
       }, 500);
@@ -77,32 +83,41 @@ export default function CreateArticleForm() {
     } else if(!watchedImageUrl) {
         setImageUrl('');
     }
-  }, [watchedImageUrl, form]);
+  }, [watchedImageUrl, form, isEditMode]);
 
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsSubmitting(true);
-    const result = await createArticle({ 
+    
+    const input = { 
       ...values,
       slug: values.slug || '',
       imageUrl: values.imageUrl || '',
-     });
+     };
+
+    const result = isEditMode && article 
+        ? await updateArticle(article.id, input)
+        : await createArticle(input);
 
     if (result.error) {
       toast({
-        title: 'Error creating article',
+        title: `Error ${isEditMode ? 'updating' : 'creating'} article`,
         description: result.error,
         variant: 'destructive',
       });
     } else if (result.slug) {
       toast({
-        title: 'Article created!',
-        description: 'Your article has been successfully published.',
+        title: `Article ${isEditMode ? 'updated' : 'created'}!`,
+        description: `Your article has been successfully ${isEditMode ? 'updated' : 'published'}.`,
       });
       router.push(`/articles/${result.slug}`);
+      router.refresh();
     }
     setIsSubmitting(false);
   }
+
+  const submitButtonText = isEditMode ? 'Update Article' : 'Publish Article';
+  const submittingButtonText = isEditMode ? 'Updating...' : 'Publishing...';
 
   return (
     <Form {...form}>
@@ -213,7 +228,7 @@ export default function CreateArticleForm() {
         <aside className="space-y-8 lg:col-span-1">
              <Card>
                 <CardHeader>
-                    <CardTitle>Publish</CardTitle>
+                    <CardTitle>{isEditMode ? 'Update' : 'Publish'}</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-6">
                     <FormField
@@ -256,10 +271,10 @@ export default function CreateArticleForm() {
                         {isSubmitting ? (
                             <>
                             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                            Publishing...
+                            {submittingButtonText}
                             </>
                         ) : (
-                            'Publish Article'
+                            submitButtonText
                         )}
                     </Button>
                 </CardContent>

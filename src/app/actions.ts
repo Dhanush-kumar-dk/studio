@@ -42,6 +42,7 @@ export async function createArticle(input: CreateArticleInput) {
             excerpt: input.excerpt,
             content: input.content,
             author: input.author,
+            authorImageUrl: `https://picsum.photos/seed/${input.author.replace(/\s+/g, '-')}/40/40`,
             publishedAt: new Date().toISOString(),
             focusKeywords: input.focusKeywords.split(',').map(k => k.trim()),
             metaDescription: input.metaDescription
@@ -58,6 +59,43 @@ export async function createArticle(input: CreateArticleInput) {
         return { error: 'An unexpected error occurred while creating the article.' };
     }
 }
+
+export async function updateArticle(articleId: string, input: CreateArticleInput) {
+    try {
+        const articleIndex = articles.findIndex((a) => a.id === articleId);
+        if (articleIndex === -1) {
+            return { error: 'Article not found.' };
+        }
+
+        const finalSlug = input.slug || input.title.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, '');
+
+        const updatedArticle: Article = {
+            ...articles[articleIndex],
+            slug: finalSlug,
+            title: input.title,
+            category: input.category,
+            imageUrl: input.imageUrl || `https://picsum.photos/seed/${finalSlug}/1200/800`,
+            excerpt: input.excerpt,
+            content: input.content,
+            author: input.author,
+            authorImageUrl: `https://picsum.photos/seed/${input.author.replace(/\s+/g, '-')}/40/40`,
+            focusKeywords: input.focusKeywords.split(',').map(k => k.trim()),
+            metaDescription: input.metaDescription
+        };
+
+        articles[articleIndex] = updatedArticle;
+        
+        revalidatePath('/');
+        revalidatePath(`/articles/${finalSlug}`);
+        revalidatePath(`/edit-post/${finalSlug}`);
+
+        return { slug: updatedArticle.slug };
+    } catch (error) {
+        console.error('Failed to update article:', error);
+        return { error: 'An unexpected error occurred while updating the article.' };
+    }
+}
+
 
 export async function deleteArticle(articleId: string) {
     try {
