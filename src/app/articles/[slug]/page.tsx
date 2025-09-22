@@ -73,7 +73,7 @@ export default function ArticlePage({ params }: ArticlePageProps) {
             <SummarizeButton articleContent={article.content} />
             <DeleteArticleButton articleId={article.id} />
           </div>
-          <div dangerouslySetInnerHTML={{ __html: article.content }} />
+          <div className="prose-p:leading-relaxed" dangerouslySetInnerHTML={{ __html: article.content }} />
         </div>
 
       </article>
