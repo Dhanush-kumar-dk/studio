@@ -13,3 +13,11 @@ export type Article = {
   focusKeywords: string[];
   metaDescription: string;
 };
+
+export type User = {
+  id: string;
+  name: string;
+  email: string;
+  role: 'Admin' | 'Subscriber';
+  avatarUrl: string;
+}
