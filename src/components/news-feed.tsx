@@ -63,7 +63,7 @@ export default function NewsFeed({ articles }: { articles: Article[] }) {
   return (
     <div>
       <Tabs value={selectedCategory} onValueChange={handleTabChange} className="w-full">
-        <TabsList className="grid w-full grid-cols-3 sm:w-auto sm:grid-cols-none sm:inline-flex">
+        <TabsList className="w-full justify-start overflow-x-auto sm:w-auto">
           {categories.map((cat) => (
             <TabsTrigger key={cat} value={cat}>
               {cat}
