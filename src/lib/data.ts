@@ -16,6 +16,7 @@ export const articles: Article[] = [
       <p>However, the rise of AI also brings challenges. Questions about job displacement, ethical considerations, and data privacy need to be addressed. As we move forward, it's crucial to have a public dialogue about the kind of future we want to build with AI.</p>
     `,
     author: 'Jane Doe',
+    authorSlug: 'jane-doe',
     authorImageUrl: 'https://picsum.photos/seed/jane-doe/40/40',
     publishedAt: '2024-05-20',
     focusKeywords: ['AI', 'Technology', 'Future'],
@@ -35,6 +36,7 @@ export const articles: Article[] = [
       <p>Negotiations are expected to be tense, with developed and developing nations often at odds over who should bear the costs of transitioning to a green economy. "We are at a pivotal moment in human history," said a lead negotiator. "The decisions we make this week will affect generations to come."</p>
     `,
     author: 'John Smith',
+    authorSlug: 'john-smith',
     authorImageUrl: 'https://picsum.photos/seed/john-smith/40/40',
     publishedAt: '2024-05-19',
     focusKeywords: ['Climate Change', 'Global Summit', 'Politics'],
@@ -54,6 +56,7 @@ export const articles: Article[] = [
       <p>The stadium erupted as the final whistle blew, and the small town of Leicester celebrated a victory that seemed impossible. "We believed in ourselves," said the team captain. "This is for all the fans who have supported us through thick and thin."</p>
     `,
     author: 'Emily White',
+    authorSlug: 'emily-white',
     authorImageUrl: 'https://picsum.photos/seed/emily-white/40/40',
     publishedAt: '2024-05-18',
     focusKeywords: ['Championship', 'Upset', 'Sports'],
@@ -73,6 +76,7 @@ export const articles: Article[] = [
       <p>While this is not definitive proof of past life on Mars, it is the strongest evidence yet. "It's a major milestone in our exploration of the Red Planet," said Dr. Anya Sharma, lead scientist on the mission. "We are getting closer to answering the age-old question: are we alone in the universe?"</p>
     `,
     author: 'David Chen',
+    authorSlug: 'david-chen',
     authorImageUrl: 'https://picsum.photos/seed/david-chen/40/40',
     publishedAt: '2024-05-17',
     focusKeywords: ['Mars', 'NASA', 'Space'],
@@ -92,6 +96,7 @@ export const articles: Article[] = [
       <p>Now, a team of researchers has designed a new type of qubit that is much more robust. This breakthrough could accelerate the development of quantum computers and unlock their potential in fields like medicine, materials science, and artificial intelligence.</p>
     `,
     author: 'Maria Garcia',
+    authorSlug: 'maria-garcia',
     authorImageUrl: 'https://picsum.photos/seed/maria-garcia/40/40',
     publishedAt: '2024-05-16',
     focusKeywords: ['Quantum Computing', 'Technology', 'Science'],
@@ -111,6 +116,7 @@ export const articles: Article[] = [
       <p>Key issues that dominated the election included the economy, healthcare, and immigration. The results indicate that voters are looking for pragmatic solutions and are tired of partisan bickering. The next two years will be a test of whether politicians can work together to address the country's pressing challenges.</p>
     `,
     author: 'Michael Brown',
+    authorSlug: 'michael-brown',
     authorImageUrl: 'https://picsum.photos/seed/michael-brown/40/40',
     publishedAt: '2024-05-15',
     focusKeywords: ['Elections', 'Politics', 'Government'],
@@ -130,6 +136,7 @@ export const articles: Article[] = [
       <p>Carter's performance was the culmination of years of hard work and dedication. "I've dreamed of this moment since I was a kid," he said, draped in his country's flag. "I hope this inspires others to chase their dreams, no matter how big."</p>
     `,
     author: 'Sarah Lee',
+    authorSlug: 'sarah-lee',
     authorImageUrl: 'https://picsum.photos/seed/sarah-lee/40/40',
     publishedAt: '2024-05-14',
     focusKeywords: ['Olympics', 'World Record', 'Sports'],
@@ -149,6 +156,7 @@ export const articles: Article[] = [
       <p>Central banks face a difficult balancing act: taming inflation without triggering a recession. Geopolitical conflicts continue to disrupt energy and food markets, while the transition to a post-pandemic world is still fraught with challenges. "We are not out of the woods yet," said the IMF's chief economist.</p>
     `,
     author: 'Thomas Wilson',
+    authorSlug: 'thomas-wilson',
     authorImageUrl: 'https://picsum.photos/seed/thomas-wilson/40/40',
     publishedAt: '2024-05-13',
     focusKeywords: ['Economy', 'Global Outlook', 'Finance'],
@@ -168,6 +176,7 @@ export const articles: Article[] = [
       <p>Innovations include bioplastics made from algae, smart grids that optimize energy consumption, and direct air capture systems that remove CO2 from the atmosphere. While technology alone cannot solve the climate crisis, it is an essential part of the solution.</p>
     `,
     author: 'Isabella Rossi',
+    authorSlug: 'isabella-rossi',
     authorImageUrl: 'https://picsum.photos/seed/isabella-rossi/40/40',
     publishedAt: '2024-05-12',
     focusKeywords: ['Sustainable Tech', 'Green Tech', 'Innovation'],
@@ -187,6 +196,7 @@ export const articles: Article[] = [
       <p>Privacy advocates have hailed the law as a major victory for consumers. "For too long, our personal data has been exploited without our consent," said a leading advocate. "This law puts power back in the hands of individuals."</p>
     `,
     author: 'Ben Carter',
+    authorSlug: 'ben-carter',
     authorImageUrl: 'https://picsum.photos/seed/ben-carter/40/40',
     publishedAt: '2024-05-11',
     focusKeywords: ['Data Privacy', 'Legislation', 'Security'],

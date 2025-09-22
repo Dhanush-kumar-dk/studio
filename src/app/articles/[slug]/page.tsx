@@ -42,13 +42,13 @@ export default function ArticlePage({ params }: ArticlePageProps) {
               {article.title}
             </h1>
             <div className="mt-4 flex items-center space-x-4 text-sm text-muted-foreground">
-              <div className="flex items-center gap-2">
+              <Link href={`/author/${article.authorSlug}`} className="flex items-center gap-2 hover:text-primary">
                 <Avatar className="h-6 w-6">
                   <AvatarImage src={article.authorImageUrl} alt={article.author} />
                   <AvatarFallback>{article.author.charAt(0)}</AvatarFallback>
                 </Avatar>
                 <span>{article.author}</span>
-              </div>
+              </Link>
               <div className="flex items-center gap-2">
                 <Calendar className="h-4 w-4" />
                 <span>{new Date(article.publishedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>

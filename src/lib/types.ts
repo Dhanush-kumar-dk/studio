@@ -8,6 +8,7 @@ export type Article = {
   excerpt: string;
   content: string;
   author: string;
+  authorSlug: string;
   authorImageUrl: string;
   publishedAt: string;
   focusKeywords: string[];
