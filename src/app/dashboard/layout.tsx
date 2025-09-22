@@ -1,4 +1,5 @@
 
+
 import {
     Sidebar,
     SidebarContent,
@@ -9,7 +10,6 @@ import {
     SidebarFooter,
     SidebarProvider,
     SidebarInset,
-    SidebarTrigger,
   } from '@/components/ui/sidebar';
 import { Home, User, Cog, Newspaper } from 'lucide-react';
 import Link from 'next/link';
@@ -71,10 +71,7 @@ import Logo from '@/components/logo';
           </SidebarFooter>
         </Sidebar>
         <SidebarInset>
-            <div className="p-4">
-                <SidebarTrigger />
-                {children}
-            </div>
+            {children}
         </SidebarInset>
       </SidebarProvider>
     );
