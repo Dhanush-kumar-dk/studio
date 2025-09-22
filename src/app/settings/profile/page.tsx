@@ -60,7 +60,7 @@ import {
                 <SidebarMenuItem>
                   <SidebarMenuButton href="/settings/profile" tooltip="Profile" isActive>
                     <Settings />
-                    Profile
+                    Settings
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               </SidebarMenu>
