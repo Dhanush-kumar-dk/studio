@@ -121,12 +121,12 @@ export default function UserNav() {
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         {user ? (
-            <DropdownMenuItem onClick={handleLogout}>
+            <DropdownMenuItem disabled>
                 <LogOut className="mr-2 h-4 w-4" />
                 <span>Log out</span>
             </DropdownMenuItem>
         ) : (
-            <DropdownMenuItem asChild>
+            <DropdownMenuItem asChild disabled>
                 <Link href="/login">
                     <LogIn className="mr-2 h-4 w-4" />
                     <span>Log in</span>
