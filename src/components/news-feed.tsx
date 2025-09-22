@@ -1,8 +1,9 @@
+
 "use client";
 
 import type { Article } from '@/lib/types';
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
-import { useMemo, useState, useTransition, useEffect, useRef } from 'react';
+import { useMemo, useState, useTransition, useEffect } from 'react';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import ArticleCard from './article-card';
 import Image from 'next/image';
@@ -48,6 +49,18 @@ export default function NewsFeed({ articles }: { articles: Article[] }) {
   const selectedCategory = searchParams.get('category') ?? 'All';
   const searchQuery = searchParams.get('search') ?? '';
 
+  const [carouselArticles, setCarouselArticles] = useState<Article[]>([]);
+
+  useEffect(() => {
+    const uniqueCategories = [...new Set(articles.map(a => a.category))];
+    const shuffledArticles = shuffle([...articles]);
+    const carouselItems = uniqueCategories.map(category => {
+        return shuffledArticles.find(article => article.category === category);
+    }).filter((a): a is Article => !!a);
+
+    setCarouselArticles(shuffle(carouselItems).slice(0, 5));
+  }, [articles]);
+
   const handleTabChange = (value: string) => {
     const params = new URLSearchParams(searchParams);
     params.set('category', value);
@@ -55,16 +68,6 @@ export default function NewsFeed({ articles }: { articles: Article[] }) {
       router.replace(`${pathname}?${params.toString()}`);
     });
   };
-
-  const carouselArticles = useMemo(() => {
-    const uniqueCategories = [...new Set(articles.map(a => a.category))];
-    const shuffledArticles = shuffle([...articles]);
-    const carouselItems = uniqueCategories.map(category => {
-        return shuffledArticles.find(article => article.category === category);
-    }).filter((a): a is Article => !!a);
-
-    return shuffle(carouselItems).slice(0, 5);
-  }, [articles]);
 
   const filteredArticles = useMemo(() => {
     return articles
@@ -178,3 +181,4 @@ export default function NewsFeed({ articles }: { articles: Article[] }) {
     </div>
   );
 }
+
