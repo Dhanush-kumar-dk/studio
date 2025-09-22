@@ -62,7 +62,7 @@ export default function ArticlePage({ params }: ArticlePageProps) {
           />
         </div>
         
-        <div className="prose prose-lg dark:prose-invert max-w-none prose-p:leading-relaxed prose-headings:font-headline">
+        <div className="prose prose-lg dark:prose-invert max-w-none">
           <div className="mb-8 flex justify-end gap-2">
             <Button asChild variant="outline" size="icon">
                 <Link href={`/edit-post/${article.slug}`}>
