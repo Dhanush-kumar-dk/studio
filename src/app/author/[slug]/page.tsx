@@ -1,9 +1,14 @@
+'use client';
+
 import { articles } from '@/lib/data';
 import { notFound } from 'next/navigation';
 import Header from '@/components/header';
 import Footer from '@/components/footer';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import ArticleCard from '@/components/article-card';
+import { Button } from '@/components/ui/button';
+import { ArrowLeft } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 type AuthorPageProps = {
   params: {
@@ -12,6 +17,7 @@ type AuthorPageProps = {
 };
 
 export default function AuthorPage({ params }: AuthorPageProps) {
+  const router = useRouter();
   const authorArticles = articles.filter((a) => a.authorSlug === params.slug);
 
   if (authorArticles.length === 0) {
@@ -43,6 +49,12 @@ export default function AuthorPage({ params }: AuthorPageProps) {
 
         <section className="py-16">
           <div className="container mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+            <div className="mb-8">
+                <Button variant="outline" onClick={() => router.back()}>
+                    <ArrowLeft className="mr-2 h-4 w-4" />
+                    Back to articles
+                </Button>
+            </div>
             {authorArticles.length > 0 ? (
                 <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
                     {authorArticles.map((article) => (
