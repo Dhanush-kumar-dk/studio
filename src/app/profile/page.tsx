@@ -15,19 +15,7 @@ export default function ProfilePage() {
         </div>
         <Button>Add New User</Button>
       </div>
-
-      <Tabs defaultValue="all-users">
-        <TabsList>
-          <TabsTrigger value="all-users">All Users</TabsTrigger>
-          <TabsTrigger value="settings">Settings</TabsTrigger>
-        </TabsList>
-        <TabsContent value="all-users" className="mt-6">
-          <ProfileForm />
-        </TabsContent>
-        <TabsContent value="settings" className="mt-6">
-          <p>Settings content will go here.</p>
-        </TabsContent>
-      </Tabs>
+      <ProfileForm />
     </div>
   );
 }
