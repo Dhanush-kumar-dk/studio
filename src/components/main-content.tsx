@@ -5,7 +5,7 @@ import Contact from './contact';
 
 export default function MainContent({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
-    const showContactForm = pathname !== '/create-post' && !pathname.startsWith('/edit-post');
+    const showContactForm = pathname === '/' || pathname.startsWith('/articles/');
 
     return (
         <>
