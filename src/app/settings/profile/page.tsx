@@ -70,9 +70,9 @@ import {
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
-                  <SidebarMenuButton href="/settings/profile" tooltip="Settings" isActive>
+                  <SidebarMenuButton href="/settings/profile" tooltip="Profile" isActive>
                     <Settings />
-                    Settings
+                    Profile
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               </SidebarMenu>

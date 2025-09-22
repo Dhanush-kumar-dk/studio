@@ -77,9 +77,9 @@ export default function DashboardPage() {
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <SidebarMenuButton href="/settings/profile" tooltip="Settings">
+                <SidebarMenuButton href="/settings/profile" tooltip="Profile">
                   <Settings />
-                  Settings
+                  Profile
                 </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>
