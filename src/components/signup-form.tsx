@@ -52,9 +52,9 @@ export default function SignupForm() {
 
       toast({
         title: 'Account created!',
-        description: 'You have successfully signed up.',
+        description: 'You have successfully signed up. Please log in.',
       });
-      router.push('/dashboard');
+      router.push('/login');
       router.refresh();
     } catch (error: any) {
       console.error('Signup failed:', error);
