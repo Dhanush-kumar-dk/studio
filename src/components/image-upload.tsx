@@ -17,7 +17,7 @@ import 'cropperjs/dist/cropper.css';
 import { updateProfile } from 'firebase/auth';
 import { ref, uploadString, getDownloadURL } from 'firebase/storage';
 import { auth, storage } from '@/lib/firebase';
-import { Loader2, Upload } from 'lucide-react';
+import { Loader2, Upload, X } from 'lucide-react';
 import Image from 'next/image';
 
 export default function ImageUpload() {
@@ -28,7 +28,10 @@ export default function ImageUpload() {
   const cropperRef = useRef<ReactCropperElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  const [currentPhotoUrl, setCurrentPhotoUrl] = useState(user?.photoURL || "https://picsum.photos/seed/gene-rodrig/200/200");
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.target.value = ''; // Allow re-selecting the same file
     if (e.target.files && e.target.files.length > 0) {
       const reader = new FileReader();
       reader.onload = () => setImageSrc(reader.result as string);
@@ -37,7 +40,7 @@ export default function ImageUpload() {
   };
 
   const handleUpload = async () => {
-    if (!user || !cropperRef.current) return;
+    if (!cropperRef.current) return;
 
     const cropper = cropperRef.current?.cropper;
     const croppedCanvas = cropper.getCroppedCanvas();
@@ -48,59 +51,73 @@ export default function ImageUpload() {
     }
     
     const dataUrl = croppedCanvas.toDataURL();
-
     setIsUploading(true);
-    try {
-      const storageRef = ref(storage, `profile-pictures/${user.uid}`);
-      await uploadString(storageRef, dataUrl, 'data_url');
-      const photoURL = await getDownloadURL(storageRef);
 
-      await updateProfile(user, { photoURL });
+    if (user) {
+        try {
+        const storageRef = ref(storage, `profile-pictures/${user.uid}`);
+        await uploadString(storageRef, dataUrl, 'data_url');
+        const photoURL = await getDownloadURL(storageRef);
 
-      toast({
-        title: 'Success!',
-        description: 'Your profile picture has been updated.',
-      });
-      setImageSrc(null); // Close the dialog
-    } catch (error) {
-      console.error('Error uploading image:', error);
-      toast({
-        title: 'Upload failed',
-        description: 'Could not upload your new profile picture. Please try again.',
-        variant: 'destructive',
-      });
-    } finally {
-      setIsUploading(false);
+        await updateProfile(user, { photoURL });
+        
+        setCurrentPhotoUrl(photoURL);
+        toast({
+            title: 'Success!',
+            description: 'Your profile picture has been updated.',
+        });
+        } catch (error) {
+        console.error('Error uploading image:', error);
+        toast({
+            title: 'Upload failed',
+            description: 'Could not upload your new profile picture. Please try again.',
+            variant: 'destructive',
+        });
+        }
+    } else {
+        // Handle non-logged in user case, just update UI
+        setCurrentPhotoUrl(dataUrl);
+        toast({
+            title: 'Image Set',
+            description: 'Your profile picture has been set for this session.',
+        });
     }
-  };
-  
-  const getInitials = (name?: string | null) => {
-    if (!name) return 'U';
-    const names = name.split(' ');
-    if (names.length > 1) {
-      return names[0][0] + names[names.length - 1][0];
-    }
-    return name[0];
+
+    setIsUploading(false);
+    setImageSrc(null);
   };
 
   return (
-    <div className="flex items-center space-x-6">
-        <div className="relative h-24 w-24">
+    <div className="flex flex-col items-center gap-4">
+        <div className="relative h-40 w-40">
             <Image
-                src={user?.photoURL || `https://ui-avatars.com/api/?name=${user?.displayName || 'A'}&background=random`}
+                key={currentPhotoUrl} // Force re-render on change
+                src={currentPhotoUrl}
                 alt="Profile picture"
-                className="h-24 w-24 rounded-full object-cover"
-                width={96}
-                height={96}
+                className="rounded-lg object-cover"
+                width={160}
+                height={160}
             />
+             <Button
+                type="button"
+                variant="destructive"
+                size="icon"
+                className="absolute -right-2 -top-2 h-6 w-6 rounded-full"
+                onClick={() => setCurrentPhotoUrl(`https://picsum.photos/seed/${user?.uid || 'placeholder'}/200/200`)}
+              >
+                <X className="h-4 w-4" />
+                <span className="sr-only">Remove image</span>
+              </Button>
         </div>
 
       <Button
+        type="button"
         onClick={() => fileInputRef.current?.click()}
         variant="outline"
+        className="w-full"
       >
         <Upload className="mr-2 h-4 w-4" />
-        Change Picture
+        Upload Photo
       </Button>
       <Input
         ref={fileInputRef}
