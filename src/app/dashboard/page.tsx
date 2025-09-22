@@ -4,7 +4,7 @@
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from '@/components/ui/input';
-import { users } from '@/lib/users';
+import { users as initialUsers } from '@/lib/users';
 import UserTable from '@/components/user-table';
 import { useAuth } from '@/hooks/use-auth';
 import type { User } from '@/lib/types';
@@ -13,27 +13,24 @@ import { Loader2 } from 'lucide-react';
 export default function DashboardPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const { user, loading } = useAuth();
-  const [displayUsers, setDisplayUsers] = useState<User[]>(users);
+  const [displayUsers, setDisplayUsers] = useState<User[]>(initialUsers);
 
   useEffect(() => {
     if (user) {
-      const userExists = users.some(u => u.id === user.uid);
+      const userExists = displayUsers.some(u => u.id === user.uid);
       if (!userExists) {
         const newUser: User = {
             id: user.uid,
             name: user.displayName || user.email || 'Anonymous',
             email: user.email || '',
-            role: 'Admin', // Logged in user is likely admin of their own dashboard
+            role: 'Subscriber', 
             avatarUrl: user.photoURL || `https://picsum.photos/seed/${user.uid}/40/40`,
         };
-        // Add user to the start of the list
-        const updatedUsers = [newUser, ...users];
-        // update the original array for prototype persistence across navigations
-        users.splice(0, users.length, ...updatedUsers);
+        const updatedUsers = [newUser, ...displayUsers];
         setDisplayUsers(updatedUsers);
       }
     }
-  }, [user]);
+  }, [user, displayUsers]);
 
   if (loading) {
       return (
@@ -41,6 +38,12 @@ export default function DashboardPage() {
               <Loader2 className="h-8 w-8 animate-spin" />
           </div>
       )
+  }
+
+  const handleUsersChange = (updatedUsers: User[]) => {
+    setDisplayUsers(updatedUsers);
+    // In a real app, you would also update the original `users` array or a database.
+    // For this prototype, we just update the state to reflect changes.
   }
 
   return (
@@ -59,7 +62,11 @@ export default function DashboardPage() {
                         className="max-w-sm"
                     />
                 </div>
-                <UserTable users={displayUsers} searchQuery={searchQuery} />
+                <UserTable 
+                  users={displayUsers} 
+                  searchQuery={searchQuery} 
+                  onUsersChange={handleUsersChange}
+                />
             </CardContent>
         </Card>
     </div>

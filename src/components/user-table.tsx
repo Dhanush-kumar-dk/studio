@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import type { User } from '@/lib/types';
 import {
   Table,
@@ -30,16 +30,21 @@ import { cn } from '@/lib/utils';
 type UserTableProps = {
   users: User[];
   searchQuery: string;
+  onUsersChange: (users: User[]) => void;
 };
 
 type ActionType = 'make' | 'remove';
 
-export default function UserTable({ users: initialUsers, searchQuery }: UserTableProps) {
+export default function UserTable({ users: initialUsers, searchQuery, onUsersChange }: UserTableProps) {
   const [users, setUsers] = useState(initialUsers);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [actionType, setActionType] = useState<ActionType>('make');
   const [isAlertOpen, setIsAlertOpen] = useState(false);
   const { toast } = useToast();
+
+  useEffect(() => {
+    setUsers(initialUsers);
+  }, [initialUsers]);
 
   const filteredUsers = useMemo(() => {
     if (!searchQuery) return users;
@@ -58,7 +63,9 @@ export default function UserTable({ users: initialUsers, searchQuery }: UserTabl
   const handleConfirmRoleChange = () => {
     if (selectedUser) {
       const newRole = actionType === 'make' ? 'Admin' : 'Subscriber';
-      setUsers(users.map(u => u.id === selectedUser.id ? { ...u, role: newRole } : u));
+      const updatedUsers = users.map(u => u.id === selectedUser.id ? { ...u, role: newRole } : u)
+      setUsers(updatedUsers);
+      onUsersChange(updatedUsers);
       toast({
         title: "Success",
         description: `${selectedUser.name}'s role has been updated to ${newRole}.`,
