@@ -36,10 +36,10 @@ export default function DashboardPage() {
     <SidebarProvider>
       <Sidebar>
         <SidebarHeader>
-          <div className="flex items-center gap-2">
+          <Link href="/" className="flex items-center gap-2">
             <Logo />
             <span className="text-xl font-bold">Debt & Dominion</span>
-          </div>
+          </Link>
         </SidebarHeader>
         <SidebarContent>
           <SidebarMenu>
