@@ -14,38 +14,16 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { LayoutDashboard, LogIn, LogOut, Monitor, Moon, Sun, User as UserIcon } from 'lucide-react';
+import { LayoutDashboard, Monitor, Moon, Sun, User as UserIcon } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { useAuth } from '@/hooks/use-auth';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { signOut } from 'firebase/auth';
-import { auth } from '@/lib/firebase';
-import { useToast } from '@/hooks/use-toast';
 
 export default function UserNav() {
   const { setTheme } = useTheme();
-  const { user, loading } = useAuth();
+  const { user } = useAuth();
   const router = useRouter();
-  const { toast } = useToast();
-
-  const handleLogout = async () => {
-    try {
-      await signOut(auth);
-      toast({
-        title: "Logged Out",
-        description: "You have been successfully logged out.",
-      });
-      router.push('/');
-    } catch (error) {
-      console.error("Logout failed", error);
-      toast({
-        title: "Logout Failed",
-        description: "Could not log you out. Please try again.",
-        variant: "destructive",
-      });
-    }
-  };
 
   const getInitials = (name?: string | null) => {
     if (!name) return 'U';
@@ -119,13 +97,6 @@ export default function UserNav() {
           </DropdownMenuSubContent>
           </DropdownMenuSub>
         </DropdownMenuGroup>
-        <DropdownMenuSeparator />
-        {user && (
-            <DropdownMenuItem disabled>
-                <LogOut className="mr-2 h-4 w-4" />
-                <span>Log out</span>
-            </DropdownMenuItem>
-        )}
       </DropdownMenuContent>
     </DropdownMenu>
   );
