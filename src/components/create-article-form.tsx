@@ -57,7 +57,7 @@ export default function CreateArticleForm({ article }: CreateArticleFormProps) {
     defaultValues: {
       title: article?.title || '',
       imageUrl: article?.imageUrl || '',
-      content: article?.content.replace(/<[^>]+>/g, '') || '', // Strip html for textarea
+      content: article?.content.replace(/<br\s*\/?>/gi, '\n') || '', // Replace <br> with newlines for textarea
       focusKeywords: article?.focusKeywords.join(', ') || '',
       slug: article?.slug || '',
       metaDescription: article?.metaDescription || '',

@@ -31,6 +31,7 @@ export async function createArticle(input: CreateArticleInput) {
     try {
         const newId = (articles.length + 1).toString();
         const finalSlug = input.slug || input.title.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, '');
+        const contentWithBreaks = input.content.replace(/\n/g, '<br />');
 
         const newArticle: Article = {
             id: newId,
@@ -40,7 +41,7 @@ export async function createArticle(input: CreateArticleInput) {
             imageUrl: input.imageUrl || `https://picsum.photos/seed/${finalSlug}/1200/800`,
             imageHint: 'new article',
             excerpt: input.excerpt,
-            content: input.content,
+            content: contentWithBreaks,
             author: input.author,
             authorImageUrl: `https://picsum.photos/seed/${input.author.replace(/\s+/g, '-')}/40/40`,
             publishedAt: new Date().toISOString(),
@@ -68,6 +69,7 @@ export async function updateArticle(articleId: string, input: CreateArticleInput
         }
 
         const finalSlug = input.slug || input.title.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, '');
+        const contentWithBreaks = input.content.replace(/\n/g, '<br />');
 
         const updatedArticle: Article = {
             ...articles[articleIndex],
@@ -76,7 +78,7 @@ export async function updateArticle(articleId: string, input: CreateArticleInput
             category: input.category,
             imageUrl: input.imageUrl || `https://picsum.photos/seed/${finalSlug}/1200/800`,
             excerpt: input.excerpt,
-            content: input.content,
+            content: contentWithBreaks,
             author: input.author,
             authorImageUrl: `https://picsum.photos/seed/${input.author.replace(/\s+/g, '-')}/40/40`,
             focusKeywords: input.focusKeywords.split(',').map(k => k.trim()),
