@@ -11,7 +11,7 @@ import {
     SidebarProvider,
     SidebarInset,
   } from '@/components/ui/sidebar';
-import { Home, User, Cog, Newspaper } from 'lucide-react';
+import { Home, User, Cog, Newspaper, Settings, LayoutDashboard } from 'lucide-react';
 import Link from 'next/link';
 import Logo from '@/components/logo';
   
@@ -41,17 +41,9 @@ import Logo from '@/components/logo';
               </SidebarMenuItem>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
-                    <Link href="/profile">
-                        <User />
-                        Profile
-                    </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
                     <Link href="/dashboard">
-                        <Newspaper />
-                        User Dashboard
+                        <LayoutDashboard />
+                        Dashboard
                     </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
@@ -61,8 +53,8 @@ import Logo from '@/components/logo';
             <SidebarMenu>
                 <SidebarMenuItem>
                     <SidebarMenuButton asChild>
-                        <Link href="/settings">
-                            <Cog />
+                        <Link href="/profile">
+                            <Settings />
                             Settings
                         </Link>
                     </SidebarMenuButton>
