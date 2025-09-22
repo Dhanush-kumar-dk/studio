@@ -20,21 +20,32 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import UserProfileCard from "./user-profile-card";
+import { useToast } from "@/hooks/use-toast";
+import { auth } from "@/lib/firebase";
+import { updateProfile } from "firebase/auth";
+import { Loader2 } from "lucide-react";
 
-export default function ProfileForm() {
+const mockData = {
+  username: "gene.rodrig",
+  firstName: "Gene",
+  role: "subscriber",
+  lastName: "Rodriguez",
+  email: "gene.rodrig@gmail.com",
+  website: "gene-roding.webflow.io",
+  bio: "Albert Einstein was a German mathematician and physicist who developed the special and general theories of relativity. In 1921, he won the Nobel Prize for physics for his explanation of the photoelectric effect. In the following decade.",
+  avatarUrl: 'https://picsum.photos/seed/gene-rodrig/150/150'
+};
+
+type ProfileFormProps = {
+  initialData?: typeof mockData;
+}
+
+export default function ProfileForm({ initialData = mockData }: ProfileFormProps) {
   const [isEditing, setIsEditing] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const { toast } = useToast();
 
-  // Mock data - in a real app, this would come from an API or auth context
-  const [userData, setUserData] = useState({
-    username: "gene.rodrig",
-    firstName: "Gene",
-    role: "subscriber",
-    lastName: "Rodriguez",
-    email: "gene.rodrig@gmail.com",
-    website: "gene-roding.webflow.io",
-    bio: "Albert Einstein was a German mathematician and physicist who developed the special and general theories of relativity. In 1921, he won the Nobel Prize for physics for his explanation of the photoelectric effect. In the following decade.",
-    avatarUrl: 'https://picsum.photos/seed/gene-rodrig/150/150'
-  });
+  const [userData, setUserData] = useState(initialData);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { id, value } = e.target;
@@ -45,10 +56,31 @@ export default function ProfileForm() {
     setUserData(prev => ({...prev, role: value}));
   }
 
-  const handleSave = () => {
-    // Here you would typically save the data to your backend
-    console.log("Saving data:", userData);
-    setIsEditing(false);
+  const handleSave = async () => {
+    setIsSaving(true);
+    const currentUser = auth.currentUser;
+    if (currentUser) {
+        try {
+            await updateProfile(currentUser, {
+                displayName: `${userData.firstName} ${userData.lastName}`.trim(),
+                // PhotoURL update would require file upload, skipping for now.
+            });
+            // Here you would also save other data (bio, website, etc.) to your database (e.g., Firestore)
+            toast({
+                title: "Profile Updated",
+                description: "Your profile has been successfully updated.",
+            });
+            setIsEditing(false);
+        } catch (error) {
+            console.error("Error updating profile: ", error);
+            toast({
+                title: "Error",
+                description: "Failed to update profile. Please try again.",
+                variant: "destructive"
+            });
+        }
+    }
+    setIsSaving(false);
   };
   
   const handleEdit = () => {
@@ -113,7 +145,7 @@ export default function ProfileForm() {
               <div>
                 <Label htmlFor="email">Email (required)</Label>
                  {isEditing ? (
-                    <Input id="email" type="email" value={userData.email} onChange={handleInputChange} />
+                    <Input id="email" type="email" value={userData.email} onChange={handleInputChange} disabled/>
                 ) : (
                     <p className="mt-1 text-sm text-muted-foreground">{userData.email}</p>
                 )}
@@ -146,8 +178,11 @@ export default function ProfileForm() {
            <CardFooter className="flex justify-end gap-2">
                 {isEditing ? (
                   <>
-                    <Button variant="outline" onClick={() => setIsEditing(false)}>Cancel</Button>
-                    <Button onClick={handleSave}>Save Profile</Button>
+                    <Button variant="outline" onClick={() => setIsEditing(false)} disabled={isSaving}>Cancel</Button>
+                    <Button onClick={handleSave} disabled={isSaving}>
+                        {isSaving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                        Save Profile
+                    </Button>
                   </>
                 ) : (
                   <Button onClick={handleEdit}>Edit Profile</Button>
