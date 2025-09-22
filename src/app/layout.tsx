@@ -6,6 +6,7 @@ import Footer from '@/components/footer';
 import { Toaster } from '@/components/ui/toaster';
 import { cn } from '@/lib/utils';
 import Contact from '@/components/contact';
+import { ThemeProvider } from '@/components/theme-provider';
 
 export const metadata: Metadata = {
   title: 'NewsFlash',
@@ -28,15 +29,22 @@ export default function RootLayout({
         />
       </head>
       <body className={cn('font-body bg-background text-foreground antialiased')}>
-        <Providers>
-          <div className="relative flex min-h-screen flex-col">
-            <Header />
-            <main className="flex-1">{children}</main>
-            <Contact />
-            <Footer />
-          </div>
-          <Toaster />
-        </Providers>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <Providers>
+            <div className="relative flex min-h-screen flex-col">
+              <Header />
+              <main className="flex-1">{children}</main>
+              <Contact />
+              <Footer />
+            </div>
+            <Toaster />
+          </Providers>
+        </ThemeProvider>
       </body>
     </html>
   );
