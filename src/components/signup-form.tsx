@@ -21,6 +21,7 @@ import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Loader2 } from 'lucide-react';
 import Link from 'next/link';
+import { users } from '@/lib/users';
 
 const formSchema = z.object({
   name: z.string().min(1, 'Name is required.'),
@@ -50,11 +51,20 @@ export default function SignupForm() {
         displayName: values.name,
       });
 
+      // Add user to the in-memory user list
+      users.push({
+        id: userCredential.user.uid,
+        name: values.name,
+        email: values.email,
+        role: 'Subscriber',
+        avatarUrl: `https://picsum.photos/seed/${userCredential.user.uid}/40/40`,
+      });
+
       toast({
         title: 'Account created!',
         description: 'You have successfully signed up.',
       });
-      router.push('/dashboard');
+      router.push('/login');
       router.refresh();
     } catch (error: any) {
       console.error('Signup failed:', error);
