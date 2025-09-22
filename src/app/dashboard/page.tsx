@@ -28,6 +28,15 @@ export default function DashboardPage() {
         };
         const updatedUsers = [newUser, ...displayUsers];
         setDisplayUsers(updatedUsers);
+      } else {
+        // If user exists, check if avatarUrl needs updating (e.g. after a Google login)
+        const updatedUsers = displayUsers.map(u => {
+          if (u.id === user.uid && u.avatarUrl !== user.photoURL && user.photoURL) {
+            return { ...u, avatarUrl: user.photoURL };
+          }
+          return u;
+        });
+        setDisplayUsers(updatedUsers);
       }
     }
   }, [user, displayUsers]);
