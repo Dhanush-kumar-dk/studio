@@ -56,13 +56,18 @@ export default function UserNav() {
     }
   };
 
+  const getUserName = () => {
+    if (!user) return '';
+    return user.displayName || user.email?.split('@')[0] || 'User';
+  }
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="relative h-8 w-8 rounded-full">
           <Avatar className="h-8 w-8">
             {user && <AvatarImage src={user.photoURL || ''} alt={user.displayName || 'User'} />}
-            <AvatarFallback>{user ? getInitials(user.displayName) : <UserIcon className="h-4 w-4" />}</AvatarFallback>
+            <AvatarFallback>{user ? getInitials(user.displayName || user.email) : <UserIcon className="h-4 w-4" />}</AvatarFallback>
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
@@ -71,7 +76,7 @@ export default function UserNav() {
           <>
             <DropdownMenuLabel className="font-normal">
               <div className="flex flex-col space-y-1">
-                <p className="text-sm font-medium leading-none">{user.displayName || 'Anonymous User'}</p>
+                <p className="text-sm font-medium leading-none">{getUserName()}</p>
                 <p className="text-xs leading-none text-muted-foreground">
                   {user.email}
                 </p>
