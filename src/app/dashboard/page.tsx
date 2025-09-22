@@ -19,7 +19,6 @@ import {
   LayoutGrid,
   User,
   Search,
-  Settings,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Logo from '@/components/logo';
@@ -68,7 +67,7 @@ export default function DashboardPage() {
            <SidebarMenu>
               <SidebarMenuItem>
                 <SidebarMenuButton href="/settings/profile" tooltip="Profile">
-                  <Settings />
+                  <User />
                   Profile
                 </SidebarMenuButton>
               </SidebarMenuItem>
