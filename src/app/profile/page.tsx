@@ -1,4 +1,4 @@
-import { users } from 'lucide-react';
+import { Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import ProfileForm from '@/components/profile-form';
@@ -9,7 +9,7 @@ export default function ProfilePage() {
       <div className="mb-8 flex items-center justify-between">
         <div className="flex items-center gap-4">
           <div className="rounded-md bg-muted p-2">
-            <users className="h-6 w-6 text-muted-foreground" />
+            <Users className="h-6 w-6 text-muted-foreground" />
           </div>
           <h1 className="text-2xl font-bold">Users</h1>
         </div>
