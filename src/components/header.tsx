@@ -5,7 +5,6 @@ import { Flame, Loader2, Search, PlusCircle } from 'lucide-react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { useAuth } from '@/hooks/use-auth';
-import GoogleSignInButton from './google-signin-button';
 import UserNav from './user-nav';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { FormEvent } from 'react';
@@ -71,7 +70,7 @@ export default function Header() {
                 <UserNav />
               </>
             ) : (
-              <GoogleSignInButton />
+                <UserNav />
             )}
           </div>
         </div>
