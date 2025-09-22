@@ -26,7 +26,6 @@ import {
 import { createArticle } from '@/app/actions';
 import { useState } from 'react';
 import { Loader2 } from 'lucide-react';
-import { useAuth } from '@/hooks/use-auth';
 
 const formSchema = z.object({
   title: z.string().min(10, 'Title must be at least 10 characters.'),
@@ -39,7 +38,6 @@ export default function CreateArticleForm() {
   const router = useRouter();
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { user } = useAuth();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -52,17 +50,8 @@ export default function CreateArticleForm() {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    if (!user) {
-      toast({
-        title: 'Authentication Required',
-        description: 'You must be logged in to create an article.',
-        variant: 'destructive',
-      });
-      return;
-    }
-
     setIsSubmitting(true);
-    const result = await createArticle({ ...values, author: user.displayName || 'Anonymous' });
+    const result = await createArticle({ ...values, author: 'Anonymous' });
 
     if (result.error) {
       toast({

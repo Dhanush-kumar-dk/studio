@@ -4,7 +4,6 @@ import Image from 'next/image';
 import { Badge } from '@/components/ui/badge';
 import { Calendar, User } from 'lucide-react';
 import SummarizeButton from '@/components/summarize-button';
-import ReadingHistoryTracker from '@/components/reading-history-tracker';
 
 type ArticlePageProps = {
   params: {
@@ -63,7 +62,6 @@ export default function ArticlePage({ params }: ArticlePageProps) {
           <div dangerouslySetInnerHTML={{ __html: article.content }} />
         </div>
       </article>
-      <ReadingHistoryTracker articleId={article.id} />
     </>
   );
 }

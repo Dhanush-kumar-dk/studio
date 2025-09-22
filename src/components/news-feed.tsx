@@ -2,27 +2,17 @@
 
 import type { Article } from '@/lib/types';
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
-import { useMemo, useState, useTransition, useEffect, useCallback } from 'react';
+import { useMemo, useState, useTransition, useEffect } from 'react';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
-import { getPersonalizedRecommendations } from '@/app/actions';
-import { useAuth } from '@/hooks/use-auth';
-import { useToast } from '@/hooks/use-toast';
-import { useReadingHistory } from '@/hooks/use-reading-history';
 import ArticleCard from './article-card';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Button } from './ui/button';
 import { Badge } from './ui/badge';
-import { Loader2 } from 'lucide-react';
 import { Skeleton } from './ui/skeleton';
 
 const categories = ['All', 'Politics', 'Sports', 'Technology', 'World'];
 
 export default function NewsFeed({ articles }: { articles: Article[] }) {
-  const { user, loading: authLoading } = useAuth();
-  const { toast } = useToast();
-  const { history } = useReadingHistory();
-
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
@@ -30,9 +20,6 @@ export default function NewsFeed({ articles }: { articles: Article[] }) {
 
   const selectedCategory = searchParams.get('category') ?? 'All';
   const searchQuery = searchParams.get('search') ?? '';
-
-  const [recommendedArticles, setRecommendedArticles] = useState<Article[]>([]);
-  const [recommendationsLoading, setRecommendationsLoading] = useState(false);
 
   const handleTabChange = (value: string) => {
     const params = new URLSearchParams(searchParams);
@@ -42,33 +29,7 @@ export default function NewsFeed({ articles }: { articles: Article[] }) {
     });
   };
 
-  const fetchRecommendations = useCallback(async () => {
-    if (selectedCategory !== 'For You' || !user) return;
-    setRecommendationsLoading(true);
-    const result = await getPersonalizedRecommendations(history);
-    if (result.error) {
-      toast({
-        title: 'Error',
-        description: result.error,
-        variant: 'destructive',
-      });
-      setRecommendedArticles([]);
-    } else if (result.recommendations) {
-      setRecommendedArticles(result.recommendations as Article[]);
-    }
-    setRecommendationsLoading(false);
-  }, [selectedCategory, user, history, toast]);
-
-  useEffect(() => {
-    if (selectedCategory === 'For You' && user) {
-      fetchRecommendations();
-    }
-  }, [selectedCategory, user, fetchRecommendations]);
-
   const filteredArticles = useMemo(() => {
-    if (selectedCategory === 'For You') {
-      return recommendedArticles;
-    }
     return articles
       .filter((article) =>
         selectedCategory === 'All' ? true : article.category === selectedCategory
@@ -76,12 +37,12 @@ export default function NewsFeed({ articles }: { articles: Article[] }) {
       .filter((article) =>
         article.title.toLowerCase().includes(searchQuery.toLowerCase())
       );
-  }, [articles, selectedCategory, searchQuery, recommendedArticles]);
+  }, [articles, selectedCategory, searchQuery]);
 
   const featuredArticle = filteredArticles.length > 0 ? filteredArticles[0] : null;
   const gridArticles = filteredArticles.length > 1 ? filteredArticles.slice(1) : [];
 
-  const isLoading = isPending || recommendationsLoading;
+  const isLoading = isPending;
 
   const renderSkeletons = () => (
     <>
@@ -103,7 +64,6 @@ export default function NewsFeed({ articles }: { articles: Article[] }) {
     <div>
       <Tabs value={selectedCategory} onValueChange={handleTabChange} className="w-full">
         <TabsList className="grid w-full grid-cols-3 sm:w-auto sm:grid-cols-none sm:inline-flex">
-          {!authLoading && user && <TabsTrigger value="For You">For You</TabsTrigger>}
           {categories.map((cat) => (
             <TabsTrigger key={cat} value={cat}>
               {cat}

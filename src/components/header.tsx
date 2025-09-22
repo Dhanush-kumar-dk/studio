@@ -1,16 +1,14 @@
 "use client";
 
 import Link from 'next/link';
-import { Flame, Loader2, Search, PlusCircle } from 'lucide-react';
+import { Flame, Search, PlusCircle } from 'lucide-react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
-import { useAuth } from '@/hooks/use-auth';
 import UserNav from './user-nav';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { FormEvent } from 'react';
 
 export default function Header() {
-  const { user, loading } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -57,21 +55,13 @@ export default function Header() {
           )}
 
           <div className="flex items-center gap-2">
-            {loading ? (
-              <Loader2 className="h-6 w-6 animate-spin" />
-            ) : user ? (
-              <>
-                <Button asChild variant="ghost" size="sm">
-                    <Link href="/create-post">
-                        <PlusCircle className="mr-2 h-4 w-4" />
-                        Create Post
-                    </Link>
-                </Button>
-                <UserNav />
-              </>
-            ) : (
-                <UserNav />
-            )}
+            <Button asChild variant="ghost" size="sm">
+                <Link href="/create-post">
+                    <PlusCircle className="mr-2 h-4 w-4" />
+                    Create Post
+                </Link>
+            </Button>
+            <UserNav />
           </div>
         </div>
       </div>
