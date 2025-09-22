@@ -20,11 +20,11 @@ import {
   User,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import Link from 'next/link';
 import Logo from '@/components/logo';
 import UserTable from '@/components/user-table';
 import { users } from '@/lib/users';
+import UserNav from '@/components/user-nav';
 
 export default function DashboardPage() {
   return (
@@ -90,10 +90,7 @@ export default function DashboardPage() {
               <Bell className="h-5 w-5" />
               <span className="sr-only">Toggle notifications</span>
             </Button>
-            <Avatar className="h-8 w-8">
-              <AvatarImage src="https://picsum.photos/seed/sami/40/40" />
-              <AvatarFallback>SR</AvatarFallback>
-            </Avatar>
+            <UserNav />
           </div>
         </header>
         <main className="flex-1 p-4 md:p-6">
