@@ -15,9 +15,9 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
+import { signInWithEmailAndPassword, signInWithRedirect, GoogleAuthProvider, getRedirectResult } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Loader2 } from 'lucide-react';
 import GoogleIcon from '@/components/icons/google';
@@ -33,6 +33,7 @@ export default function LoginForm() {
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isGoogleSubmitting, setIsGoogleSubmitting] = useState(false);
+  const [isHandlingRedirect, setIsHandlingRedirect] = useState(true);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -41,6 +42,35 @@ export default function LoginForm() {
       password: '',
     },
   });
+
+  useEffect(() => {
+    async function handleRedirect() {
+      try {
+        const result = await getRedirectResult(auth);
+        if (result) {
+          toast({
+            title: 'Logged in!',
+            description: 'You have successfully logged in with Google.',
+          });
+          router.push('/dashboard');
+          router.refresh();
+        }
+      } catch (error: any) {
+        console.error('Google login failed:', error);
+        // Only show toast if it's a real error, not just no-redirect
+        if (error.code !== 'auth/no-redirect-result') {
+          toast({
+            title: 'Login Failed',
+            description: 'Could not log in with Google. Please try again.',
+            variant: 'destructive',
+          });
+        }
+      } finally {
+        setIsHandlingRedirect(false);
+      }
+    }
+    handleRedirect();
+  }, [router, toast]);
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsSubmitting(true);
@@ -68,13 +98,7 @@ export default function LoginForm() {
     setIsGoogleSubmitting(true);
     try {
       const provider = new GoogleAuthProvider();
-      await signInWithPopup(auth, provider);
-      toast({
-        title: 'Logged in!',
-        description: 'You have successfully logged in with Google.',
-      });
-      router.push('/dashboard');
-      router.refresh();
+      await signInWithRedirect(auth, provider);
     } catch (error) {
       console.error('Google login failed:', error);
       toast({
@@ -82,9 +106,16 @@ export default function LoginForm() {
         description: 'Could not log in with Google. Please try again.',
         variant: 'destructive',
       });
-    } finally {
-        setIsGoogleSubmitting(false);
+      setIsGoogleSubmitting(false);
     }
+  }
+
+  if (isHandlingRedirect) {
+    return (
+        <div className="flex min-h-[300px] items-center justify-center">
+            <Loader2 className="h-8 w-8 animate-spin" />
+        </div>
+    )
   }
 
   return (
