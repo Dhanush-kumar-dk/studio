@@ -36,7 +36,7 @@ export default function Header() {
       <div className="container flex h-16 items-center justify-between">
         <Link href="/" className="flex items-center gap-2">
           <Logo />
-          <span className="text-xl font-bold tracking-tight">Debt & Dominion</span>
+          <span className="hidden sm:inline-block text-xl font-bold tracking-tight">Debt & Dominion</span>
         </Link>
 
         <div className="flex flex-1 items-center justify-end gap-4">
@@ -59,7 +59,7 @@ export default function Header() {
             <Button asChild variant="ghost" size="sm">
                 <Link href="/create-post">
                     <PlusCircle className="mr-2 h-4 w-4" />
-                    Create Post
+                    <span className="hidden sm:inline-block">Create Post</span>
                 </Link>
             </Button>
             <UserNav />
