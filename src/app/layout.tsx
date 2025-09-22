@@ -6,6 +6,7 @@ import { Toaster } from '@/components/ui/toaster';
 import { cn } from '@/lib/utils';
 import { ThemeProvider } from '@/components/theme-provider';
 import MainContent from '@/components/main-content';
+import { Providers } from '@/components/providers';
 
 export const metadata: Metadata = {
   title: 'Debt & Dominion',
@@ -34,12 +35,14 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
+          <Providers>
             <div className="relative flex min-h-screen flex-col">
               <Header />
               <MainContent>{children}</MainContent>
               <Footer />
             </div>
             <Toaster />
+          </Providers>
         </ThemeProvider>
       </body>
     </html>
