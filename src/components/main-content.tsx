@@ -7,7 +7,7 @@ import Footer from './footer';
 
 export default function MainContent({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
-    const isDashboardRoute = pathname.startsWith('/dashboard');
+    const isDashboardRoute = pathname.startsWith('/dashboard') || pathname.startsWith('/profile');
 
     return (
         <>
