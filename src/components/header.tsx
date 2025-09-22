@@ -1,7 +1,7 @@
 "use client";
 
 import Link from 'next/link';
-import { Flame, Loader2, Search } from 'lucide-react';
+import { Flame, Loader2, Search, PlusCircle } from 'lucide-react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { useAuth } from '@/hooks/use-auth';
@@ -57,11 +57,19 @@ export default function Header() {
             </form>
           )}
 
-          <div className="flex items-center">
+          <div className="flex items-center gap-2">
             {loading ? (
               <Loader2 className="h-6 w-6 animate-spin" />
             ) : user ? (
-              <UserNav />
+              <>
+                <Button asChild variant="ghost" size="sm">
+                    <Link href="/create-post">
+                        <PlusCircle className="mr-2 h-4 w-4" />
+                        Create Post
+                    </Link>
+                </Button>
+                <UserNav />
+              </>
             ) : (
               <GoogleSignInButton />
             )}
