@@ -58,6 +58,10 @@ export default function ProfileForm({ initialData = mockData, isCurrentUser = fa
     setUserData(prev => ({...prev, role: value}));
   }
 
+  const handleAvatarChange = (newAvatarUrl: string) => {
+    setUserData(prev => ({ ...prev, avatarUrl: newAvatarUrl }));
+  };
+
   const handleSave = async () => {
     setIsSaving(true);
     const currentUser = auth.currentUser;
@@ -65,8 +69,8 @@ export default function ProfileForm({ initialData = mockData, isCurrentUser = fa
         try {
             await updateProfile(currentUser, {
                 displayName: `${userData.firstName} ${userData.lastName}`.trim(),
-                // PhotoURL update would require file upload, skipping for now.
             });
+            // The avatar is updated via ImageUploader now.
             // Here you would also save other data (bio, website, etc.) to your database (e.g., Firestore)
             toast({
                 title: "Profile Updated",
@@ -94,7 +98,11 @@ export default function ProfileForm({ initialData = mockData, isCurrentUser = fa
 
   return (
     <div className="space-y-8">
-      <UserProfileCard userData={userData} />
+      <UserProfileCard 
+        userData={userData} 
+        isEditing={isEditing}
+        onAvatarChange={handleAvatarChange}
+      />
       <Card>
           <CardHeader>
             <CardTitle>Profile Information</CardTitle>
