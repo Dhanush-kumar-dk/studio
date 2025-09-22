@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import Header from '@/components/header';
 import Footer from '@/components/footer';
-import Contact from '@/components/contact';
+import Newsletter from '@/components/newsletter';
 
 type ArticlePageProps = {
   params: {
@@ -83,7 +83,7 @@ export default function ArticlePage({ params }: ArticlePageProps) {
 
         </article>
       </main>
-      <Contact />
+      <Newsletter />
       <Footer />
     </>
   );

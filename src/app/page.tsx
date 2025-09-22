@@ -2,8 +2,8 @@ import { articles } from '@/lib/data';
 import NewsFeed from '@/components/news-feed';
 import { Suspense } from 'react';
 import Header from '@/components/header';
-import Contact from '@/components/contact';
 import Footer from '@/components/footer';
+import Newsletter from '@/components/newsletter';
 
 export default function Home() {
   return (
@@ -16,7 +16,7 @@ export default function Home() {
           </Suspense>
         </div>
       </main>
-      <Contact />
+      <Newsletter />
       <Footer />
     </>
   );

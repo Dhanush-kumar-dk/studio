@@ -5,6 +5,7 @@ import Footer from '@/components/footer';
 import { Card, CardContent } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import ProfileForm from '@/components/profile-form';
+import Newsletter from '@/components/newsletter';
 
 const teamMembers = [
   {
@@ -91,6 +92,7 @@ export default function AboutPage() {
         </section>
 
       </main>
+      <Newsletter />
       <Footer />
     </>
   );

@@ -1,7 +1,7 @@
 import CreateArticleForm from '@/components/create-article-form';
 import Header from '@/components/header';
 import Footer from '@/components/footer';
-import Contact from '@/components/contact';
+import Newsletter from '@/components/newsletter';
 
 export default function CreatePostPage() {
   return (
@@ -18,7 +18,7 @@ export default function CreatePostPage() {
           <CreateArticleForm />
         </div>
       </main>
-      <Contact />
+      <Newsletter />
       <Footer />
     </>
   );

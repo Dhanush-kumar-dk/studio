@@ -3,7 +3,7 @@ import { articles } from '@/lib/data';
 import { notFound } from 'next/navigation';
 import Header from '@/components/header';
 import Footer from '@/components/footer';
-import Contact from '@/components/contact';
+import Newsletter from '@/components/newsletter';
 
 type EditPostPageProps = {
     params: {
@@ -32,7 +32,7 @@ export default function EditPostPage({ params }: EditPostPageProps) {
           <CreateArticleForm article={article} />
         </div>
       </main>
-      <Contact />
+      <Newsletter />
       <Footer />
     </>
   );
