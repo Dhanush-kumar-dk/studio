@@ -1,5 +1,6 @@
-import { Flame, Linkedin, Mail } from "lucide-react";
+import { Linkedin, Mail } from "lucide-react";
 import Link from "next/link";
+import { Logo } from "./logo";
 
 export default function Footer() {
   return (
@@ -8,7 +9,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
           <div>
             <div className="flex items-center gap-2">
-              <Flame className="h-7 w-7 text-primary" />
+              <Logo className="h-7 w-7 text-primary" />
               <span className="text-xl font-bold">Debt & Dominion</span>
             </div>
             <p className="mt-4 text-muted-foreground">
