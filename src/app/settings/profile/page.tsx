@@ -9,7 +9,6 @@ import {
     SidebarMenu,
     SidebarMenuItem,
     SidebarMenuButton,
-    SidebarGroup,
   } from '@/components/ui/sidebar';
   import {
     Bell,

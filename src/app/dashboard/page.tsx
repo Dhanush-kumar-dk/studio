@@ -11,7 +11,6 @@ import {
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
-  SidebarGroup,
 } from '@/components/ui/sidebar';
 import {
   Bell,
@@ -19,6 +18,7 @@ import {
   LayoutGrid,
   User,
   Search,
+  Settings,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Logo from '@/components/logo';
@@ -67,7 +67,7 @@ export default function DashboardPage() {
            <SidebarMenu>
               <SidebarMenuItem>
                 <SidebarMenuButton href="/settings/profile" tooltip="Profile">
-                  <User />
+                  <Settings />
                   Profile
                 </SidebarMenuButton>
               </SidebarMenuItem>

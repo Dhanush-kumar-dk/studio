@@ -13,7 +13,7 @@ import {
 } from '@/components/ui/table';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+import { Button, buttonVariants } from '@/components/ui/button';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -25,6 +25,7 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { useToast } from '@/hooks/use-toast';
+import { cn } from '@/lib/utils';
 
 type UserTableProps = {
   users: User[];
@@ -87,6 +88,7 @@ export default function UserTable({ users: initialUsers, searchQuery }: UserTabl
             <TableRow>
               <TableHead>User</TableHead>
               <TableHead>Email</TableHead>
+              <TableHead>ID</TableHead>
               <TableHead>Role</TableHead>
               <TableHead>Actions</TableHead>
             </TableRow>
@@ -104,6 +106,7 @@ export default function UserTable({ users: initialUsers, searchQuery }: UserTabl
                   </div>
                 </TableCell>
                 <TableCell>{user.email}</TableCell>
+                <TableCell>{user.id}</TableCell>
                 <TableCell>
                   <Badge variant={user.role === 'Admin' ? 'default' : 'secondary'}>
                     {user.role}
@@ -142,10 +145,13 @@ export default function UserTable({ users: initialUsers, searchQuery }: UserTabl
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel onClick={() => setSelectedUser(null)}>No</AlertDialogCancel>
+            <AlertDialogCancel>No</AlertDialogCancel>
             <AlertDialogAction
               onClick={handleConfirmRoleChange}
-              className={actionType === 'make' ? "bg-primary hover:bg-primary/90" : "bg-destructive hover:bg-destructive/90"}
+              className={cn(
+                actionType === 'make' ? 'bg-green-600 hover:bg-green-700' : 'bg-red-600 hover:bg-red-700',
+                buttonVariants({ variant: 'default' })
+              )}
             >
               Yes
             </AlertDialogAction>
