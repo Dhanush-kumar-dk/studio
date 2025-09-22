@@ -30,30 +30,33 @@ export default function LinkEditor({ onSetLink, onClose }: LinkEditorProps) {
 
   return (
     <Dialog open={true} onOpenChange={onClose}>
-      <DialogContent>
+      <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Add/Edit Link</DialogTitle>
         </DialogHeader>
-        <div className="space-y-4 py-4">
-          <div className="space-y-2">
-            <Label htmlFor="link-url">URL</Label>
+        <div className="grid gap-4 py-4">
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="link-url" className="text-right">
+              URL
+            </Label>
             <Input
               id="link-url"
               value={url}
               onChange={(e) => setUrl(e.target.value)}
               placeholder="https://example.com"
+              className="col-span-3"
             />
           </div>
-          <div className="space-y-2">
-             <Label>Target</Label>
-             <RadioGroup defaultValue={target} onValueChange={setTarget} className="flex space-x-4">
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label className="text-right">Target</Label>
+             <RadioGroup defaultValue={target} onValueChange={setTarget} className="col-span-3 flex space-x-4">
                 <div className="flex items-center space-x-2">
                     <RadioGroupItem value="_blank" id="new-tab" />
-                    <Label htmlFor="new-tab">Open in new tab</Label>
+                    <Label htmlFor="new-tab">New Tab</Label>
                 </div>
                 <div className="flex items-center space-x-2">
                     <RadioGroupItem value="_self" id="same-tab" />
-                    <Label htmlFor="same-tab">Open in same tab</Label>
+                    <Label htmlFor="same-tab">Same Tab</Label>
                 </div>
              </RadioGroup>
           </div>

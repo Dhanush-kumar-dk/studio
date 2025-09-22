@@ -131,27 +131,32 @@ export default function CreateArticleForm({ article }: CreateArticleFormProps) {
     if (start !== end) {
         setSelection([start, end]);
         
+        // This is a hacky way to get the position of the selected text.
+        // A proper rich text editor would provide a better API for this.
+        const dummyEl = document.createElement('span');
+        const textBefore = textarea.value.substring(0, start);
+        dummyEl.innerHTML = textBefore.replace(/\n/g, '<br>');
+        document.body.appendChild(dummyEl);
+        
         const rect = textarea.getBoundingClientRect();
-
-        // This is a simplified calculation. A real-world implementation
-        // might need a more robust way to get the exact cursor coordinates.
-        const textBeforeSelection = textarea.value.substring(0, start);
-        const textLines = textBeforeSelection.split('\n');
+        
+        const textLines = textBefore.split('\n');
         const currentLine = textLines.length;
         const positionInLine = textLines[textLines.length - 1].length;
         
-        // Approximate character width and line height
-        const charWidth = 8; 
-        const calcLineHeight = 24; 
+        const lineHeight = parseInt(window.getComputedStyle(textarea).lineHeight);
+        const charWidth = 8; // Approximate character width
 
-        let newTop = (currentLine * calcLineHeight) - textarea.scrollTop + rect.top;
-        let newLeft = (positionInLine * charWidth) + rect.left + textarea.offsetLeft;
+        let top = rect.top + (currentLine * lineHeight) - textarea.scrollTop - (lineHeight * 1.5);
+        let left = rect.left + (positionInLine * charWidth) - textarea.scrollLeft;
 
-        // Keep button within textarea bounds
-        newTop = Math.max(rect.top, newTop);
-        newLeft = Math.min(newLeft, rect.right - 50);
+        // Clamp position within textarea bounds
+        top = Math.max(rect.top, top);
+        left = Math.min(Math.max(rect.left, left), rect.right - 50); // 50 is button width
 
-        setLinkEditorPosition({ top: newTop - 40, left: newLeft });
+        setLinkEditorPosition({ top, left });
+        document.body.removeChild(dummyEl);
+
     } else {
         setSelection(null);
         setShowLinkEditor(false);
@@ -237,7 +242,7 @@ export default function CreateArticleForm({ article }: CreateArticleFormProps) {
                         placeholder="Write your full article content here. You can use HTML for formatting links, images, and videos."
                         rows={15}
                         onSelect={handleSelection}
-                        onScroll={handleSelection} // Re-calculate on scroll
+                        onScroll={() => setSelection(null)}
                         />
                     </FormControl>
                     <FormMessage />
@@ -248,12 +253,12 @@ export default function CreateArticleForm({ article }: CreateArticleFormProps) {
                      <Button
                         type="button"
                         variant="secondary"
-                        size="icon"
-                        className="absolute h-8 w-8"
+                        className="absolute h-8"
                         style={{ top: `${linkEditorPosition.top}px`, left: `${linkEditorPosition.left}px`, zIndex: 10 }}
                         onClick={() => setShowLinkEditor(true)}
                      >
-                        <LinkIcon className="h-4 w-4" />
+                        <LinkIcon className="mr-2 h-4 w-4" />
+                        Add Link
                      </Button>
                  )}
             </div>
