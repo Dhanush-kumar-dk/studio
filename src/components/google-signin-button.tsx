@@ -28,7 +28,7 @@ const GoogleSignInButton = () => {
   };
 
   return (
-    <Button onClick={handleSignIn} disabled={isLoading} variant="outline" size="sm">
+    <Button onClick={handleSignIn} disabled={true} variant="outline" size="sm">
       {isLoading ? (
         'Signing in...'
       ) : (
