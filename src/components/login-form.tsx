@@ -15,13 +15,14 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import { signInWithEmailAndPassword, signInWithRedirect, GoogleAuthProvider, getRedirectResult } from 'firebase/auth';
+import { signInWithEmailAndPassword, signInWithRedirect, GoogleAuthProvider, getRedirectResult, type User } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Loader2 } from 'lucide-react';
 import GoogleIcon from '@/components/icons/google';
 import Link from 'next/link';
+import { users } from '@/lib/users';
 
 const formSchema = z.object({
   email: z.string().email('Please enter a valid email address.'),
@@ -43,11 +44,25 @@ export default function LoginForm() {
     },
   });
 
+  const addUserToDashboard = (user: User) => {
+    const userExists = users.some(u => u.id === user.uid);
+    if (!userExists) {
+      users.push({
+        id: user.uid,
+        name: user.displayName || user.email || 'Anonymous',
+        email: user.email || '',
+        role: 'Subscriber',
+        avatarUrl: user.photoURL || `https://picsum.photos/seed/${user.uid}/40/40`,
+      });
+    }
+  }
+
   useEffect(() => {
     async function handleRedirect() {
       try {
         const result = await getRedirectResult(auth);
         if (result) {
+          addUserToDashboard(result.user);
           toast({
             title: 'Logged in!',
             description: 'You have successfully logged in with Google.',
@@ -75,7 +90,8 @@ export default function LoginForm() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsSubmitting(true);
     try {
-      await signInWithEmailAndPassword(auth, values.email, values.password);
+      const userCredential = await signInWithEmailAndPassword(auth, values.email, values.password);
+      addUserToDashboard(userCredential.user);
       toast({
         title: 'Logged in!',
         description: 'You have successfully logged in.',
