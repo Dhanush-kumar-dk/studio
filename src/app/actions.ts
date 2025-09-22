@@ -21,30 +21,36 @@ type CreateArticleInput = {
   content: string;
   category: 'Technology' | 'Politics' | 'Sports' | 'World';
   author: string;
+  slug: string;
+  metaDescription: string;
+  focusKeywords: string;
+  imageUrl: string;
 };
 
 export async function createArticle(input: CreateArticleInput) {
     try {
         const newId = (articles.length + 1).toString();
-        const slug = input.title.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, '');
+        const finalSlug = input.slug || input.title.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, '');
 
         const newArticle: Article = {
             id: newId,
-            slug,
+            slug: finalSlug,
             title: input.title,
             category: input.category,
-            imageUrl: `https://picsum.photos/seed/${slug}/1200/800`,
+            imageUrl: input.imageUrl || `https://picsum.photos/seed/${finalSlug}/1200/800`,
             imageHint: 'new article',
             excerpt: input.excerpt,
             content: `<p>${input.content.replace(/\n/g, '</p><p>')}</p>`,
             author: input.author,
             publishedAt: new Date().toISOString(),
+            focusKeywords: input.focusKeywords.split(',').map(k => k.trim()),
+            metaDescription: input.metaDescription
         };
 
         articles.unshift(newArticle);
         
         revalidatePath('/');
-        revalidatePath(`/articles/${slug}`);
+        revalidatePath(`/articles/${finalSlug}`);
 
         return { slug: newArticle.slug };
     } catch (error) {

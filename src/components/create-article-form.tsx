@@ -29,9 +29,14 @@ import { Loader2 } from 'lucide-react';
 
 const formSchema = z.object({
   title: z.string().min(10, 'Title must be at least 10 characters.'),
+  slug: z.string().optional(),
+  author: z.string().min(1, 'Author is required.'),
+  category: z.enum(['Technology', 'Politics', 'Sports', 'World']),
   excerpt: z.string().min(20, 'Excerpt must be at least 20 characters.'),
   content: z.string().min(100, 'Content must be at least 100 characters.'),
-  category: z.enum(['Technology', 'Politics', 'Sports', 'World']),
+  imageUrl: z.string().url('Please enter a valid image URL.').optional().or(z.literal('')),
+  metaDescription: z.string().min(20, 'Meta description must be at least 20 characters.'),
+  focusKeywords: z.string().min(1, 'Please enter at least one focus keyword.'),
 });
 
 export default function CreateArticleForm() {
@@ -43,15 +48,24 @@ export default function CreateArticleForm() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       title: '',
+      slug: '',
+      author: '',
       excerpt: '',
       content: '',
       category: 'Technology',
+      imageUrl: '',
+      metaDescription: '',
+      focusKeywords: '',
     },
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsSubmitting(true);
-    const result = await createArticle({ ...values, author: 'Anonymous' });
+    const result = await createArticle({ 
+      ...values,
+      slug: values.slug || '',
+      imageUrl: values.imageUrl || '',
+     });
 
     if (result.error) {
       toast({
@@ -87,6 +101,32 @@ export default function CreateArticleForm() {
         />
         <FormField
           control={form.control}
+          name="slug"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="text-lg font-semibold">Slug</FormLabel>
+              <FormControl>
+                <Input placeholder="e.g., my-awesome-article (optional)" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="author"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="text-lg font-semibold">Author</FormLabel>
+              <FormControl>
+                <Input placeholder="Enter the author's name" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
           name="category"
           render={({ field }) => (
             <FormItem>
@@ -104,6 +144,19 @@ export default function CreateArticleForm() {
                   <SelectItem value="World">World</SelectItem>
                 </SelectContent>
               </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+         <FormField
+          control={form.control}
+          name="imageUrl"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="text-lg font-semibold">Featured Image URL</FormLabel>
+              <FormControl>
+                <Input placeholder="https://example.com/image.jpg (optional)" {...field} />
+              </FormControl>
               <FormMessage />
             </FormItem>
           )}
@@ -136,6 +189,35 @@ export default function CreateArticleForm() {
                   rows={15}
                   {...field}
                 />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="metaDescription"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="text-lg font-semibold">Meta Description</FormLabel>
+              <FormControl>
+                <Textarea
+                  placeholder="A concise summary for search engine results"
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+         <FormField
+          control={form.control}
+          name="focusKeywords"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="text-lg font-semibold">Focus Keywords</FormLabel>
+              <FormControl>
+                <Input placeholder="e.g., AI, machine learning, tech (comma-separated)" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>

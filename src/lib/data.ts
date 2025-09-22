@@ -17,6 +17,8 @@ export const articles: Article[] = [
     `,
     author: 'Jane Doe',
     publishedAt: '2024-05-20',
+    focusKeywords: ['AI', 'Technology', 'Future'],
+    metaDescription: 'Explore the future of artificial intelligence and its impact on various sectors over the next decade. What can we expect from AI advancements?',
   },
   {
     id: '2',
@@ -33,6 +35,8 @@ export const articles: Article[] = [
     `,
     author: 'John Smith',
     publishedAt: '2024-05-19',
+    focusKeywords: ['Climate Change', 'Global Summit', 'Politics'],
+    metaDescription: 'World leaders convene for a crucial summit on climate change to negotiate a new international treaty. The future of our planet hangs in the balance.',
   },
   {
     id: '3',
@@ -49,6 +53,8 @@ export const articles: Article[] = [
     `,
     author: 'Emily White',
     publishedAt: '2024-05-18',
+    focusKeywords: ['Championship', 'Upset', 'Sports'],
+    metaDescription: 'The Leicester Foxes achieve a historic victory against the Manchester Giants, winning the national championship in a stunning upset.',
   },
   {
     id: '4',
@@ -65,6 +71,8 @@ export const articles: Article[] = [
     `,
     author: 'David Chen',
     publishedAt: '2024-05-17',
+    focusKeywords: ['Mars', 'NASA', 'Space'],
+    metaDescription: 'NASA\'s Perseverance rover discovers ancient organic molecules on Mars, a significant step forward in the search for extraterrestrial life.',
   },
   {
     id: '5',
@@ -81,6 +89,8 @@ export const articles: Article[] = [
     `,
     author: 'Maria Garcia',
     publishedAt: '2024-05-16',
+    focusKeywords: ['Quantum Computing', 'Technology', 'Science'],
+    metaDescription: 'A major breakthrough in quantum computing promises more stable and error-free quantum chips, accelerating the path to practical quantum computers.',
   },
   {
     id: '6',
@@ -97,6 +107,8 @@ export const articles: Article[] = [
     `,
     author: 'Michael Brown',
     publishedAt: '2024-05-15',
+    focusKeywords: ['Elections', 'Politics', 'Government'],
+    metaDescription: 'An in-depth analysis of the recent midterm election results and their implications for the future political landscape.',
   },
   {
     id: '7',
@@ -113,6 +125,8 @@ export const articles: Article[] = [
     `,
     author: 'Sarah Lee',
     publishedAt: '2024-05-14',
+    focusKeywords: ['Olympics', 'World Record', 'Sports'],
+    metaDescription: 'A rising star athlete shatters the 100m sprint world record at the Olympic Games with a breathtaking performance.',
   },
   {
     id: '8',
@@ -129,6 +143,8 @@ export const articles: Article[] = [
     `,
     author: 'Thomas Wilson',
     publishedAt: '2024-05-13',
+    focusKeywords: ['Economy', 'Global Outlook', 'Finance'],
+    metaDescription: 'The global economic outlook for the second half of 2024 shows cautious optimism, but significant risks from inflation and geopolitics remain.',
   },
   {
     id: '9',
@@ -145,6 +161,8 @@ export const articles: Article[] = [
     `,
     author: 'Isabella Rossi',
     publishedAt: '2024-05-12',
+    focusKeywords: ['Sustainable Tech', 'Green Tech', 'Innovation'],
+    metaDescription: 'Discover the latest innovations in sustainable technology, from biodegradable electronics to carbon capture, and their potential to create a greener planet.',
   },
   {
     id: '10',
@@ -161,5 +179,7 @@ export const articles: Article[] = [
     `,
     author: 'Ben Carter',
     publishedAt: '2024-05-11',
+    focusKeywords: ['Data Privacy', 'Legislation', 'Security'],
+    metaDescription: 'A new comprehensive data privacy law gives consumers more control over their personal information, marking a major victory for privacy advocates.',
   },
 ];
