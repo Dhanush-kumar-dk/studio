@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import type { User } from '@/lib/types';
 import {
   Table,
@@ -28,16 +28,25 @@ import { useToast } from '@/hooks/use-toast';
 
 type UserTableProps = {
   users: User[];
+  searchQuery: string;
 };
 
 type ActionType = 'make' | 'remove';
 
-export default function UserTable({ users: initialUsers }: UserTableProps) {
+export default function UserTable({ users: initialUsers, searchQuery }: UserTableProps) {
   const [users, setUsers] = useState(initialUsers);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [actionType, setActionType] = useState<ActionType>('make');
   const [isAlertOpen, setIsAlertOpen] = useState(false);
   const { toast } = useToast();
+
+  const filteredUsers = useMemo(() => {
+    if (!searchQuery) return users;
+    return users.filter(user => 
+        user.email.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  }, [users, searchQuery]);
+
 
   const handleRoleChangeClick = (user: User, type: ActionType) => {
     setSelectedUser(user);
@@ -83,7 +92,7 @@ export default function UserTable({ users: initialUsers }: UserTableProps) {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {users.map((user) => (
+            {filteredUsers.map((user) => (
               <TableRow key={user.id}>
                 <TableCell>
                   <div className="flex items-center gap-3">
@@ -136,7 +145,7 @@ export default function UserTable({ users: initialUsers }: UserTableProps) {
             <AlertDialogCancel onClick={() => setSelectedUser(null)}>No</AlertDialogCancel>
             <AlertDialogAction
               onClick={handleConfirmRoleChange}
-              className={actionType === 'make' ? "bg-green-600 hover:bg-green-700" : ""}
+              className={actionType === 'make' ? "bg-primary hover:bg-primary/90" : "bg-destructive hover:bg-destructive/90"}
             >
               Yes
             </AlertDialogAction>

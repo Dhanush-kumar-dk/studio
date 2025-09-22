@@ -1,4 +1,6 @@
 
+"use client";
+
 import {
   Sidebar,
   SidebarContent,
@@ -18,15 +20,19 @@ import {
   LayoutGrid,
   Settings,
   User,
+  Search,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import Link from 'next/link';
 import Logo from '@/components/logo';
 import UserTable from '@/components/user-table';
 import { users } from '@/lib/users';
 import UserNav from '@/components/user-nav';
+import { useState } from 'react';
+import { Input } from '@/components/ui/input';
 
 export default function DashboardPage() {
+  const [searchQuery, setSearchQuery] = useState('');
+  
   return (
     <SidebarProvider>
       <Sidebar>
@@ -96,13 +102,20 @@ export default function DashboardPage() {
         <main className="flex-1 p-4 md:p-6">
           <div className="flex items-center justify-between">
             <h2 className="text-2xl font-bold tracking-tight">Users</h2>
-             <div className="flex items-center gap-2">
-              <Button variant="outline">All Users</Button>
-              <Button>Add New User</Button>
-            </div>
+             <div className="relative w-full max-w-sm">
+                <Input
+                  type="search"
+                  name="search"
+                  placeholder="Search by email..."
+                  className="pl-10"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+                <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
+              </div>
           </div>
           <div className="mt-6">
-            <UserTable users={users} />
+            <UserTable users={users} searchQuery={searchQuery} />
           </div>
         </main>
       </SidebarInset>
