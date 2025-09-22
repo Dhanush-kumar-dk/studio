@@ -1,8 +1,10 @@
 
+
 import Header from '@/components/header';
 import Footer from '@/components/footer';
 import { Card, CardContent } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import ProfileForm from '@/components/profile-form';
 
 const teamMembers = [
   {
@@ -43,6 +45,9 @@ export default function AboutPage() {
 
         <section className="py-16">
           <div className="container mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+            <div className="mb-12">
+              <ProfileForm />
+            </div>
             <div className="prose prose-lg dark:prose-invert mx-auto">
               <p>
                 <strong>Debt & Dominion</strong> was founded on a simple yet powerful premise: to demystify the intricate connections between wealth, power, and influence that shape our world. In an age of information overload, we strive to provide our readers with sharp, incisive analysis that cuts through the noise.
