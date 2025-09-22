@@ -31,7 +31,7 @@ export default function UserNav() {
   const getInitials = (name?: string | null) => {
     if (!name) return 'U';
     const names = name.split(' ');
-    if (names.length > 1) {
+    if (names.length > 1 && names[0] && names[names.length - 1]) {
       return names[0][0] + names[names.length - 1][0];
     }
     return name[0];
@@ -56,13 +56,15 @@ export default function UserNav() {
     }
   };
 
+  const displayName = user?.displayName || user?.email?.split('@')[0] || 'Anonymous User';
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="relative h-8 w-8 rounded-full">
           <Avatar className="h-8 w-8">
-            <AvatarImage src={user?.photoURL ?? undefined} alt={user?.displayName || 'User'} />
-            <AvatarFallback>{user ? getInitials(user.displayName) : <UserIcon className="h-4 w-4" />}</AvatarFallback>
+            <AvatarImage src={user?.photoURL ?? undefined} alt={displayName} />
+            <AvatarFallback>{getInitials(user?.displayName)}</AvatarFallback>
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
@@ -71,10 +73,12 @@ export default function UserNav() {
           <>
             <DropdownMenuLabel className="font-normal">
               <div className="flex flex-col space-y-1">
-                <p className="text-sm font-medium leading-none">{user.displayName || 'Anonymous User'}</p>
-                <p className="text-xs leading-none text-muted-foreground">
-                  {user.email}
-                </p>
+                <p className="text-sm font-medium leading-none">{displayName}</p>
+                {user.email && (
+                  <p className="text-xs leading-none text-muted-foreground">
+                    {user.email}
+                  </p>
+                )}
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
