@@ -15,10 +15,8 @@ import {
 } from '@/components/ui/sidebar';
 import {
   Bell,
-  CircleHelp,
   Home,
   LayoutGrid,
-  Settings,
   User,
   Search,
 } from 'lucide-react';
@@ -70,20 +68,6 @@ export default function DashboardPage() {
           </SidebarGroup>
         </SidebarContent>
         <SidebarHeader>
-           <SidebarMenu>
-              <SidebarMenuItem>
-                <SidebarMenuButton href="#" tooltip="Support">
-                  <CircleHelp />
-                  Support
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton href="/settings/profile" tooltip="Profile">
-                  <Settings />
-                  Profile
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            </SidebarMenu>
         </SidebarHeader>
       </Sidebar>
       <SidebarInset>

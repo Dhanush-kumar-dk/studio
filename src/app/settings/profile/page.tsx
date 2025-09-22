@@ -13,7 +13,6 @@ import {
   } from '@/components/ui/sidebar';
   import {
     Bell,
-    CircleHelp,
     Home,
     LayoutGrid,
     Settings,
@@ -63,12 +62,6 @@ import {
           </SidebarContent>
           <SidebarHeader>
              <SidebarMenu>
-                <SidebarMenuItem>
-                  <SidebarMenuButton href="#" tooltip="Support">
-                    <CircleHelp />
-                    Support
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
                 <SidebarMenuItem>
                   <SidebarMenuButton href="/settings/profile" tooltip="Profile" isActive>
                     <Settings />
