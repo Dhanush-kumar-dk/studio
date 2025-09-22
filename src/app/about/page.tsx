@@ -1,9 +1,7 @@
 
 import Header from '@/components/header';
 import Footer from '@/components/footer';
-import Contact from '@/components/contact';
-import Image from 'next/image';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 const teamMembers = [
@@ -88,7 +86,6 @@ export default function AboutPage() {
         </section>
 
       </main>
-      <Contact />
       <Footer />
     </>
   );
