@@ -5,6 +5,7 @@ import Header from '@/components/header';
 import Footer from '@/components/footer';
 import { Toaster } from '@/components/ui/toaster';
 import { cn } from '@/lib/utils';
+import Contact from '@/components/contact';
 
 export const metadata: Metadata = {
   title: 'NewsFlash',
@@ -31,6 +32,7 @@ export default function RootLayout({
           <div className="relative flex min-h-screen flex-col">
             <Header />
             <main className="flex-1">{children}</main>
+            <Contact />
             <Footer />
           </div>
           <Toaster />
