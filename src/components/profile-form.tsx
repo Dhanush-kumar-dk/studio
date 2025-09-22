@@ -27,10 +27,8 @@ export default function ProfileForm() {
   const [userData, setUserData] = useState({
     username: "gene.rodrig",
     firstName: "Gene",
-    nickname: "Gene.r",
     role: "subscriber",
     lastName: "Rodriguez",
-    displayName: "Gene",
     email: "gene.rodrig@gmail.com",
     whatsapp: "@gene-rod",
     website: "gene-roding.webflow.io",
@@ -84,11 +82,11 @@ export default function ProfileForm() {
                 )}
               </div>
               <div>
-                <Label htmlFor="nickname">Nickname</Label>
+                <Label htmlFor="lastName">Last Name</Label>
                  {isEditing ? (
-                    <Input id="nickname" value={userData.nickname} onChange={handleInputChange} />
+                    <Input id="lastName" value={userData.lastName} onChange={handleInputChange} />
                 ) : (
-                    <p className="mt-1 text-sm text-muted-foreground">{userData.nickname}</p>
+                    <p className="mt-1 text-sm text-muted-foreground">{userData.lastName}</p>
                 )}
               </div>
               <div>
@@ -106,22 +104,6 @@ export default function ProfileForm() {
                     </Select>
                 ) : (
                     <p className="mt-1 text-sm text-muted-foreground capitalize">{userData.role}</p>
-                )}
-              </div>
-              <div>
-                <Label htmlFor="lastName">Last Name</Label>
-                 {isEditing ? (
-                    <Input id="lastName" value={userData.lastName} onChange={handleInputChange} />
-                ) : (
-                    <p className="mt-1 text-sm text-muted-foreground">{userData.lastName}</p>
-                )}
-              </div>
-              <div>
-                <Label htmlFor="displayName">Display Name Publicly as</Label>
-                 {isEditing ? (
-                    <Input id="displayName" value={userData.displayName} onChange={handleInputChange} />
-                ) : (
-                    <p className="mt-1 text-sm text-muted-foreground">{userData.displayName}</p>
                 )}
               </div>
             </div>
