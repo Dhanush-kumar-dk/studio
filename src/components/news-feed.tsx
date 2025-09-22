@@ -2,7 +2,7 @@
 
 import type { Article } from '@/lib/types';
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
-import { useMemo, useState, useTransition, useEffect } from 'react';
+import { useMemo, useState, useTransition, useEffect, useRef } from 'react';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import ArticleCard from './article-card';
 import Image from 'next/image';
@@ -17,6 +17,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel"
+import Autoplay from "embla-carousel-autoplay"
 
 const categories = ['All', 'Politics', 'Sports', 'Technology', 'World'];
 
@@ -115,10 +116,16 @@ export default function NewsFeed({ articles }: { articles: Article[] }) {
           ) : (
             <>
               {carouselArticles.length > 0 && (
-                 <Carousel className="w-full mb-8"
+                 <Carousel 
+                    className="w-full mb-8"
                     opts={{
                         loop: true,
                     }}
+                    plugins={[
+                        Autoplay({
+                            delay: 5000,
+                        }),
+                    ]}
                     >
                     <CarouselContent>
                         {carouselArticles.map((article) => (
