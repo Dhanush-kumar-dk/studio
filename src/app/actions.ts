@@ -3,6 +3,7 @@
 import { summarizeArticle as summarizeArticleFlow } from '@/ai/flows/article-summarization';
 import { articles } from '@/lib/data';
 import type { Article } from '@/lib/types';
+import { revalidatePath } from 'next/cache';
 
 export async function summarizeArticle(articleContent: string) {
   try {
@@ -41,10 +42,29 @@ export async function createArticle(input: CreateArticleInput) {
         };
 
         articles.unshift(newArticle);
+        
+        revalidatePath('/');
+        revalidatePath(`/articles/${slug}`);
 
         return { slug: newArticle.slug };
     } catch (error) {
         console.error('Failed to create article:', error);
         return { error: 'An unexpected error occurred while creating the article.' };
+    }
+}
+
+export async function deleteArticle(articleId: string) {
+    try {
+        const articleIndex = articles.findIndex((a) => a.id === articleId);
+        if (articleIndex === -1) {
+            return { error: 'Article not found.' };
+        }
+        articles.splice(articleIndex, 1);
+        revalidatePath('/');
+        revalidatePath('/articles');
+        return { success: true };
+    } catch (error) {
+        console.error('Failed to delete article:', error);
+        return { error: 'An unexpected error occurred while deleting the article.' };
     }
 }

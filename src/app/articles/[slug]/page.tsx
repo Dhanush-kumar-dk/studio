@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { Badge } from '@/components/ui/badge';
 import { Calendar, User } from 'lucide-react';
 import SummarizeButton from '@/components/summarize-button';
+import DeleteArticleButton from '@/components/delete-article-button';
 
 type ArticlePageProps = {
   params: {
@@ -56,10 +57,14 @@ export default function ArticlePage({ params }: ArticlePageProps) {
         </div>
         
         <div className="prose prose-lg dark:prose-invert max-w-none prose-p:leading-relaxed prose-headings:font-headline">
-          <div className="mb-8 flex justify-end">
+          <div className="mb-8 flex justify-end gap-2">
             <SummarizeButton articleContent={article.content} />
           </div>
           <div dangerouslySetInnerHTML={{ __html: article.content }} />
+        </div>
+
+        <div className="mt-8 flex justify-end">
+            <DeleteArticleButton articleId={article.id} />
         </div>
       </article>
     </>
