@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import {
   Card,
   CardContent,
@@ -18,50 +17,10 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { X } from "lucide-react";
 
 export default function ProfileForm() {
   return (
-    <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
-      <div className="lg:col-span-1">
-        <Card>
-          <CardHeader>
-            <CardTitle>Account Management</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            <div className="flex flex-col items-center gap-4">
-              <div className="relative h-32 w-32 rounded-lg bg-muted">
-                <Image
-                  src="https://picsum.photos/seed/gene-rodrig/128/128"
-                  alt="User avatar"
-                  layout="fill"
-                  className="rounded-lg object-cover"
-                />
-                <Button
-                  variant="destructive"
-                  size="icon"
-                  className="absolute -right-2 -top-2 h-6 w-6 rounded-full"
-                >
-                  <X className="h-4 w-4" />
-                </Button>
-              </div>
-              <Button variant="outline">Upload Photo</Button>
-            </div>
-            <div className="space-y-4">
-              <div>
-                <Label htmlFor="old-password">Old Password</Label>
-                <Input id="old-password" type="password" defaultValue="********" />
-              </div>
-              <div>
-                <Label htmlFor="new-password">New Password</Label>
-                <Input id="new-password" type="password" defaultValue="********" />
-              </div>
-              <Button className="w-full">Change Password</Button>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
+    <div className="grid grid-cols-1 gap-8">
       <div className="lg:col-span-2">
         <Card>
           <CardHeader>
