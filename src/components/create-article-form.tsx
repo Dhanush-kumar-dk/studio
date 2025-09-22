@@ -25,10 +25,11 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { createArticle, updateArticle } from '@/app/actions';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Loader2, X } from 'lucide-react';
+import { Loader2, X, Link as LinkIcon } from 'lucide-react';
 import type { Article } from '@/lib/types';
+import LinkEditor from './link-editor';
 
 const formSchema = z.object({
   title: z.string().min(10, 'Title must be at least 10 characters.'),
@@ -51,6 +52,10 @@ export default function CreateArticleForm({ article }: CreateArticleFormProps) {
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const isEditMode = !!article;
+  const contentRef = useRef<HTMLTextAreaElement>(null);
+  const [selection, setSelection] = useState<[number, number] | null>(null);
+  const [showLinkEditor, setShowLinkEditor] = useState(false);
+  const [linkEditorPosition, setLinkEditorPosition] = useState({ top: 0, left: 0 });
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -116,10 +121,63 @@ export default function CreateArticleForm({ article }: CreateArticleFormProps) {
     setIsSubmitting(false);
   }
 
+  const handleSelection = () => {
+    const textarea = contentRef.current;
+    if (!textarea) return;
+
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+
+    if (start !== end) {
+        setSelection([start, end]);
+        
+        const rect = textarea.getBoundingClientRect();
+
+        // This is a simplified calculation. A real-world implementation
+        // might need a more robust way to get the exact cursor coordinates.
+        const textBeforeSelection = textarea.value.substring(0, start);
+        const textLines = textBeforeSelection.split('\n');
+        const currentLine = textLines.length;
+        const positionInLine = textLines[textLines.length - 1].length;
+        
+        // Approximate character width and line height
+        const charWidth = 8; 
+        const calcLineHeight = 24; 
+
+        let newTop = (currentLine * calcLineHeight) - textarea.scrollTop + rect.top;
+        let newLeft = (positionInLine * charWidth) + rect.left + textarea.offsetLeft;
+
+        // Keep button within textarea bounds
+        newTop = Math.max(rect.top, newTop);
+        newLeft = Math.min(newLeft, rect.right - 50);
+
+        setLinkEditorPosition({ top: newTop - 40, left: newLeft });
+    } else {
+        setSelection(null);
+        setShowLinkEditor(false);
+    }
+  };
+
+  const applyLink = (url: string, target: string) => {
+    const textarea = contentRef.current;
+    if (!textarea || !selection) return;
+
+    const [start, end] = selection;
+    const currentContent = form.getValues('content');
+    const selectedText = currentContent.substring(start, end);
+    const link = `<a href="${url}" target="${target}">${selectedText}</a>`;
+    const newContent = `${currentContent.substring(0, start)}${link}${currentContent.substring(end)}`;
+    
+    form.setValue('content', newContent, { shouldValidate: true, shouldDirty: true });
+    setShowLinkEditor(false);
+    setSelection(null);
+  };
+
   const submitButtonText = isEditMode ? 'Update Article' : 'Publish Article';
   const submittingButtonText = isEditMode ? 'Updating...' : 'Publishing...';
 
   return (
+    <>
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="grid grid-cols-1 gap-8 lg:grid-cols-3">
         <div className="space-y-8 lg:col-span-2">
@@ -165,23 +223,40 @@ export default function CreateArticleForm({ article }: CreateArticleFormProps) {
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="content"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-lg font-semibold">Body</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      placeholder="Write your full article content here. You can use HTML for formatting links, images, and videos."
-                      rows={15}
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <div className="relative">
+                <FormField
+                control={form.control}
+                name="content"
+                render={({ field }) => (
+                    <FormItem>
+                    <FormLabel className="text-lg font-semibold">Body</FormLabel>
+                    <FormControl>
+                        <Textarea
+                        {...field}
+                        ref={contentRef}
+                        placeholder="Write your full article content here. You can use HTML for formatting links, images, and videos."
+                        rows={15}
+                        onSelect={handleSelection}
+                        onScroll={handleSelection} // Re-calculate on scroll
+                        />
+                    </FormControl>
+                    <FormMessage />
+                    </FormItem>
+                )}
+                />
+                 {selection && !showLinkEditor && (
+                     <Button
+                        type="button"
+                        variant="secondary"
+                        size="icon"
+                        className="absolute h-8 w-8"
+                        style={{ top: `${linkEditorPosition.top}px`, left: `${linkEditorPosition.left}px`, zIndex: 10 }}
+                        onClick={() => setShowLinkEditor(true)}
+                     >
+                        <LinkIcon className="h-4 w-4" />
+                     </Button>
+                 )}
+            </div>
             <FormField
               control={form.control}
               name="focusKeywords"
@@ -308,5 +383,13 @@ export default function CreateArticleForm({ article }: CreateArticleFormProps) {
         </aside>
       </form>
     </Form>
+
+    {showLinkEditor && selection && (
+        <LinkEditor
+          onSetLink={applyLink}
+          onClose={() => setShowLinkEditor(false)}
+        />
+      )}
+    </>
   );
 }
