@@ -29,6 +29,7 @@ import { users } from '@/lib/users';
 import UserNav from '@/components/user-nav';
 import { useState } from 'react';
 import { Input } from '@/components/ui/input';
+import Link from 'next/link';
 
 export default function DashboardPage() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -92,6 +93,12 @@ export default function DashboardPage() {
             <h1 className="text-lg font-semibold">User Management</h1>
           </div>
           <div className="flex items-center gap-4">
+             <Button asChild variant="outline">
+                <Link href="/settings/profile">
+                    <User className="mr-2 h-4 w-4" />
+                    Profile
+                </Link>
+            </Button>
             <Button variant="ghost" size="icon" className="rounded-full">
               <Bell className="h-5 w-5" />
               <span className="sr-only">Toggle notifications</span>
