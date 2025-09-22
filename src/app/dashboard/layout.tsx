@@ -11,7 +11,7 @@ import {
     SidebarProvider,
     SidebarInset,
   } from '@/components/ui/sidebar';
-import { Home, User, Cog, Newspaper, Settings, LayoutDashboard } from 'lucide-react';
+import { Home, User, Cog, Newspaper, Settings, LayoutDashboard, Info } from 'lucide-react';
 import Link from 'next/link';
 import Logo from '@/components/logo';
   
@@ -58,6 +58,16 @@ import Logo from '@/components/logo';
             </SidebarMenu>
           </SidebarContent>
           <SidebarFooter>
+            <SidebarMenu>
+                <SidebarMenuItem>
+                    <SidebarMenuButton asChild>
+                        <Link href="/about">
+                            <Info />
+                            About Us
+                        </Link>
+                    </SidebarMenuButton>
+                </SidebarMenuItem>
+            </SidebarMenu>
           </SidebarFooter>
         </Sidebar>
         <SidebarInset>
