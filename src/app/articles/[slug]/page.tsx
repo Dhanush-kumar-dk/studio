@@ -8,6 +8,9 @@ import DeleteArticleButton from '@/components/delete-article-button';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import Header from '@/components/header';
+import Footer from '@/components/footer';
+import Contact from '@/components/contact';
 
 type ArticlePageProps = {
   params: {
@@ -30,53 +33,58 @@ export default function ArticlePage({ params }: ArticlePageProps) {
 
   return (
     <>
-      <article className="container mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
-        <div className="mb-8">
-          <Badge variant="secondary" className="mb-4">{article.category}</Badge>
-          <h1 className="font-headline text-3xl font-extrabold tracking-tight md:text-5xl">
-            {article.title}
-          </h1>
-          <div className="mt-4 flex items-center space-x-4 text-sm text-muted-foreground">
-            <div className="flex items-center gap-2">
-              <Avatar className="h-6 w-6">
-                <AvatarImage src={article.authorImageUrl} alt={article.author} />
-                <AvatarFallback>{article.author.charAt(0)}</AvatarFallback>
-              </Avatar>
-              <span>{article.author}</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Calendar className="h-4 w-4" />
-              <span>{new Date(article.publishedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+      <Header />
+      <main className="flex-1">
+        <article className="container mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
+          <div className="mb-8">
+            <Badge variant="secondary" className="mb-4">{article.category}</Badge>
+            <h1 className="font-headline text-3xl font-extrabold tracking-tight md:text-5xl">
+              {article.title}
+            </h1>
+            <div className="mt-4 flex items-center space-x-4 text-sm text-muted-foreground">
+              <div className="flex items-center gap-2">
+                <Avatar className="h-6 w-6">
+                  <AvatarImage src={article.authorImageUrl} alt={article.author} />
+                  <AvatarFallback>{article.author.charAt(0)}</AvatarFallback>
+                </Avatar>
+                <span>{article.author}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Calendar className="h-4 w-4" />
+                <span>{new Date(article.publishedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div className="relative mb-8 h-64 w-full overflow-hidden rounded-lg md:h-96">
-          <Image
-            src={article.imageUrl}
-            alt={article.title}
-            fill
-            className="object-cover"
-            priority
-            data-ai-hint={article.imageHint}
-          />
-        </div>
-        
-        <div className="prose prose-lg dark:prose-invert max-w-none">
-          <div className="mb-8 flex justify-end gap-2">
-            <Button asChild variant="outline" size="icon">
-                <Link href={`/edit-post/${article.slug}`}>
-                    <Pencil className="h-4 w-4" />
-                    <span className="sr-only">Edit Article</span>
-                </Link>
-            </Button>
-            <SummarizeButton articleContent={article.content} />
-            <DeleteArticleButton articleId={article.id} />
+          <div className="relative mb-8 h-64 w-full overflow-hidden rounded-lg md:h-96">
+            <Image
+              src={article.imageUrl}
+              alt={article.title}
+              fill
+              className="object-cover"
+              priority
+              data-ai-hint={article.imageHint}
+            />
           </div>
-          <div className="prose-p:leading-relaxed" dangerouslySetInnerHTML={{ __html: article.content }} />
-        </div>
+          
+          <div className="prose prose-lg dark:prose-invert max-w-none">
+            <div className="mb-8 flex justify-end gap-2">
+              <Button asChild variant="outline" size="icon">
+                  <Link href={`/edit-post/${article.slug}`}>
+                      <Pencil className="h-4 w-4" />
+                      <span className="sr-only">Edit Article</span>
+                  </Link>
+              </Button>
+              <SummarizeButton articleContent={article.content} />
+              <DeleteArticleButton articleId={article.id} />
+            </div>
+            <div className="prose-p:leading-relaxed" dangerouslySetInnerHTML={{ __html: article.content }} />
+          </div>
 
-      </article>
+        </article>
+      </main>
+      <Contact />
+      <Footer />
     </>
   );
 }

@@ -3,8 +3,10 @@ import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
 import { cn } from '@/lib/utils';
 import { ThemeProvider } from '@/components/theme-provider';
-import MainContent from '@/components/main-content';
 import { Providers } from '@/components/providers';
+import Header from '@/components/header';
+import Footer from '@/components/footer';
+import Contact from '@/components/contact';
 
 export const metadata: Metadata = {
   title: 'Debt & Dominion',
@@ -35,7 +37,7 @@ export default function RootLayout({
         >
           <Providers>
             <div className="relative flex min-h-screen flex-col">
-              <MainContent>{children}</MainContent>
+                {children}
             </div>
             <Toaster />
           </Providers>
