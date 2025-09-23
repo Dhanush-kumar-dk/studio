@@ -2,14 +2,10 @@
 
 import { summarizeArticle as summarizeArticleFlow } from '@/ai/flows/article-summarization';
 import type { Article } from '@/lib/types';
+import { articles as allArticles } from '@/lib/data';
 import { revalidatePath } from 'next/cache';
-import clientPromise from '@/lib/mongodb';
-import { ObjectId } from 'mongodb';
 
-async function getDb() {
-  const client = await clientPromise;
-  return client.db(process.env.MONGODB_DB);
-}
+let articles: (Article & {_id: any})[] = allArticles.map((a, i) => ({...a, _id: i.toString()}));
 
 const generateSlug = (title: string) => {
   return title
@@ -22,28 +18,20 @@ const generateSlug = (title: string) => {
 };
 
 export async function getArticles() {
-  const db = await getDb();
-  const articles = await db.collection('articles').find({}).sort({ publishedAt: -1 }).toArray();
-  return JSON.parse(JSON.stringify(articles)) as Article[];
+  return articles.sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime());
 }
 
 export async function getArticleBySlug(slug: string) {
-  const db = await getDb();
-  const article = await db.collection('articles').findOne({ slug });
-  if (!article) return null;
-  return JSON.parse(JSON.stringify(article)) as Article;
+  return articles.find((article) => article.slug === slug) || null;
 }
 
 export async function getArticlesByAuthor(authorSlug: string) {
-    const db = await getDb();
-    const articles = await db.collection('articles').find({ authorSlug }).sort({ publishedAt: -1 }).toArray();
-    return JSON.parse(JSON.stringify(articles)) as Article[];
+    return articles.filter((article) => article.authorSlug === authorSlug).sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime());
 }
 
 export async function getAuthorSlugs() {
-    const db = await getDb();
-    const articles = await db.collection('articles').distinct('authorSlug');
-    return articles;
+    const slugs = new Set(articles.map(a => a.authorSlug));
+    return Array.from(slugs);
 }
 
 export async function summarizeArticle(articleContent: string) {
@@ -70,10 +58,11 @@ type CreateArticleInput = {
 
 export async function createArticle(input: CreateArticleInput) {
   try {
-    const db = await getDb();
     const finalSlug = input.slug || generateSlug(input.title);
 
     const newArticle = {
+      _id: (articles.length + 1).toString(),
+      id: (articles.length + 1).toString(),
       slug: finalSlug,
       title: input.title,
       category: input.category,
@@ -89,7 +78,7 @@ export async function createArticle(input: CreateArticleInput) {
       metaDescription: input.metaDescription,
     };
 
-    const result = await db.collection('articles').insertOne(newArticle);
+    articles.push(newArticle);
 
     revalidatePath('/');
     revalidatePath(`/articles/${finalSlug}`);
@@ -103,34 +92,29 @@ export async function createArticle(input: CreateArticleInput) {
 
 export async function updateArticle(articleId: string, input: CreateArticleInput) {
   try {
-    if (!ObjectId.isValid(articleId)) {
-        return { error: 'Invalid article ID.'}
-    }
-    const db = await getDb();
-    const finalSlug = input.slug || generateSlug(input.title);
-
-    const updatedArticleData = {
-      slug: finalSlug,
-      title: input.title,
-      category: input.category,
-      imageUrl: input.imageUrl || `https://picsum.photos/seed/${finalSlug}/1200/800`,
-      excerpt: input.excerpt,
-      content: input.content,
-      author: input.author,
-      authorSlug: generateSlug(input.author),
-      authorImageUrl: `https://picsum.photos/seed/${input.author.replace(/\s+/g, '-')}/40/40`,
-      focusKeywords: input.focusKeywords.split(',').map((k) => k.trim()),
-      metaDescription: input.metaDescription,
-    };
-
-    const result = await db.collection('articles').updateOne(
-        { _id: new ObjectId(articleId) },
-        { $set: updatedArticleData }
-    );
-
-    if (result.matchedCount === 0) {
+    const articleIndex = articles.findIndex(a => a._id.toString() === articleId);
+    if (articleIndex === -1) {
         return { error: 'Article not found.' };
     }
+
+    const finalSlug = input.slug || generateSlug(input.title);
+
+    const updatedArticle = {
+        ...articles[articleIndex],
+        slug: finalSlug,
+        title: input.title,
+        category: input.category,
+        imageUrl: input.imageUrl || `https://picsum.photos/seed/${finalSlug}/1200/800`,
+        excerpt: input.excerpt,
+        content: input.content,
+        author: input.author,
+        authorSlug: generateSlug(input.author),
+        authorImageUrl: `https://picsum.photos/seed/${input.author.replace(/\s+/g, '-')}/40/40`,
+        focusKeywords: input.focusKeywords.split(',').map((k) => k.trim()),
+        metaDescription: input.metaDescription,
+    };
+    
+    articles[articleIndex] = updatedArticle;
 
     revalidatePath('/');
     revalidatePath(`/articles/${finalSlug}`);
@@ -145,15 +129,12 @@ export async function updateArticle(articleId: string, input: CreateArticleInput
 
 export async function deleteArticle(articleId: string) {
   try {
-    if (!ObjectId.isValid(articleId)) {
-        return { error: 'Invalid article ID.'}
-    }
-    const db = await getDb();
-    const result = await db.collection('articles').deleteOne({ _id: new ObjectId(articleId) });
-    
-    if (result.deletedCount === 0) {
+    const articleIndex = articles.findIndex(a => a._id.toString() === articleId);
+    if (articleIndex === -1) {
         return { error: 'Article not found.' };
     }
+    
+    articles.splice(articleIndex, 1);
 
     revalidatePath('/');
     revalidatePath('/articles');

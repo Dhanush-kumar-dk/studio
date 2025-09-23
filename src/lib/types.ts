@@ -1,8 +1,8 @@
-import { ObjectId } from 'mongodb';
+import type { ObjectId } from 'mongodb';
 
 export type Article = {
-  _id: ObjectId;
-  id: string; // Keep for client-side components that might use it, but it's the string version of _id
+  _id: ObjectId | string; // Allow string for in-memory data
+  id: string;
   slug: string;
   title: string;
   category: 'Politics' | 'Sports' | 'Technology' | 'World';
