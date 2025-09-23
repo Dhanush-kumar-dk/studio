@@ -8,22 +8,28 @@ import Newsletter from '@/components/newsletter';
 
 const teamMembers = [
   {
-    name: 'Jane Doe',
-    role: 'Founder & Editor-in-Chief',
-    bio: 'Jane has over 15 years of experience in financial journalism, with a passion for uncovering the stories behind the numbers.',
-    imageUrl: 'https://picsum.photos/seed/jane-doe/150/150',
+    name: 'Miss Vedika Joshi',
+    role: 'Founder / Editor - in - Chief',
+    bio: 'Vedika is a student of Economics and Finance at the University of Winchester and a Royal Navy Officer Cadet (URNU). She brings a rare combination of intellectual curiosity, leadership, and operational discipline to the publication. Her background spans university governance, policy engagement, and financial training, with experience across organisations such as the Royal Navy Leadership Institute and as a University Student Union Trustee. Vedika is also a Model UN chair with multilingual fluency and embodies the cross-sector insight Debt & Dominion was founded to represent.',
+    imageUrl: 'https://picsum.photos/seed/vedika-joshi/150/150',
   },
   {
-    name: 'John Smith',
-    role: 'Lead Political Analyst',
-    bio: 'John brings a sharp eye for political strategy and policy, connecting the dots between Washington and Wall Street.',
-    imageUrl: 'https://picsum.photos/seed/john-smith/150/150',
+    name: 'Mr Victor Ohagwasi',
+    role: 'Consultant',
+    bio: "Victor is a Data Analyst and Brand/Product Designer currently embedded in the World Bank-supported L-PRES project in Lokoja, delivering strategic progress reports to World Bank management and state stakeholders. With advanced technical skills in Python, Excel, and Figma, plus a background in UX design and digital marketing, Victor ensures Debt & Dominion's operational workflows are both data-driven and user-centric, while bringing global development insights directly from one of the world's leading financial institutions.",
+    imageUrl: 'https://picsum.photos/seed/victor-ohagwasi/150/150',
   },
   {
-    name: 'Emily White',
-    role: 'Sports & Finance Correspondent',
-    bio: 'Emily explores the surprising and often complex financial world of professional sports.',
-    imageUrl: 'https://picsum.photos/seed/emily-white/150/150',
+    name: 'Mr Joshua Pinto',
+    role: 'Finance and Sponsorship Lead',
+    bio: 'Joshua is a First-Class Economics & Finance graduate from Lancaster University, with hands-on experience in financial analysis and treasury operations. At Debt & Dominion, Joshua drives our sponsorship strategy and financial planning—creating robust funding proposals, structuring budgets, and ensuring our growth is underpinned by sound quantitative insight and strategic foresight.',
+    imageUrl: 'https://picsum.photos/seed/joshua-pinto/150/150',
+  },
+  {
+    name: 'Miss Emma Coffey',
+    role: 'Visual and Graphics Lead',
+    bio: "Emma is a BA (Hons) Graphic Design graduate from the University of Salford (Class of 2025), where she achieved a 2:1 and honed her expertise in branding, illustration, and digital/print design. Proficient in Adobe Illustrator, Photoshop, InDesign, and After Effects, Emma combines strategic thinking with creative flair. At Debt & Dominion, Emma drives our brand development and issue design—ensuring each edition is both visually compelling and strategically on-point.",
+    imageUrl: 'https://picsum.photos/seed/emma-coffey/150/150',
   },
 ];
 
@@ -69,14 +75,10 @@ export default function AboutPage() {
                         The dedicated professionals behind our analysis and reporting.
                     </p>
                 </div>
-                <div className="mt-12 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+                <div className="mt-12 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-2">
                     {teamMembers.map((member) => (
                         <Card key={member.name} className="text-center">
                             <CardContent className="pt-6">
-                                <Avatar className="mx-auto h-24 w-24">
-                                    <AvatarImage src={member.imageUrl} alt={member.name} />
-                                    <AvatarFallback>{member.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
-                                </Avatar>
                                 <h3 className="mt-4 text-lg font-bold">{member.name}</h3>
                                 <p className="text-sm font-semibold text-primary">{member.role}</p>
                                 <p className="mt-2 text-sm text-muted-foreground">{member.bio}</p>

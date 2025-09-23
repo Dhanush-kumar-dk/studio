@@ -4,6 +4,7 @@ import { Suspense } from 'react';
 import Header from '@/components/header';
 import Footer from '@/components/footer';
 import Newsletter from '@/components/newsletter';
+import Team from '@/components/team';
 
 export default function Home() {
   return (
@@ -15,6 +16,7 @@ export default function Home() {
             <NewsFeed articles={articles} />
           </Suspense>
         </div>
+        <Team />
       </main>
       <Newsletter />
       <Footer />
