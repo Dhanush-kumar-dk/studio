@@ -1,6 +1,8 @@
 import type { Article } from './types';
 
-export const articles: Article[] = [
+// This data is now managed in `src/app/actions.ts`
+// This file can be removed or kept for type definitions if needed.
+const initialArticles: Article[] = [
   {
     id: '1',
     slug: 'the-future-of-ai-in-tech',
@@ -203,3 +205,20 @@ export const articles: Article[] = [
     metaDescription: 'A new comprehensive data privacy law gives consumers more control over their personal information, marking a major victory for privacy advocates.',
   },
 ];
+
+
+export function getArticles() {
+    return initialArticles;
+}
+
+export function getArticleBySlug(slug: string) {
+    return initialArticles.find(a => a.slug === slug);
+}
+
+export function getArticlesByAuthor(authorSlug: string) {
+    return initialArticles.filter(a => a.authorSlug === authorSlug);
+}
+
+export function getAuthorSlugs() {
+    return [...new Set(initialArticles.map((article) => article.authorSlug))];
+}

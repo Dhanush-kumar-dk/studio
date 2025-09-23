@@ -1,4 +1,4 @@
-import { articles } from '@/lib/data';
+import { getArticles } from '@/app/actions';
 import NewsFeed from '@/components/news-feed';
 import { Suspense } from 'react';
 import Header from '@/components/header';
@@ -7,7 +7,8 @@ import Newsletter from '@/components/newsletter';
 import Team from '@/components/team';
 import AboutPublication from '@/components/about-publication';
 
-export default function Home() {
+export default async function Home() {
+  const articles = await getArticles();
   return (
     <>
       <Header />

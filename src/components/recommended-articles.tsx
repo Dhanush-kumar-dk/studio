@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useReadingHistory } from '@/hooks/use-reading-history';
 import { getPersonalizedRecommendations } from '@/ai/flows/personalized-recommendations';
-import { articles } from '@/lib/data';
+import { getArticles } from '@/app/actions';
 import type { Article } from '@/lib/types';
 import ArticleCard from './article-card';
 import { Skeleton } from './ui/skeleton';
@@ -23,9 +23,10 @@ export default function RecommendedArticles() {
       };
 
       setIsLoading(true);
+      const allArticles = await getArticles();
       const readingHistoryText = history
         .map(id => {
-            const article = articles.find(a => a.id === id);
+            const article = allArticles.find(a => a.id === id);
             return article ? `${article.title} (${article.category})` : '';
         })
         .filter(Boolean)
@@ -39,7 +40,7 @@ export default function RecommendedArticles() {
         });
 
         const recommendedArticles = result.recommendations
-          .map(recTitle => articles.find(a => a.title.toLowerCase() === recTitle.toLowerCase()))
+          .map(recTitle => allArticles.find(a => a.title.toLowerCase() === recTitle.toLowerCase()))
           .filter((a): a is Article => !!a);
         
         setRecommendations(recommendedArticles);

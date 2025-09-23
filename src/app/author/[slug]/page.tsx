@@ -1,5 +1,5 @@
 
-import { articles } from '@/lib/data';
+import { getArticlesByAuthor, getAuthorSlugs } from '@/app/actions';
 import { notFound } from 'next/navigation';
 import Header from '@/components/header';
 import Footer from '@/components/footer';
@@ -11,8 +11,8 @@ type AuthorPageProps = {
   };
 };
 
-export default function AuthorPage({ params }: AuthorPageProps) {
-  const authorArticles = articles.filter((a) => a.authorSlug === params.slug);
+export default async function AuthorPage({ params }: AuthorPageProps) {
+  const authorArticles = await getArticlesByAuthor(params.slug);
 
   if (authorArticles.length === 0) {
     notFound();
@@ -28,7 +28,7 @@ export default function AuthorPage({ params }: AuthorPageProps) {
 }
 
 export async function generateStaticParams() {
-    const authorSlugs = [...new Set(articles.map((article) => article.authorSlug))];
+    const authorSlugs = await getAuthorSlugs();
     return authorSlugs.map((slug) => ({
       slug: slug,
     }));

@@ -1,5 +1,5 @@
 import CreateArticleForm from '@/components/create-article-form';
-import { articles } from '@/lib/data';
+import { getArticleBySlug } from '@/app/actions';
 import { notFound } from 'next/navigation';
 import Header from '@/components/header';
 import Footer from '@/components/footer';
@@ -11,8 +11,8 @@ type EditPostPageProps = {
     }
 }
 
-export default function EditPostPage({ params }: EditPostPageProps) {
-  const article = articles.find((a) => a.slug === params.slug);
+export default async function EditPostPage({ params }: EditPostPageProps) {
+  const article = await getArticleBySlug(params.slug);
 
   if (!article) {
     notFound();
