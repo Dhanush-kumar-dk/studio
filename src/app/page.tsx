@@ -5,6 +5,7 @@ import Header from '@/components/header';
 import Footer from '@/components/footer';
 import Newsletter from '@/components/newsletter';
 import Team from '@/components/team';
+import AboutPublication from '@/components/about-publication';
 
 export default function Home() {
   return (
@@ -19,6 +20,7 @@ export default function Home() {
         <Team />
       </main>
       <Newsletter />
+      <AboutPublication />
       <Footer />
     </>
   );
