@@ -31,6 +31,10 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
   if (!article) {
     notFound();
   }
+  
+  // Convert _id to string for client-side component
+  const articleId = article._id.toString();
+
 
   return (
     <>
@@ -77,7 +81,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
                   </Link>
               </Button>
               <SummarizeButton articleContent={article.content} />
-              <DeleteArticleButton articleId={article.id} />
+              <DeleteArticleButton articleId={articleId} />
             </div>
             <div className="prose-p:leading-relaxed" dangerouslySetInnerHTML={{ __html: article.content }} />
           </div>

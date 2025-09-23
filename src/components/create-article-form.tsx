@@ -44,7 +44,7 @@ const formSchema = z.object({
 });
 
 type CreateArticleFormProps = {
-    article?: Article;
+    article?: Article & { _id: any };
 }
 
 export default function CreateArticleForm({ article }: CreateArticleFormProps) {
@@ -101,7 +101,7 @@ export default function CreateArticleForm({ article }: CreateArticleFormProps) {
      };
 
     const result = isEditMode && article 
-        ? await updateArticle(article.id, input)
+        ? await updateArticle(article._id.toString(), input)
         : await createArticle(input);
 
     if (result.error) {

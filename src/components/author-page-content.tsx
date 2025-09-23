@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
 
 type AuthorPageContentProps = {
-  articles: Article[];
+  articles: (Article & {_id: any})[];
 };
 
 export default function AuthorPageContent({ articles }: AuthorPageContentProps) {
@@ -46,7 +46,7 @@ export default function AuthorPageContent({ articles }: AuthorPageContentProps) 
           {articles.length > 0 ? (
               <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
                   {articles.map((article) => (
-                  <ArticleCard key={article.id} article={article} />
+                  <ArticleCard key={article._id.toString()} article={{...article, id: article._id.toString()}} />
                   ))}
               </div>
               ) : (

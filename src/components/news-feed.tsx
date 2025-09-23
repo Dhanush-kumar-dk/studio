@@ -40,7 +40,7 @@ const shuffle = (array: any[]) => {
     return array;
 }
 
-export default function NewsFeed({ articles }: { articles: Article[] }) {
+export default function NewsFeed({ articles }: { articles: (Article & {_id: any})[] }) {
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
@@ -49,14 +49,14 @@ export default function NewsFeed({ articles }: { articles: Article[] }) {
   const selectedCategory = searchParams.get('category') ?? 'All';
   const searchQuery = searchParams.get('search') ?? '';
 
-  const [carouselArticles, setCarouselArticles] = useState<Article[]>([]);
+  const [carouselArticles, setCarouselArticles] = useState<(Article & {_id: any})[]>([]);
 
   useEffect(() => {
     const uniqueCategories = [...new Set(articles.map(a => a.category))];
     const shuffledArticles = shuffle([...articles]);
     const carouselItems = uniqueCategories.map(category => {
         return shuffledArticles.find(article => article.category === category);
-    }).filter((a): a is Article => !!a);
+    }).filter((a): a is (Article & {_id: any}) => !!a);
 
     setCarouselArticles(shuffle(carouselItems).slice(0, 5));
   }, [articles]);
@@ -72,7 +72,7 @@ export default function NewsFeed({ articles }: { articles: Article[] }) {
   const filteredArticles = useMemo(() => {
     return articles
       .filter((article) =>
-        !carouselArticles.some(ca => ca.id === article.id)
+        !carouselArticles.some(ca => ca._id.toString() === article._id.toString())
       )
       .filter((article) =>
         selectedCategory === 'All' ? true : article.category === selectedCategory
@@ -132,7 +132,7 @@ export default function NewsFeed({ articles }: { articles: Article[] }) {
                     >
                     <CarouselContent>
                         {carouselArticles.map((article) => (
-                        <CarouselItem key={article.id}>
+                        <CarouselItem key={article._id.toString()}>
                             <div className="group relative overflow-hidden rounded-lg bg-card shadow-lg transition-shadow duration-300 hover:shadow-xl">
                                 <Link href={`/articles/${article.slug}`}>
                                     <div className="relative h-64 md:h-96">
@@ -163,7 +163,7 @@ export default function NewsFeed({ articles }: { articles: Article[] }) {
               {gridArticles.length > 0 ? (
                 <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
                   {gridArticles.map((article) => (
-                    <ArticleCard key={article.id} article={article} />
+                    <ArticleCard key={article._id.toString()} article={{...article, id: article._id.toString()}} />
                   ))}
                 </div>
               ) : (
