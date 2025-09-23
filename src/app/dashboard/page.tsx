@@ -29,9 +29,15 @@ export default function DashboardPage() {
           };
           return [newUser, ...prevUsers];
         } else {
+          // If user exists, check if an update is needed (e.g. new avatar from Google login)
           return prevUsers.map(u => {
-            if (u.id === user.uid && user.photoURL && u.avatarUrl !== user.photoURL) {
-              return { ...u, avatarUrl: user.photoURL, name: user.displayName || u.name };
+            if (u.id === user.uid) {
+              return {
+                ...u,
+                name: user.displayName || u.name,
+                email: user.email || u.email,
+                avatarUrl: user.photoURL || u.avatarUrl
+              };
             }
             return u;
           });
@@ -49,6 +55,7 @@ export default function DashboardPage() {
   }
 
   const handleUsersChange = (updatedUsers: User[]) => {
+    // This function will be called by UserTable when roles are changed
     setDisplayUsers(updatedUsers);
   }
 
