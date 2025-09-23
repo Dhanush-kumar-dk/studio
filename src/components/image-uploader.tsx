@@ -58,7 +58,7 @@ export default function ImageUploader({ children, onUploadComplete }: ImageUploa
         setIsLoading(false);
         return;
       }
-      const dataUrl = croppedCanvas.toDataURL('image/jpeg', 0.9);
+      const dataUrl = croppedCanvas.toDataURL('image/jpeg', 0.7);
       
       const user = auth.currentUser;
       if (!user) {
