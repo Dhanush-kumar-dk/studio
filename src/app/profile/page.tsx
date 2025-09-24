@@ -7,6 +7,7 @@ import ProfileForm from '@/components/profile-form';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/hooks/use-auth';
 import { useEffect } from 'react';
+import { checkAndCreateUser } from '@/app/actions';
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -15,6 +16,11 @@ export default function ProfilePage() {
   useEffect(() => {
     if (!loading && !user) {
       router.push('/login');
+    }
+    
+    // Ensure user exists in the database when they visit their profile
+    if (user) {
+        checkAndCreateUser(user);
     }
   }, [user, loading, router]);
 

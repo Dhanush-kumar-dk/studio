@@ -171,12 +171,13 @@ export async function checkAndCreateUser(user: { uid: string; displayName: strin
         role: 'Subscriber',
         avatarUrl: user.photoURL || `https://picsum.photos/seed/${user.uid}/40/40`,
       });
+      return { created: true };
     } catch (error) {
       console.error("Error creating user document:", error);
       return { error: 'Failed to create user in database.' }
     }
   }
-  return { success: true };
+  return { created: false };
 }
 
 export async function getUsers(): Promise<User[]> {
