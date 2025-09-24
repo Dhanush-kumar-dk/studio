@@ -19,21 +19,35 @@ export default function DashboardPage() {
 
   useEffect(() => {
     async function fetchUsers() {
-      if (!authLoading && user) {
+      // Ensure we don't try to fetch if the user is not authenticated
+      if (!authLoading && !user) {
+        setLoading(false);
+        setError("You must be logged in to view the dashboard.");
+        return;
+      }
+      
+      if (user) {
         try {
           const fetchedUsers = await getUsers();
           setUsers(fetchedUsers);
+          setError(null);
         } catch (err: any) {
           console.error("Failed to fetch users:", err);
-          setError("Could not fetch user data. Please check permissions and network.");
+          if (err.message.includes('Permission denied')) {
+            setError("Permission denied. Please check your Realtime Database security rules in the Firebase Console.");
+          } else {
+            setError("Could not fetch user data. Please try again later.");
+          }
         } finally {
           setLoading(false);
         }
-      } else if (!authLoading && !user) {
-        setLoading(false);
       }
     }
-    fetchUsers();
+    
+    // Only run fetchUsers when the authentication state is resolved
+    if (!authLoading) {
+        fetchUsers();
+    }
   }, [user, authLoading]);
 
 
@@ -60,8 +74,12 @@ export default function DashboardPage() {
             <CardContent>
               {error ? (
                 <div className="text-center text-red-500 py-8">
+                  <p className="font-bold">An Error Occurred</p>
                   <p>{error}</p>
-                  <p className="text-sm text-muted-foreground mt-2">Please ensure your Realtime Database security rules allow authenticated reads.</p>
+                </div>
+              ) : !user ? (
+                 <div className="text-center text-muted-foreground py-8">
+                  <p>Please log in to manage users.</p>
                 </div>
               ) : (
                 <>
