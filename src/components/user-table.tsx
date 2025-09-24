@@ -26,8 +26,8 @@ import {
 } from '@/components/ui/alert-dialog';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
-import { doc, updateDoc } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
+import { ref, update } from 'firebase/database';
+import { rtdb } from '@/lib/firebase';
 
 type UserTableProps = {
   users: User[];
@@ -66,9 +66,9 @@ export default function UserTable({ users: initialUsers, searchQuery, onUsersCha
     if (selectedUser) {
       const newRole = actionType === 'make' ? 'Admin' : 'Subscriber';
       
-      const userRef = doc(db, 'user', selectedUser.id);
+      const userRef = ref(rtdb, 'users/' + selectedUser.id);
       try {
-        await updateDoc(userRef, { role: newRole });
+        await update(userRef, { role: newRole });
         const updatedUsers = users.map(u => u.id === selectedUser.id ? { ...u, role: newRole } : u);
         setUsers(updatedUsers);
         onUsersChange(updatedUsers);

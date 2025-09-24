@@ -4,8 +4,8 @@ import { summarizeArticle as summarizeArticleFlow } from '@/ai/flows/article-sum
 import type { Article, User } from '@/lib/types';
 import { articles as allArticles } from '@/lib/data';
 import { revalidatePath } from 'next/cache';
-import { db } from '@/lib/firebase';
-import { collection, doc, setDoc, getDoc, getDocs } from 'firebase/firestore';
+import { rtdb } from '@/lib/firebase';
+import { ref, set, get, child } from 'firebase/database';
 
 let articles: (Article & {_id: any})[] = allArticles.map((a, i) => ({...a, id: (i+1).toString(), _id: (i+1).toString()}));
 
@@ -112,7 +112,7 @@ export async function updateArticle(articleId: string, input: CreateArticleInput
         author: input.author,
         authorSlug: generateSlug(input.author),
         authorImageUrl: `https://picsum.photos/seed/${input.author.replace(/\s+/g, '-')}/40/40`,
-        focusKeywords: input.focusKeywords.split(',').map((k) => k.trim()),
+        focusKeywords: input.focusKeywords.split(',-').map((k) => k.trim()),
         metaDescription: input.metaDescription,
     };
     
@@ -148,12 +148,12 @@ export async function deleteArticle(articleId: string) {
 }
 
 export async function checkAndCreateUser(user: { uid: string; displayName: string | null; email: string | null; photoURL: string | null; }) {
-  const userRef = doc(db, 'user', user.uid);
-  const docSnap = await getDoc(userRef);
+  const dbRef = ref(rtdb);
+  const snapshot = await get(child(dbRef, `users/${user.uid}`));
 
-  if (!docSnap.exists()) {
+  if (!snapshot.exists()) {
     try {
-      await setDoc(userRef, {
+      await set(ref(rtdb, 'users/' + user.uid), {
         id: user.uid,
         name: user.displayName || user.email?.split('@')[0] || 'Anonymous',
         email: user.email,
@@ -169,8 +169,16 @@ export async function checkAndCreateUser(user: { uid: string; displayName: strin
 }
 
 export async function getUsers(): Promise<User[]> {
-    const usersCol = collection(db, 'user');
-    const userSnapshot = await getDocs(usersCol);
-    const userList = userSnapshot.docs.map(doc => doc.data() as User);
-    return userList;
+    const usersRef = ref(rtdb, 'users');
+    const snapshot = await get(usersRef);
+    if (snapshot.exists()) {
+        const usersData = snapshot.val();
+        const userList = Object.keys(usersData).map(key => ({
+            id: key,
+            ...usersData[key]
+        }));
+        return userList as User[];
+    } else {
+        return [];
+    }
 }
