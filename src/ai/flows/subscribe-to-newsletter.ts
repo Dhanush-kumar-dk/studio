@@ -20,7 +20,7 @@ const SubscribeToNewsletterInputSchema = z.object({
 export type SubscribeToNewsletterInput = z.infer<typeof SubscribeToNewsletterInputSchema>;
 
 const SubscribeToNewsletterOutputSchema = z.object({
-  status: z.string().describe('The status of the subscription (e.g., "subscribed").'),
+  status: z.string().describe('The status of the subscription (e.g., "subscribed" or "failed").'),
 });
 export type SubscribeToNewsletterOutput = z.infer<typeof SubscribeToNewsletterOutputSchema>;
 
@@ -32,35 +32,24 @@ async function getGoogleSheetsClient() {
     return google.sheets({ version: 'v4', auth: authClient });
 }
 
-const appendToSheetTool = ai.defineTool(
-    {
-        name: 'appendToSheet',
-        description: 'Appends a row to a Google Sheet.',
-        inputSchema: z.object({
-            email: z.string().email(),
-        }),
-        outputSchema: z.boolean(),
-    },
-    async (input) => {
-        try {
-            const sheets = await getGoogleSheetsClient();
-            const timestamp = new Date().toISOString();
-            await sheets.spreadsheets.values.append({
-                spreadsheetId: SPREADSHEET_ID,
-                range: `${SHEET_NAME}!A:B`,
-                valueInputOption: 'USER_ENTERED',
-                requestBody: {
-                    values: [[input.email, timestamp]],
-                },
-            });
-            return true;
-        } catch (error) {
-            console.error('Error appending to sheet:', error);
-            return false;
-        }
+async function appendToSheet(email: string): Promise<boolean> {
+    try {
+        const sheets = await getGoogleSheetsClient();
+        const timestamp = new Date().toISOString();
+        await sheets.spreadsheets.values.append({
+            spreadsheetId: SPREADSHEET_ID,
+            range: `${SHEET_NAME}!A:B`,
+            valueInputOption: 'USER_ENTERED',
+            requestBody: {
+                values: [[email, timestamp]],
+            },
+        });
+        return true;
+    } catch (error) {
+        console.error('Error appending to sheet:', error);
+        return false;
     }
-);
-
+}
 
 const subscribeToNewsletterFlow = ai.defineFlow(
   {
@@ -69,7 +58,7 @@ const subscribeToNewsletterFlow = ai.defineFlow(
     outputSchema: SubscribeToNewsletterOutputSchema,
   },
   async (input) => {
-    const success = await appendToSheetTool(input);
+    const success = await appendToSheet(input.email);
     return {
         status: success ? 'subscribed' : 'failed',
     };
