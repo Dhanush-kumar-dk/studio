@@ -21,7 +21,7 @@ import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Loader2 } from 'lucide-react';
 import Link from 'next/link';
-import { users } from '@/lib/users';
+import { checkAndCreateUser } from '@/app/actions';
 
 const formSchema = z.object({
   name: z.string().min(1, 'Name is required.'),
@@ -51,15 +51,14 @@ export default function SignupForm() {
         displayName: values.name,
       });
 
-      // Add user to the in-memory user list
-      users.push({
-        id: userCredential.user.uid,
-        name: values.name,
-        email: values.email,
-        role: 'Subscriber',
-        avatarUrl: `https://picsum.photos/seed/${userCredential.user.uid}/40/40`,
-      });
+      // We need to reload the user to get the updated displayName
+      await userCredential.user.reload();
+      const updatedUser = auth.currentUser;
 
+      if (updatedUser) {
+        await checkAndCreateUser(updatedUser);
+      }
+      
       toast({
         title: 'Account created!',
         description: 'You have successfully signed up.',

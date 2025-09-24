@@ -1,11 +1,13 @@
 'use server';
 
 import { summarizeArticle as summarizeArticleFlow } from '@/ai/flows/article-summarization';
-import type { Article } from '@/lib/types';
+import type { Article, User } from '@/lib/types';
 import { articles as allArticles } from '@/lib/data';
 import { revalidatePath } from 'next/cache';
+import { db } from '@/lib/firebase';
+import { collection, doc, setDoc, getDoc, getDocs } from 'firebase/firestore';
 
-let articles: (Article & {_id: any})[] = allArticles.map((a, i) => ({...a, _id: i.toString()}));
+let articles: (Article & {_id: any})[] = allArticles.map((a, i) => ({...a, id: (i+1).toString(), _id: (i+1).toString()}));
 
 const generateSlug = (title: string) => {
   return title
@@ -143,4 +145,32 @@ export async function deleteArticle(articleId: string) {
     console.error('Failed to delete article:', error);
     return { error: 'An unexpected error occurred while deleting the article.' };
   }
+}
+
+export async function checkAndCreateUser(user: { uid: string; displayName: string | null; email: string | null; photoURL: string | null; }) {
+  const userRef = doc(db, 'user', user.uid);
+  const docSnap = await getDoc(userRef);
+
+  if (!docSnap.exists()) {
+    try {
+      await setDoc(userRef, {
+        id: user.uid,
+        name: user.displayName || user.email?.split('@')[0] || 'Anonymous',
+        email: user.email,
+        role: 'Subscriber',
+        avatarUrl: user.photoURL || `https://picsum.photos/seed/${user.uid}/40/40`,
+      });
+    } catch (error) {
+      console.error("Error creating user document:", error);
+      return { error: 'Failed to create user in database.' }
+    }
+  }
+  return { success: true };
+}
+
+export async function getUsers(): Promise<User[]> {
+    const usersCol = collection(db, 'user');
+    const userSnapshot = await getDocs(usersCol);
+    const userList = userSnapshot.docs.map(doc => doc.data() as User);
+    return userList;
 }

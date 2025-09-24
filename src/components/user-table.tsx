@@ -26,6 +26,8 @@ import {
 } from '@/components/ui/alert-dialog';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
+import { doc, updateDoc } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
 
 type UserTableProps = {
   users: User[];
@@ -60,24 +62,37 @@ export default function UserTable({ users: initialUsers, searchQuery, onUsersCha
     setIsAlertOpen(true);
   };
 
-  const handleConfirmRoleChange = () => {
+  const handleConfirmRoleChange = async () => {
     if (selectedUser) {
       const newRole = actionType === 'make' ? 'Admin' : 'Subscriber';
-      const updatedUsers = users.map(u => u.id === selectedUser.id ? { ...u, role: newRole } : u)
-      setUsers(updatedUsers);
-      onUsersChange(updatedUsers);
-      toast({
-        title: "Success",
-        description: `${selectedUser.name}'s role has been updated to ${newRole}.`,
-      });
+      
+      const userRef = doc(db, 'user', selectedUser.id);
+      try {
+        await updateDoc(userRef, { role: newRole });
+        const updatedUsers = users.map(u => u.id === selectedUser.id ? { ...u, role: newRole } : u);
+        setUsers(updatedUsers);
+        onUsersChange(updatedUsers);
+        toast({
+          title: "Success",
+          description: `${selectedUser.name}'s role has been updated to ${newRole}.`,
+        });
+      } catch (error) {
+        console.error("Failed to update role:", error);
+        toast({
+          title: "Error",
+          description: "Failed to update user role. Please try again.",
+          variant: "destructive",
+        });
+      }
     }
     setIsAlertOpen(false);
     setSelectedUser(null);
   };
 
   const getInitials = (name: string) => {
+    if (!name) return '';
     const names = name.split(' ');
-    if (names.length > 1) {
+    if (names.length > 1 && names[0] && names[names.length - 1]) {
       return names[0][0] + names[names.length - 1][0];
     }
     return name[0];

@@ -4,49 +4,34 @@
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from '@/components/ui/input';
-import { users as initialUsers } from '@/lib/users';
 import UserTable from '@/components/user-table';
 import { useAuth } from '@/hooks/use-auth';
 import type { User } from '@/lib/types';
 import { Loader2 } from 'lucide-react';
+import { getUsers } from '@/app/actions';
 
 export default function DashboardPage() {
   const [searchQuery, setSearchQuery] = useState('');
-  const { user, loading } = useAuth();
-  const [displayUsers, setDisplayUsers] = useState<User[]>(initialUsers);
+  const { user, loading: authLoading } = useAuth();
+  const [users, setUsers] = useState<User[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (user) {
-      setDisplayUsers(prevUsers => {
-        const userExists = prevUsers.some(u => u.id === user.uid);
-        if (!userExists) {
-          const newUser: User = {
-            id: user.uid,
-            name: user.displayName || user.email || 'Anonymous',
-            email: user.email || '',
-            role: 'Subscriber',
-            avatarUrl: user.photoURL || `https://picsum.photos/seed/${user.uid}/40/40`,
-          };
-          return [newUser, ...prevUsers];
-        } else {
-          // If user exists, check if an update is needed (e.g. new avatar from Google login)
-          return prevUsers.map(u => {
-            if (u.id === user.uid) {
-              return {
-                ...u,
-                name: user.displayName || u.name,
-                email: user.email || u.email,
-                avatarUrl: user.photoURL || u.avatarUrl
-              };
-            }
-            return u;
-          });
-        }
-      });
+    if (!authLoading && user) {
+        getUsers().then(fetchedUsers => {
+            setUsers(fetchedUsers);
+            setLoading(false);
+        }).catch(err => {
+            console.error("Failed to fetch users:", err);
+            setLoading(false);
+        });
+    } else if (!authLoading && !user) {
+        setLoading(false);
     }
-  }, [user]);
+  }, [user, authLoading]);
 
-  if (loading) {
+
+  if (loading || authLoading) {
       return (
           <div className="flex h-screen items-center justify-center">
               <Loader2 className="h-8 w-8 animate-spin" />
@@ -56,7 +41,7 @@ export default function DashboardPage() {
 
   const handleUsersChange = (updatedUsers: User[]) => {
     // This function will be called by UserTable when roles are changed
-    setDisplayUsers(updatedUsers);
+    setUsers(updatedUsers);
   }
 
   return (
@@ -76,7 +61,7 @@ export default function DashboardPage() {
                     />
                 </div>
                 <UserTable 
-                  users={displayUsers} 
+                  users={users} 
                   searchQuery={searchQuery} 
                   onUsersChange={handleUsersChange}
                 />
