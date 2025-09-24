@@ -28,7 +28,7 @@ import { createArticle, updateArticle } from '@/app/actions';
 import { useState, useEffect, useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Loader2, X, Link as LinkIcon } from 'lucide-react';
-import type { Article } from '@/lib/types';
+import type { Article } from '@/lib/models/Article';
 import LinkEditor from './link-editor';
 
 const formSchema = z.object({

@@ -3,8 +3,8 @@
 import { useEffect, useState } from 'react';
 import { useReadingHistory } from '@/hooks/use-reading-history';
 import { getPersonalizedRecommendations } from '@/ai/flows/personalized-recommendations';
-import { articles } from '@/lib/data';
-import type { Article } from '@/lib/types';
+import { getAllArticles } from '@/lib/services/articleService';
+import type { Article } from '@/lib/models/Article';
 import ArticleCard from './article-card';
 import { Skeleton } from './ui/skeleton';
 import { useAuth } from '@/hooks/use-auth';
@@ -14,10 +14,19 @@ export default function RecommendedArticles() {
   const { user } = useAuth();
   const [recommendations, setRecommendations] = useState<Article[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [articles, setArticles] = useState<Article[]>([]);
+
+  useEffect(() => {
+    async function loadArticles() {
+      const allArticles = await getAllArticles();
+      setArticles(allArticles);
+    }
+    loadArticles();
+  }, []);
 
   useEffect(() => {
     async function fetchRecommendations() {
-      if (!user) {
+      if (!user || articles.length === 0) {
         setIsLoading(false);
         return;
       };
@@ -51,7 +60,7 @@ export default function RecommendedArticles() {
     }
 
     fetchRecommendations();
-  }, [history, user]);
+  }, [history, user, articles]);
 
   if (!user) {
     return <p>Please log in to see your personalized recommendations.</p>

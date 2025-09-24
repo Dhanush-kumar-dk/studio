@@ -2,7 +2,7 @@
 "use client";
 
 import { useState, useMemo } from 'react';
-import type { User } from '@/lib/types';
+import type { User } from '@/lib/models/User';
 import {
   Table,
   TableBody,

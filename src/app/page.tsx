@@ -1,11 +1,13 @@
-import { articles } from '@/lib/data';
+import { getAllArticles } from '@/lib/services/articleService';
 import NewsFeed from '@/components/news-feed';
 import { Suspense } from 'react';
 import Header from '@/components/header';
 import Footer from '@/components/footer';
 import Newsletter from '@/components/newsletter';
 
-export default function Home() {
+export default async function Home() {
+  const articles = await getAllArticles();
+
   return (
     <>
       <Header />

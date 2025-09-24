@@ -1,4 +1,4 @@
-import { articles } from '@/lib/data';
+import { getAllArticles, getArticleBySlug } from '@/lib/services/articleService';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import { Badge } from '@/components/ui/badge';
@@ -19,6 +19,7 @@ type ArticlePageProps = {
 };
 
 export async function generateStaticParams() {
+  const articles = await getAllArticles();
   return articles.map((article) => ({
     slug: article.slug,
   }));
@@ -26,7 +27,7 @@ export async function generateStaticParams() {
 
 export default async function ArticlePage({ params }: ArticlePageProps) {
   const { slug } = await params;
-  const article = articles.find((a) => a.slug === slug);
+  const article = await getArticleBySlug(slug);
 
   if (!article) {
     notFound();

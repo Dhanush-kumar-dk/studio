@@ -1,8 +1,8 @@
 "use server";
 
 import { summarizeArticle as summarizeArticleFlow } from '@/ai/flows/article-summarization';
-import { articles } from '@/lib/data';
-import type { Article } from '@/lib/types';
+import { getAllArticles, createArticle as createArticleInDB, updateArticle as updateArticleInDB, deleteArticle as deleteArticleInDB, getArticleById } from '@/lib/services/articleService';
+import type { Article } from '@/lib/models/Article';
 import { revalidatePath } from 'next/cache';
 
 export async function summarizeArticle(articleContent: string) {
@@ -29,12 +29,10 @@ type CreateArticleInput = {
 
 export async function createArticle(input: CreateArticleInput) {
     try {
-        const newId = (articles.length + 1).toString();
         const finalSlug = input.slug || input.title.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, '');
         const contentWithBreaks = input.content.replace(/\n/g, '<br />');
 
-        const newArticle: Article = {
-            id: newId,
+        const articleData = {
             slug: finalSlug,
             title: input.title,
             category: input.category,
@@ -44,15 +42,19 @@ export async function createArticle(input: CreateArticleInput) {
             content: contentWithBreaks,
             author: input.author,
             authorImageUrl: `https://picsum.photos/seed/${input.author.replace(/\s+/g, '-')}/40/40`,
-            publishedAt: new Date().toISOString(),
+            publishedAt: new Date().toISOString().split('T')[0],
             focusKeywords: input.focusKeywords.split(',').map(k => k.trim()),
             metaDescription: input.metaDescription
         };
 
-        articles.unshift(newArticle);
+        const newArticle = await createArticleInDB(articleData);
+        
+        if (!newArticle) {
+            return { error: 'Failed to create article in database.' };
+        }
         
         revalidatePath('/');
-        revalidatePath(`/articles/${finalSlug}`);
+        revalidatePath(`/articles/${newArticle.slug}`);
 
         return { slug: newArticle.slug };
     } catch (error) {
@@ -63,16 +65,15 @@ export async function createArticle(input: CreateArticleInput) {
 
 export async function updateArticle(articleId: string, input: CreateArticleInput) {
     try {
-        const articleIndex = articles.findIndex((a) => a.id === articleId);
-        if (articleIndex === -1) {
+        const existingArticle = await getArticleById(articleId);
+        if (!existingArticle) {
             return { error: 'Article not found.' };
         }
 
         const finalSlug = input.slug || input.title.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, '');
         const contentWithBreaks = input.content.replace(/\n/g, '<br />');
 
-        const updatedArticle: Article = {
-            ...articles[articleIndex],
+        const updateData = {
             slug: finalSlug,
             title: input.title,
             category: input.category,
@@ -85,11 +86,15 @@ export async function updateArticle(articleId: string, input: CreateArticleInput
             metaDescription: input.metaDescription
         };
 
-        articles[articleIndex] = updatedArticle;
+        const updatedArticle = await updateArticleInDB(articleId, updateData);
+        
+        if (!updatedArticle) {
+            return { error: 'Failed to update article in database.' };
+        }
         
         revalidatePath('/');
-        revalidatePath(`/articles/${finalSlug}`);
-        revalidatePath(`/edit-post/${finalSlug}`);
+        revalidatePath(`/articles/${updatedArticle.slug}`);
+        revalidatePath(`/edit-post/${updatedArticle.slug}`);
 
         return { slug: updatedArticle.slug };
     } catch (error) {
@@ -101,11 +106,16 @@ export async function updateArticle(articleId: string, input: CreateArticleInput
 
 export async function deleteArticle(articleId: string) {
     try {
-        const articleIndex = articles.findIndex((a) => a.id === articleId);
-        if (articleIndex === -1) {
+        const existingArticle = await getArticleById(articleId);
+        if (!existingArticle) {
             return { error: 'Article not found.' };
         }
-        articles.splice(articleIndex, 1);
+        
+        const deleted = await deleteArticleInDB(articleId);
+        if (!deleted) {
+            return { error: 'Failed to delete article from database.' };
+        }
+        
         revalidatePath('/');
         revalidatePath('/articles');
         return { success: true };

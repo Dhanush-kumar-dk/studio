@@ -1,7 +1,7 @@
 
 "use client";
 
-import type { Article } from '@/lib/types';
+import type { Article } from '@/lib/models/Article';
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import { useMemo, useState, useTransition, useEffect } from 'react';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
