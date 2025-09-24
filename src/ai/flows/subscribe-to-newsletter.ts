@@ -25,11 +25,16 @@ const SubscribeToNewsletterOutputSchema = z.object({
 export type SubscribeToNewsletterOutput = z.infer<typeof SubscribeToNewsletterOutputSchema>;
 
 async function getGoogleSheetsClient() {
-    const auth = new google.auth.GoogleAuth({
-        scopes: ['https://www.googleapis.com/auth/spreadsheets'],
-    });
-    const authClient = await auth.getClient();
-    return google.sheets({ version: 'v4', auth: authClient });
+    const serviceAccountJson = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_KEY!);
+    const jwtClient = new google.auth.JWT(
+        serviceAccountJson.client_email,
+        undefined,
+        serviceAccountJson.private_key.replace(/\\n/g, '\n'),
+        ['https://www.googleapis.com/auth/spreadsheets']
+    );
+
+    await jwtClient.authorize();
+    return google.sheets({ version: 'v4', auth: jwtClient });
 }
 
 async function appendToSheet(email: string): Promise<boolean> {
