@@ -17,7 +17,7 @@ import {
 } from '@/components/ui/form';
 import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Loader2 } from 'lucide-react';
 import GoogleIcon from '@/components/icons/google';
