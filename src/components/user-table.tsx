@@ -51,7 +51,7 @@ export default function UserTable({ users: initialUsers, searchQuery, onUsersCha
   const filteredUsers = useMemo(() => {
     if (!searchQuery) return users;
     return users.filter(user => 
-        user.email.toLowerCase().includes(searchQuery.toLowerCase())
+        (user.email || '').toLowerCase().includes(searchQuery.toLowerCase())
     );
   }, [users, searchQuery]);
 
@@ -171,8 +171,7 @@ export default function UserTable({ users: initialUsers, searchQuery, onUsersCha
             <AlertDialogAction
               onClick={handleConfirmRoleChange}
               className={cn(
-                actionType === 'make' ? 'bg-green-600 hover:bg-green-700' : 'bg-red-600 hover:bg-red-700',
-                buttonVariants({ variant: 'default' })
+                actionType === 'make' ? 'bg-primary hover:bg-primary/90' : 'bg-destructive hover:bg-destructive/90'
               )}
             >
               Yes
