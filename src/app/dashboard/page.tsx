@@ -15,19 +15,25 @@ export default function DashboardPage() {
   const { user, loading: authLoading } = useAuth();
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!authLoading && user) {
-        getUsers().then(fetchedUsers => {
-            setUsers(fetchedUsers);
-            setLoading(false);
-        }).catch(err => {
-            console.error("Failed to fetch users:", err);
-            setLoading(false);
-        });
-    } else if (!authLoading && !user) {
+    async function fetchUsers() {
+      if (!authLoading && user) {
+        try {
+          const fetchedUsers = await getUsers();
+          setUsers(fetchedUsers);
+        } catch (err: any) {
+          console.error("Failed to fetch users:", err);
+          setError("Could not fetch user data. Please check permissions and network.");
+        } finally {
+          setLoading(false);
+        }
+      } else if (!authLoading && !user) {
         setLoading(false);
+      }
     }
+    fetchUsers();
   }, [user, authLoading]);
 
 
@@ -52,19 +58,28 @@ export default function DashboardPage() {
                 <CardDescription>Manage your application's users here.</CardDescription>
             </CardHeader>
             <CardContent>
-                <div className="mb-4">
-                    <Input 
-                        placeholder="Search by email..."
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        className="max-w-sm"
-                    />
+              {error ? (
+                <div className="text-center text-red-500 py-8">
+                  <p>{error}</p>
+                  <p className="text-sm text-muted-foreground mt-2">Please ensure your Realtime Database security rules allow authenticated reads.</p>
                 </div>
-                <UserTable 
-                  users={users} 
-                  searchQuery={searchQuery} 
-                  onUsersChange={handleUsersChange}
-                />
+              ) : (
+                <>
+                  <div className="mb-4">
+                      <Input 
+                          placeholder="Search by email..."
+                          value={searchQuery}
+                          onChange={(e) => setSearchQuery(e.target.value)}
+                          className="max-w-sm"
+                      />
+                  </div>
+                  <UserTable 
+                    users={users} 
+                    searchQuery={searchQuery} 
+                    onUsersChange={handleUsersChange}
+                  />
+                </>
+              )}
             </CardContent>
         </Card>
     </div>
