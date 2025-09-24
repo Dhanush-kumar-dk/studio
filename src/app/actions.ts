@@ -2,12 +2,11 @@
 
 import { summarizeArticle as summarizeArticleFlow } from '@/ai/flows/article-summarization';
 import type { Article, User } from '@/lib/types';
-import { articles as allArticles } from '@/lib/data';
 import { revalidatePath } from 'next/cache';
-import { rtdb } from '@/lib/firebase';
-import { ref, set, get, child } from 'firebase/database';
+import { rtdb } from '@/lib/firebase-admin';
+import { ref, set, get, child, remove, update } from 'firebase/database';
+import { v4 as uuidv4 } from 'uuid';
 
-let articles: (Article & {_id: any})[] = allArticles.map((a, i) => ({...a, id: (i+1).toString(), _id: (i+1).toString()}));
 
 const generateSlug = (title: string) => {
   return title
@@ -19,19 +18,32 @@ const generateSlug = (title: string) => {
     .replace(/-+$/, ''); // Trim - from end of text
 };
 
-export async function getArticles() {
-  return articles.sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime());
+export async function getArticles(): Promise<(Article & { _id: string })[]> {
+    const articlesRef = ref(rtdb, 'articles');
+    const snapshot = await get(articlesRef);
+    if (snapshot.exists()) {
+        const articlesData = snapshot.val();
+        const articlesList = Object.keys(articlesData).map(key => ({
+            ...articlesData[key],
+            _id: key,
+        }));
+        return articlesList.sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime());
+    }
+    return [];
 }
 
-export async function getArticleBySlug(slug: string) {
-  return articles.find((article) => article.slug === slug) || null;
+export async function getArticleBySlug(slug: string): Promise<(Article & { _id: string }) | null> {
+    const articles = await getArticles();
+    return articles.find((article) => article.slug === slug) || null;
 }
 
 export async function getArticlesByAuthor(authorSlug: string) {
+    const articles = await getArticles();
     return articles.filter((article) => article.authorSlug === authorSlug).sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime());
 }
 
 export async function getAuthorSlugs() {
+    const articles = await getArticles();
     const slugs = new Set(articles.map(a => a.authorSlug));
     return Array.from(slugs);
 }
@@ -61,10 +73,10 @@ type CreateArticleInput = {
 export async function createArticle(input: CreateArticleInput) {
   try {
     const finalSlug = input.slug || generateSlug(input.title);
+    const articleId = uuidv4();
 
-    const newArticle = {
-      _id: (articles.length + 1).toString(),
-      id: (articles.length + 1).toString(),
+    const newArticle: Omit<Article, '_id'> = {
+      id: articleId,
       slug: finalSlug,
       title: input.title,
       category: input.category,
@@ -79,8 +91,9 @@ export async function createArticle(input: CreateArticleInput) {
       focusKeywords: input.focusKeywords.split(',').map((k) => k.trim()),
       metaDescription: input.metaDescription,
     };
-
-    articles.push(newArticle);
+    
+    const articleRef = ref(rtdb, 'articles/' + articleId);
+    await set(articleRef, newArticle);
 
     revalidatePath('/');
     revalidatePath(`/articles/${finalSlug}`);
@@ -94,15 +107,16 @@ export async function createArticle(input: CreateArticleInput) {
 
 export async function updateArticle(articleId: string, input: CreateArticleInput) {
   try {
-    const articleIndex = articles.findIndex(a => a._id.toString() === articleId);
-    if (articleIndex === -1) {
+    const articleRef = ref(rtdb, 'articles/' + articleId);
+    const snapshot = await get(articleRef);
+
+    if (!snapshot.exists()) {
         return { error: 'Article not found.' };
     }
 
     const finalSlug = input.slug || generateSlug(input.title);
 
-    const updatedArticle = {
-        ...articles[articleIndex],
+    const updatedArticleData = {
         slug: finalSlug,
         title: input.title,
         category: input.category,
@@ -112,11 +126,11 @@ export async function updateArticle(articleId: string, input: CreateArticleInput
         author: input.author,
         authorSlug: generateSlug(input.author),
         authorImageUrl: `https://picsum.photos/seed/${input.author.replace(/\s+/g, '-')}/40/40`,
-        focusKeywords: input.focusKeywords.split(',-').map((k) => k.trim()),
+        focusKeywords: input.focusKeywords.split(',').map((k) => k.trim()),
         metaDescription: input.metaDescription,
     };
     
-    articles[articleIndex] = updatedArticle;
+    await update(articleRef, updatedArticleData);
 
     revalidatePath('/');
     revalidatePath(`/articles/${finalSlug}`);
@@ -131,12 +145,8 @@ export async function updateArticle(articleId: string, input: CreateArticleInput
 
 export async function deleteArticle(articleId: string) {
   try {
-    const articleIndex = articles.findIndex(a => a._id.toString() === articleId);
-    if (articleIndex === -1) {
-        return { error: 'Article not found.' };
-    }
-    
-    articles.splice(articleIndex, 1);
+    const articleRef = ref(rtdb, 'articles/' + articleId);
+    await remove(articleRef);
 
     revalidatePath('/');
     revalidatePath('/articles');
@@ -170,15 +180,25 @@ export async function checkAndCreateUser(user: { uid: string; displayName: strin
 
 export async function getUsers(): Promise<User[]> {
     const usersRef = ref(rtdb, 'users');
-    const snapshot = await get(usersRef);
-    if (snapshot.exists()) {
-        const usersData = snapshot.val();
-        const userList = Object.keys(usersData).map(key => ({
-            id: key,
-            ...usersData[key]
-        }));
-        return userList as User[];
-    } else {
-        return [];
+    try {
+        const snapshot = await get(usersRef);
+        if (snapshot.exists()) {
+            const usersData = snapshot.val();
+            const userList = Object.keys(usersData).map(key => ({
+                id: key,
+                ...usersData[key]
+            }));
+            return userList as User[];
+        } else {
+            return [];
+        }
+    } catch (error) {
+        console.error("Error fetching users:", error);
+        // This is where the permission error from RTDB would be caught.
+        // We can re-throw a more specific error message.
+        if ((error as any).code === 'PERMISSION_DENIED') {
+             throw new Error("Permission denied. Please check your Realtime Database security rules in the Firebase Console.");
+        }
+        throw new Error("Could not fetch user data.");
     }
 }

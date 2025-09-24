@@ -1,5 +1,7 @@
 import type { Article } from './types';
 
+// This data is now used for seeding the database.
+// The application will fetch articles directly from Firebase Realtime Database.
 export const articles: Omit<Article, '_id' | 'id'>[] = [
     {
     slug: 'the-future-of-ai-in-tech',

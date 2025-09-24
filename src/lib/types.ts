@@ -1,7 +1,6 @@
-import type { ObjectId } from 'mongodb';
 
 export type Article = {
-  _id: ObjectId | string; // Allow string for in-memory data
+  _id: string; 
   id: string;
   slug: string;
   title: string;

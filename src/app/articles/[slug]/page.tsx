@@ -32,8 +32,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
     notFound();
   }
   
-  // Convert _id to string for client-side component
-  const articleId = article._id.toString();
+  const articleId = article._id;
 
 
   return (
