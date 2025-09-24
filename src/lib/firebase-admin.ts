@@ -4,9 +4,15 @@ import { config } from 'dotenv';
 
 config({ path: '.env.local' });
 
-const serviceAccount = process.env.FIREBASE_SERVICE_ACCOUNT_KEY
-  ? JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_KEY)
-  : undefined;
+let serviceAccount: object | undefined;
+try {
+  if (process.env.FIREBASE_SERVICE_ACCOUNT_KEY) {
+    serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_KEY);
+  }
+} catch (e) {
+  console.error('Failed to parse FIREBASE_SERVICE_ACCOUNT_KEY. Make sure it is a valid JSON string in your .env.local file:', e);
+}
+
 
 const adminApp = !getApps().length
   ? initializeApp({
