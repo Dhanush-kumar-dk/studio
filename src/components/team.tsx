@@ -16,11 +16,6 @@ const teamMembers = [
     role: 'Finance and Sponsorship Lead',
     bio: 'Joshua is a First-Class Economics & Finance graduate from Lancaster University, with hands-on experience in financial analysis and treasury operations. At Debt & Dominion, Joshua drives our sponsorship strategy and financial planning—creating robust funding proposals, structuring budgets, and ensuring our growth is underpinned by sound quantitative insight and strategic foresight.',
   },
-  {
-    name: 'Miss Emma Coffey',
-    role: 'Visual and Graphics Lead',
-    bio: "Emma is a BA (Hons) Graphic Design graduate from the University of Salford (Class of 2025), where she achieved a 2:1 and honed her expertise in branding, illustration, and digital/print design. Proficient in Adobe Illustrator, Photoshop, InDesign, and After Effects, Emma combines strategic thinking with creative flair. At Debt & Dominion, Emma drives our brand development and issue design—ensuring each edition is both visually compelling and strategically on-point.",
-  },
 ];
 
 export default function Team() {
