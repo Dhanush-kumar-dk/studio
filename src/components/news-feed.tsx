@@ -22,24 +22,6 @@ import Autoplay from "embla-carousel-autoplay"
 
 const categories = ['All', 'Politics', 'Sports', 'Technology', 'World'];
 
-// Function to shuffle an array
-const shuffle = (array: any[]) => {
-    let currentIndex = array.length, randomIndex;
-  
-    // While there remain elements to shuffle.
-    while (currentIndex > 0) {
-      // Pick a remaining element.
-      randomIndex = Math.floor(Math.random() * currentIndex);
-      currentIndex--;
-  
-      // And swap it with the current element.
-      [array[currentIndex], array[randomIndex]] = [
-        array[randomIndex], array[currentIndex]];
-    }
-  
-    return array;
-}
-
 export default function NewsFeed({ articles }: { articles: (Article & {_id: any})[] }) {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -52,13 +34,9 @@ export default function NewsFeed({ articles }: { articles: (Article & {_id: any}
   const [carouselArticles, setCarouselArticles] = useState<(Article & {_id: any})[]>([]);
 
   useEffect(() => {
-    const uniqueCategories = [...new Set(articles.map(a => a.category))];
-    const shuffledArticles = shuffle([...articles]);
-    const carouselItems = uniqueCategories.map(category => {
-        return shuffledArticles.find(article => article.category === category);
-    }).filter((a): a is (Article & {_id: any}) => !!a);
-
-    setCarouselArticles(shuffle(carouselItems).slice(0, 5));
+    // Sort articles by published date in descending order and take the top 5 for the carousel.
+    const sortedArticles = [...articles].sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime());
+    setCarouselArticles(sortedArticles.slice(0, 5));
   }, [articles]);
 
   const handleTabChange = (value: string) => {
@@ -181,4 +159,3 @@ export default function NewsFeed({ articles }: { articles: (Article & {_id: any}
     </div>
   );
 }
-
