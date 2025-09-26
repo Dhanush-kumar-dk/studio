@@ -50,15 +50,12 @@ export default function NewsFeed({ articles }: { articles: (Article & {_id: any}
   const filteredArticles = useMemo(() => {
     return articles
       .filter((article) =>
-        !carouselArticles.some(ca => ca._id.toString() === article._id.toString())
-      )
-      .filter((article) =>
         selectedCategory === 'All' ? true : article.category === selectedCategory
       )
       .filter((article) =>
         article.title.toLowerCase().includes(searchQuery.toLowerCase())
       );
-  }, [articles, selectedCategory, searchQuery, carouselArticles]);
+  }, [articles, selectedCategory, searchQuery]);
 
   const gridArticles = filteredArticles;
 
