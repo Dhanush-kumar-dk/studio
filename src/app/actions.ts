@@ -8,6 +8,7 @@ import { revalidatePath } from 'next/cache';
 import { rtdb } from '@/lib/firebase-admin';
 import { ref, set, get, child, remove, update } from 'firebase/database';
 import { v4 as uuidv4 } from 'uuid';
+import { articles as sampleArticles } from '@/lib/data';
 
 
 const generateSlug = (title: string) => {
@@ -31,7 +32,9 @@ export async function getArticles(): Promise<(Article & { _id: string })[]> {
         }));
         return articlesList.sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime());
     }
-    return [];
+    
+    // Fallback to sample data if database is empty
+    return sampleArticles.map(article => ({...article, _id: uuidv4(), id: uuidv4() })).sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime());
 }
 
 export async function getArticleBySlug(slug: string): Promise<(Article & { _id: string }) | null> {
