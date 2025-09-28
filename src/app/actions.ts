@@ -101,7 +101,7 @@ export async function createArticle(input: CreateArticleInput) {
       content: input.content,
       author: input.author,
       authorSlug: generateSlug(input.author),
-      authorImageUrl: `https://picsum.photos/seed/${input.author.replace(/\s+/g, '-')}/40/40`,
+      authorImageUrl: `https://picsum.photos/seed/${input.author.toLowerCase().replace(/\s+/g, '-')}/40/40`,
       publishedAt: new Date().toISOString(),
       focusKeywords: input.focusKeywords.split(',').map((k) => k.trim()),
       metaDescription: input.metaDescription,
@@ -140,7 +140,7 @@ export async function updateArticle(articleId: string, input: CreateArticleInput
         content: input.content,
         author: input.author,
         authorSlug: generateSlug(input.author),
-        authorImageUrl: `https://picsum.photos/seed/${input.author.replace(/\s+/g, '-')}/40/40`,
+        authorImageUrl: `https://picsum.photos/seed/${input.author.toLowerCase().replace(/\s+/g, '-')}/40/40`,
         focusKeywords: input.focusKeywords.split(',').map((k) => k.trim()),
         metaDescription: input.metaDescription,
     };
