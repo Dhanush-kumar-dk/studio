@@ -9,6 +9,7 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { FormEvent, useState } from 'react';
 import Logo from './logo';
 import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
+import { useAuth } from '@/hooks/use-auth';
 
 export default function Header() {
   const router = useRouter();
@@ -16,6 +17,7 @@ export default function Header() {
   const searchParams = useSearchParams();
   const defaultSearch = searchParams.get('search') ?? '';
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const { user } = useAuth();
 
   const handleSearch = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -72,12 +74,14 @@ export default function Header() {
             </PopoverContent>
           </Popover>
           
-          <Button asChild variant="ghost" size="sm">
-            <Link href="/create-post">
-              <PlusCircle className="mr-2 h-4 w-4" />
-              <span className="hidden sm:inline-block">Create Post</span>
-            </Link>
-          </Button>
+          {user && (
+            <Button asChild variant="ghost" size="sm">
+              <Link href="/create-post">
+                <PlusCircle className="mr-2 h-4 w-4" />
+                <span className="hidden sm:inline-block">Create Post</span>
+              </Link>
+            </Button>
+          )}
           <UserNav />
         </div>
       </div>
