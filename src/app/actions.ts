@@ -212,8 +212,6 @@ export async function getUsers(): Promise<User[]> {
         }
     } catch (error) {
         console.error("Error fetching users:", error);
-        // This is where the permission error from RTDB would be caught.
-        // We can re-throw a more specific error message.
         if ((error as any).code === 'PERMISSION_DENIED') {
              throw new Error("Permission denied. Please check your Realtime Database security rules in the Firebase Console.");
         }
