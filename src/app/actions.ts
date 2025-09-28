@@ -1,4 +1,5 @@
 
+
 'use server';
 
 import { summarizeArticle as summarizeArticleFlow } from '@/ai/flows/article-summarization';
@@ -178,9 +179,10 @@ export async function checkAndCreateUser(user: { uid: string; displayName: strin
 
   if (!snapshot.exists()) {
     try {
+      const name = user.displayName || (user.email ? user.email.split('@')[0] : 'Anonymous');
       await set(ref(rtdb, 'users/' + user.uid), {
         id: user.uid,
-        name: user.displayName || user.email?.split('@')[0] || 'Anonymous',
+        name: name,
         email: user.email,
         role: 'Subscriber',
         avatarUrl: user.photoURL || `https://picsum.photos/seed/${user.uid}/40/40`,
