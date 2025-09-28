@@ -1,4 +1,5 @@
 
+
 export type Article = {
   _id: string; 
   id: string;
@@ -20,7 +21,7 @@ export type Article = {
 export type User = {
   id: string;
   name: string;
-  email: string;
+  email: string | null;
   role: 'Admin' | 'Subscriber';
   avatarUrl: string;
 }
