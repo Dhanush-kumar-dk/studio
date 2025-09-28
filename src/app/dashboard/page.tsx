@@ -59,17 +59,12 @@ export default function DashboardPage() {
       )
   }
 
-  const handleUsersChange = (updatedUsers: User[]) => {
-    // This function will be called by UserTable when roles are changed
-    setUsers(updatedUsers);
-  }
-
   return (
     <div className="container mx-auto px-4 py-8 sm:px-6 lg:px-8">
         <Card>
             <CardHeader>
                 <CardTitle>Users</CardTitle>
-                <CardDescription>Manage your application's users here.</CardDescription>
+                <CardDescription>A list of all users in your application.</CardDescription>
             </CardHeader>
             <CardContent>
               {error ? (
@@ -79,7 +74,7 @@ export default function DashboardPage() {
                 </div>
               ) : !user ? (
                  <div className="text-center text-muted-foreground py-8">
-                  <p>Please log in to manage users.</p>
+                  <p>Please log in to view users.</p>
                 </div>
               ) : (
                 <>
@@ -94,7 +89,6 @@ export default function DashboardPage() {
                   <UserTable 
                     users={users} 
                     searchQuery={searchQuery} 
-                    onUsersChange={handleUsersChange}
                   />
                 </>
               )}
