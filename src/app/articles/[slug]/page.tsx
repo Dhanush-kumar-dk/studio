@@ -1,3 +1,4 @@
+
 import { getArticleBySlug, getArticles } from '@/app/actions';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
@@ -82,7 +83,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
               <SummarizeButton articleContent={article.content} />
               <DeleteArticleButton articleId={articleId} />
             </div>
-            <div className="prose-p:leading-relaxed" dangerouslySetInnerHTML={{ __html: article.content }} />
+            <div className="prose-p:leading-relaxed whitespace-pre-wrap" dangerouslySetInnerHTML={{ __html: article.content }} />
           </div>
 
         </article>
