@@ -36,7 +36,7 @@ export default function Footer() {
               </li>
               <li className="flex items-center gap-2">
                 <Linkedin className="h-5 w-5 text-muted-foreground" />
-                <a href="#" className="text-muted-foreground hover:text-primary">
+                <a href="https://www.linkedin.com/company/debt-dominion/" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary">
                   LinkedIn
                 </a>
               </li>
