@@ -8,7 +8,7 @@
  */
 
 import { ai } from '@/ai/genkit';
-import { z } from 'genkit';
+import { z } from 'zod';
 import { google } from 'googleapis';
 
 const SPREADSHEET_ID = '1Q34RzCmAOc8KqiqFys4HU3FutSP0r0fZ2nYEBHLJNGM';
