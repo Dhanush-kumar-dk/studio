@@ -27,7 +27,7 @@ import {
 import { createArticle, updateArticle } from '@/app/actions';
 import { useState, useEffect, useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Loader2, X, Link as LinkIcon } from 'lucide-react';
+import { Loader2, X, Link as LinkIcon, Heading2, Heading3, Pilcrow } from 'lucide-react';
 import type { Article } from '@/lib/types';
 import LinkEditor from './link-editor';
 
@@ -162,7 +162,7 @@ export default function CreateArticleForm({ article }: CreateArticleFormProps) {
 
         // Clamp position
         top = Math.max(textareaRect.top, top);
-        left = Math.min(Math.max(textareaRect.left, left), textareaRect.right - 120); // 120 is button width
+        left = Math.min(Math.max(textareaRect.left, left), textareaRect.right - 250); // Adjusted for more buttons
 
         setLinkEditorPosition({ top, left });
         
@@ -188,6 +188,26 @@ export default function CreateArticleForm({ article }: CreateArticleFormProps) {
     setShowLinkEditor(false);
     setSelection(null);
   };
+
+  const applyHeading = (level: number) => {
+    const textarea = contentRef.current;
+    if (!textarea || !selection) return;
+  
+    const [start, end] = selection;
+    const currentContent = form.getValues('content');
+    let selectedText = currentContent.substring(start, end);
+  
+    // Simple logic to remove existing heading tags if any
+    selectedText = selectedText.replace(/<\/?h[2-6]>/g, '').replace(/<\/?p>/g, '');
+  
+    const newText = level > 0 ? `<h${level}>${selectedText}</h${level}>` : `<p>${selectedText}</p>`;
+    
+    const newContent = `${currentContent.substring(0, start)}${newText}${currentContent.substring(end)}`;
+    
+    form.setValue('content', newContent, { shouldValidate: true, shouldDirty: true });
+    setShowLinkEditor(false);
+    setSelection(null);
+  }
 
   const submitButtonText = isEditMode ? 'Update Article' : 'Publish Article';
   const submittingButtonText = isEditMode ? 'Updating...' : 'Publishing...';
@@ -261,16 +281,50 @@ export default function CreateArticleForm({ article }: CreateArticleFormProps) {
                 )}
                 />
                  {selection && !showLinkEditor && (
-                     <Button
-                        type="button"
-                        variant="secondary"
-                        className="absolute h-8"
+                     <div
+                        className="absolute flex items-center gap-1 rounded-md bg-background p-1 border shadow-lg"
                         style={{ top: `${linkEditorPosition.top}px`, left: `${linkEditorPosition.left}px`, zIndex: 10 }}
-                        onClick={() => setShowLinkEditor(true)}
                      >
-                        <LinkIcon className="mr-2 h-4 w-4" />
-                        Add Link
-                     </Button>
+                        <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8"
+                            onClick={() => setShowLinkEditor(true)}
+                        >
+                            <LinkIcon className="h-4 w-4" />
+                        </Button>
+                        <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8"
+                            onClick={() => applyHeading(2)}
+                            title="Increase font size (H2)"
+                        >
+                            <Heading2 className="h-4 w-4" />
+                        </Button>
+                        <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8"
+                            onClick={() => applyHeading(3)}
+                             title="Decrease font size (H3)"
+                        >
+                            <Heading3 className="h-4 w-4" />
+                        </Button>
+                        <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8"
+                            onClick={() => applyHeading(0)}
+                             title="Normal text (Paragraph)"
+                        >
+                            <Pilcrow className="h-4 w-4" />
+                        </Button>
+                     </div>
                  )}
             </div>
             <FormField
