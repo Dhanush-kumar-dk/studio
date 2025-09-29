@@ -127,41 +127,52 @@ export default function CreateArticleForm({ article }: CreateArticleFormProps) {
 
     const start = textarea.selectionStart;
     const end = textarea.selectionEnd;
-
+    
     if (start !== end) {
         setSelection([start, end]);
-        
-        // This is a hacky way to get the position of the selected text.
-        // A proper rich text editor would provide a better API for this.
-        const dummyEl = document.createElement('span');
+
+        // Create a dummy div to find the position of the selected text
+        const dummy = document.createElement('div');
+        dummy.style.position = 'absolute';
+        dummy.style.visibility = 'hidden';
+        dummy.style.whiteSpace = 'pre-wrap';
+        dummy.style.font = window.getComputedStyle(textarea).font;
+        dummy.style.width = textarea.clientWidth + 'px';
+        dummy.style.padding = window.getComputedStyle(textarea).padding;
+        dummy.style.border = window.getComputedStyle(textarea).border;
+        dummy.style.letterSpacing = window.getComputedStyle(textarea).letterSpacing;
+        dummy.style.lineHeight = window.getComputedStyle(textarea).lineHeight;
+
         const textBefore = textarea.value.substring(0, start);
-        dummyEl.innerHTML = textBefore.replace(/\n/g, '<br>');
-        document.body.appendChild(dummyEl);
-        
-        const rect = textarea.getBoundingClientRect();
-        
-        const textLines = textBefore.split('\n');
-        const currentLine = textLines.length;
-        const positionInLine = textLines[textLines.length - 1].length;
-        
-        const lineHeight = parseInt(window.getComputedStyle(textarea).lineHeight);
-        const charWidth = 8; // Approximate character width
+        const selectedText = textarea.value.substring(start, end);
 
-        let top = rect.top + (currentLine * lineHeight) - textarea.scrollTop - (lineHeight * 1.5);
-        let left = rect.left + (positionInLine * charWidth) - textarea.scrollLeft;
+        dummy.textContent = textBefore;
 
-        // Clamp position within textarea bounds
-        top = Math.max(rect.top, top);
-        left = Math.min(Math.max(rect.left, left), rect.right - 50); // 50 is button width
+        const span = document.createElement('span');
+        span.textContent = selectedText;
+        dummy.appendChild(span);
+        
+        document.body.appendChild(dummy);
+        
+        const textareaRect = textarea.getBoundingClientRect();
+        const spanRect = span.getBoundingClientRect();
+        
+        let top = textareaRect.top - textarea.scrollTop + span.offsetTop - 30; // 30px to position above
+        let left = textareaRect.left - textarea.scrollLeft + span.offsetLeft;
+
+        // Clamp position
+        top = Math.max(textareaRect.top, top);
+        left = Math.min(Math.max(textareaRect.left, left), textareaRect.right - 120); // 120 is button width
 
         setLinkEditorPosition({ top, left });
-        document.body.removeChild(dummyEl);
+        
+        document.body.removeChild(dummy);
 
     } else {
         setSelection(null);
         setShowLinkEditor(false);
     }
-  };
+};
 
   const applyLink = (url: string, target: string) => {
     const textarea = contentRef.current;
