@@ -15,7 +15,7 @@ export default function NewsletterPage() {
             <p className="mt-4 text-lg text-muted-foreground">
               Get the latest news, articles, and updates delivered straight to your inbox. Stay ahead of the curve on finance and power.
             </p>
-            <div className="mt-8 w-full">
+            <div className="mt-8 w-full max-w-sm">
               <NewsletterForm />
             </div>
         </section>

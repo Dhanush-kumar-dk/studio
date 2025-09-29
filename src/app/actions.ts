@@ -3,7 +3,6 @@
 'use server';
 
 import { summarizeArticle as summarizeArticleFlow } from '@/ai/flows/article-summarization';
-import { subscribeToNewsletter as subscribeToNewsletterFlow } from '@/ai/flows/subscribe-to-newsletter';
 import type { Article, User } from '@/lib/types';
 import { revalidatePath } from 'next/cache';
 import { rtdb } from '@/lib/firebase-admin';
@@ -62,16 +61,6 @@ export async function summarizeArticle(articleContent: string) {
     console.error(error);
     return { error: 'Failed to summarize article.' };
   }
-}
-
-export async function subscribeToNewsletter(email: string) {
-    try {
-        const result = await subscribeToNewsletterFlow({ email });
-        return { success: result.status === 'subscribed' };
-    } catch (error) {
-        console.error('Failed to subscribe to newsletter:', error);
-        return { error: 'An unexpected error occurred while subscribing.' };
-    }
 }
 
 type CreateArticleInput = {

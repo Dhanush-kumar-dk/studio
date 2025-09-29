@@ -1,4 +1,3 @@
-"use client";
 
 import NewsletterForm from "./newsletter-form";
 
@@ -14,7 +13,7 @@ export default function Newsletter() {
               Get the latest news, articles, and updates delivered straight to your inbox. Stay ahead of the curve on finance and power.
             </p>
         </div>
-        <div className="mt-8 max-w-md mx-auto">
+        <div className="mt-8 w-full max-w-sm mx-auto">
             <NewsletterForm />
         </div>
       </div>
