@@ -72,7 +72,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
             />
           </div>
           
-          <div className="prose prose-lg dark:prose-invert max-w-none">
+          <div className="prose prose-lg dark:prose-invert max-w-none prose-a:text-primary hover:prose-a:underline">
             <div className="mb-8 flex justify-end gap-2">
               <Button asChild variant="outline" size="icon">
                   <Link href={`/edit-post/${article.slug}`}>
