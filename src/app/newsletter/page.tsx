@@ -1,6 +1,7 @@
 
 import Header from '@/components/header';
 import Footer from '@/components/footer';
+import NewsletterForm from '@/components/newsletter-form';
 
 export default function NewsletterPage() {
   return (
@@ -14,10 +15,8 @@ export default function NewsletterPage() {
             <p className="mt-4 text-lg text-muted-foreground">
               Get the latest news, articles, and updates delivered straight to your inbox. Stay ahead of the curve on finance and power.
             </p>
-            <div className="mt-8 w-full max-w-2xl">
-                <div className="aspect-w-16 aspect-h-9">
-                  <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSd91TDrZ285pC6TTMQEc8gV8-qdxYO4ji9O2ATbtQseOyJ7pQ/viewform?embedded=true" width="100%" height="450" frameBorder="0" marginHeight={0} marginWidth={0}>Loading…</iframe>
-                </div>
+            <div className="mt-8 w-full max-w-md">
+                <NewsletterForm />
             </div>
         </section>
       </main>

@@ -3,6 +3,7 @@
 
 import { createArticle as createArticleAction, updateArticle as updateArticleAction, deleteArticle as deleteArticleAction } from '@/lib/articles';
 import { summarizeArticle } from '@/ai/flows/article-summarization';
+import { subscribeToNewsletter as subscribeToNewsletterFlow } from '@/ai/flows/subscribe-to-newsletter';
 import type { Article, User } from '@/lib/types';
 import { revalidatePath } from 'next/cache';
 import { rtdb } from '@/lib/firebase-admin';
@@ -110,5 +111,15 @@ const summarizeArticleAction = async (articleContent: string) => {
         return { error: 'Failed to summarize article.' };
     }
 };
+
+export const subscribeToNewsletter = async (email: string) => {
+    try {
+        const result = await subscribeToNewsletterFlow({ email });
+        return result;
+    } catch (error) {
+        console.error('Error in subscribeToNewsletter action:', error);
+        return { success: false, message: 'An unexpected error occurred.' };
+    }
+}
 
 export { summarizeArticleAction as summarizeArticle };
