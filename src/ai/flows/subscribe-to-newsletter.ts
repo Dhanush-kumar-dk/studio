@@ -1,3 +1,4 @@
+
 'use server';
 /**
  * @fileOverview A flow to handle newsletter subscriptions and add emails to a Google Sheet.
@@ -25,11 +26,14 @@ const SubscribeToNewsletterOutputSchema = z.object({
 export type SubscribeToNewsletterOutput = z.infer<typeof SubscribeToNewsletterOutputSchema>;
 
 async function getGoogleSheetsClient() {
-    const serviceAccountJson = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_KEY!);
+    if (!process.env.FIREBASE_SERVICE_ACCOUNT_KEY) {
+        throw new Error('FIREBASE_SERVICE_ACCOUNT_KEY environment variable not set.');
+    }
+    const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_KEY);
     const jwtClient = new google.auth.JWT(
-        serviceAccountJson.client_email,
+        serviceAccount.client_email,
         undefined,
-        serviceAccountJson.private_key.replace(/\\n/g, '\n'),
+        serviceAccount.private_key,
         ['https://www.googleapis.com/auth/spreadsheets']
     );
 

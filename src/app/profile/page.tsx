@@ -1,4 +1,3 @@
-
 'use client';
 
 import { User, ArrowLeft, Loader2 } from 'lucide-react';
@@ -17,12 +16,10 @@ export default function ProfilePage() {
     if (!loading && !user) {
       router.push('/login');
     }
-    
-    // Ensure user exists in the database when they visit their profile
-    if (user) {
-        checkAndCreateUser(user);
+    if (!loading && user) {
+      checkAndCreateUser(user);
     }
-  }, [user, loading, router]);
+  }, [loading]);
 
   if (loading || !user) {
     return (
@@ -33,7 +30,10 @@ export default function ProfilePage() {
   }
 
   const profileData = {
-    username: user.displayName?.toLowerCase().replace(' ', '.') || user.email?.split('@')[0] || 'user',
+    username:
+      user.displayName?.toLowerCase().replace(' ', '.') ||
+      user.email?.split('@')[0] ||
+      'user',
     firstName: user.displayName?.split(' ')[0] || '',
     lastName: user.displayName?.split(' ').slice(1).join(' ') || '',
     email: user.email || '',
@@ -43,22 +43,21 @@ export default function ProfilePage() {
     bio: 'This is a default bio. Please update it.',
   };
 
-
   return (
     <div className="container mx-auto px-4 py-8 sm:px-6 lg:px-8">
       <div className="mb-8 flex items-center justify-between">
         <div className="flex items-center gap-4">
-            <Button variant="outline" size="icon" onClick={() => router.back()}>
-                <ArrowLeft className="h-4 w-4" />
-                <span className="sr-only">Back</span>
-            </Button>
+          <Button variant="outline" size="icon" onClick={() => router.back()}>
+            <ArrowLeft className="h-4 w-4" />
+            <span className="sr-only">Back</span>
+          </Button>
           <div className="rounded-md bg-muted p-2">
             <User className="h-6 w-6 text-muted-foreground" />
           </div>
           <h1 className="text-2xl font-bold">User Profile</h1>
         </div>
       </div>
-      <ProfileForm initialData={profileData} isCurrentUser={true}/>
+      <ProfileForm initialData={profileData} isCurrentUser={true} />
     </div>
   );
 }

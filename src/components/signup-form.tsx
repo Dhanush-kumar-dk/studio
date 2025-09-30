@@ -7,14 +7,7 @@ import { useRouter } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
 import { useState } from 'react';
@@ -36,44 +29,21 @@ export default function SignupForm() {
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      name: '',
-      email: '',
-      password: '',
-    },
+    defaultValues: { name: '', email: '', password: '' },
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsSubmitting(true);
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, values.email, values.password);
-      await updateProfile(userCredential.user, {
-        displayName: values.name,
-      });
-
-      // We need to reload the user to get the updated displayName
-      await userCredential.user.reload();
-      const updatedUser = auth.currentUser;
-
-      if (updatedUser) {
-        await checkAndCreateUser(updatedUser);
-      }
-      
-      toast({
-        title: 'Account created!',
-        description: 'You have successfully signed up.',
-      });
+      await updateProfile(userCredential.user, { displayName: values.name });
+      await checkAndCreateUser(userCredential.user);
+      toast({ title: 'Account created!', description: 'You have successfully signed up.' });
       router.push('/login');
-      router.refresh();
     } catch (error: any) {
-      console.error('Signup failed:', error);
-      let errorMessage = 'Could not sign up. Please try again.';
-      if (error.code === 'auth/email-already-in-use') {
-        errorMessage = 'This email is already in use. Please log in instead.';
-      }
       toast({
         title: 'Signup Failed',
-        description: errorMessage,
+        description: error.code === 'auth/email-already-in-use' ? 'This email is already in use.' : 'Could not sign up. Please try again.',
         variant: 'destructive',
       });
     } finally {
@@ -90,65 +60,35 @@ export default function SignupForm() {
       <CardContent>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-             <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Name</FormLabel>
-                  <FormControl>
-                    <Input placeholder="John Doe" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Email</FormLabel>
-                  <FormControl>
-                    <Input placeholder="m@example.com" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="password"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Password</FormLabel>
-                  <FormControl>
-                    <Input type="password" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <FormField control={form.control} name="name" render={({ field }) => (
+              <FormItem>
+                <FormLabel>Name</FormLabel>
+                <FormControl><Input placeholder="John Doe" {...field} /></FormControl>
+                <FormMessage />
+              </FormItem>
+            )} />
+            <FormField control={form.control} name="email" render={({ field }) => (
+              <FormItem>
+                <FormLabel>Email</FormLabel>
+                <FormControl><Input placeholder="m@example.com" {...field} /></FormControl>
+                <FormMessage />
+              </FormItem>
+            )} />
+            <FormField control={form.control} name="password" render={({ field }) => (
+              <FormItem>
+                <FormLabel>Password</FormLabel>
+                <FormControl><Input type="password" {...field} /></FormControl>
+                <FormMessage />
+              </FormItem>
+            )} />
             <Button type="submit" disabled={isSubmitting} className="w-full">
-              {isSubmitting ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Signing up...
-                </>
-              ) : (
-                'Sign Up'
-              )}
+              {isSubmitting ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Signing up...</> : 'Sign Up'}
             </Button>
           </form>
         </Form>
       </CardContent>
       <CardFooter className="justify-center text-sm">
-        <p>
-          Already have an account?{' '}
-          <Link href="/login" className="font-semibold text-primary hover:underline">
-            Login
-          </Link>
-        </p>
+        <p>Already have an account? <Link href="/login" className="font-semibold text-primary hover:underline">Login</Link></p>
       </CardFooter>
     </Card>
   );

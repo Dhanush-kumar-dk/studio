@@ -7,14 +7,7 @@ import { useRouter } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
 import { useState } from 'react';
@@ -37,10 +30,7 @@ export default function LoginForm() {
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      email: '',
-      password: '',
-    },
+    defaultValues: { email: '', password: '' },
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
@@ -48,21 +38,12 @@ export default function LoginForm() {
     try {
       const userCredential = await signInWithEmailAndPassword(auth, values.email, values.password);
       await checkAndCreateUser(userCredential.user);
-      toast({
-        title: 'Logged in!',
-        description: 'You have successfully logged in.',
-      });
+      toast({ title: 'Logged in!', description: 'You have successfully logged in.' });
       router.push('/');
-      router.refresh();
     } catch (error) {
-      console.error('Login failed:', error);
-      toast({
-        title: 'Login Failed',
-        description: 'Invalid email or password. Please try again.',
-        variant: 'destructive',
-      });
+      toast({ title: 'Login Failed', description: 'Invalid email or password.', variant: 'destructive' });
     } finally {
-        setIsSubmitting(false);
+      setIsSubmitting(false);
     }
   }
 
@@ -72,21 +53,12 @@ export default function LoginForm() {
       const provider = new GoogleAuthProvider();
       const result = await signInWithPopup(auth, provider);
       await checkAndCreateUser(result.user);
-      toast({
-        title: 'Logged in!',
-        description: 'You have successfully logged in with Google.',
-      });
+      toast({ title: 'Logged in!', description: 'You have successfully logged in with Google.' });
       router.push('/');
-      router.refresh();
     } catch (error) {
-      console.error('Google login failed:', error);
-      toast({
-        title: 'Login Failed',
-        description: 'Could not log in with Google. Please try again.',
-        variant: 'destructive',
-      });
+      toast({ title: 'Login Failed', description: 'Could not log in with Google.', variant: 'destructive' });
     } finally {
-        setIsGoogleSubmitting(false);
+      setIsGoogleSubmitting(false);
     }
   }
 
@@ -99,70 +71,37 @@ export default function LoginForm() {
       <CardContent className="grid gap-4">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Email</FormLabel>
-                  <FormControl>
-                    <Input placeholder="m@example.com" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="password"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Password</FormLabel>
-                  <FormControl>
-                    <Input type="password" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <FormField control={form.control} name="email" render={({ field }) => (
+              <FormItem>
+                <FormLabel>Email</FormLabel>
+                <FormControl><Input placeholder="m@example.com" {...field} /></FormControl>
+                <FormMessage />
+              </FormItem>
+            )} />
+            <FormField control={form.control} name="password" render={({ field }) => (
+              <FormItem>
+                <FormLabel>Password</FormLabel>
+                <FormControl><Input type="password" {...field} /></FormControl>
+                <FormMessage />
+              </FormItem>
+            )} />
             <Button type="submit" disabled={isSubmitting || isGoogleSubmitting} className="w-full">
-              {isSubmitting ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Logging in...
-                </>
-              ) : (
-                'Login'
-              )}
+              {isSubmitting ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Logging in...</> : 'Login'}
             </Button>
           </form>
         </Form>
         <div className="relative">
-          <div className="absolute inset-0 flex items-center">
-            <span className="w-full border-t" />
-          </div>
+          <div className="absolute inset-0 flex items-center"><span className="w-full border-t" /></div>
           <div className="relative flex justify-center text-xs uppercase">
-            <span className="bg-background px-2 text-muted-foreground">
-              Or continue with
-            </span>
+            <span className="bg-background px-2 text-muted-foreground">Or continue with</span>
           </div>
         </div>
-        <Button variant="outline" type="button" disabled={isSubmitting || isGoogleSubmitting} onClick={handleGoogleSignIn}>
-          {isGoogleSubmitting ? (
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-          ) : (
-            <GoogleIcon className="mr-2 h-4 w-4" />
-          )}{' '}
-          Google
+        <Button variant="outline" onClick={handleGoogleSignIn} disabled={isSubmitting || isGoogleSubmitting}>
+          {isGoogleSubmitting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <GoogleIcon className="mr-2 h-4 w-4" />} Google
         </Button>
       </CardContent>
-       <CardFooter className="justify-center text-sm">
-        <p>
-          Don't have an account?{' '}
-          <Link href="/signup" className="font-semibold text-primary hover:underline">
-            Sign up
-          </Link>
-        </p>
+      <CardFooter className="justify-center text-sm">
+        <p>Don't have an account? <Link href="/signup" className="font-semibold text-primary hover:underline">Sign up</Link></p>
       </CardFooter>
     </Card>
   );
