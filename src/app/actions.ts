@@ -1,7 +1,8 @@
 
 'use server';
 
-import { summarizeArticle as summarizeArticleFlow } from '@/ai/flows/article-summarization';
+import { createArticle as createArticleAction, updateArticle as updateArticleAction, deleteArticle as deleteArticleAction } from '@/lib/articles';
+import { summarizeArticle } from '@/ai/flows/article-summarization';
 import type { Article, User } from '@/lib/types';
 import { revalidatePath } from 'next/cache';
 import { rtdb } from '@/lib/firebase-admin';
@@ -18,6 +19,7 @@ const generateSlug = (title: string) => {
     .replace(/^-+/, '') // Trim hyphen from start
     .replace(/-+$/, ''); // Trim hyphen from end
 };
+
 
 export async function getArticles(): Promise<(Article & { _id: string })[]> {
   const articlesRef = rtdb.ref('articles');
@@ -95,3 +97,18 @@ export async function checkAndCreateUser(user: {
     return { error: 'Failed to create user in database.' };
   }
 }
+
+export const createArticle = createArticleAction;
+export const updateArticle = updateArticleAction;
+export const deleteArticle = deleteArticleAction;
+const summarizeArticleAction = async (articleContent: string) => {
+    try {
+        const { summary } = await summarizeArticle({ articleContent });
+        return { summary };
+    } catch (error) {
+        console.error('Error summarizing article:', error);
+        return { error: 'Failed to summarize article.' };
+    }
+};
+
+export { summarizeArticleAction as summarizeArticle };
