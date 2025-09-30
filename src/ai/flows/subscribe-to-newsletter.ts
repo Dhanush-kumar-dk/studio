@@ -30,6 +30,12 @@ async function getGoogleSheetsClient() {
         throw new Error('FIREBASE_SERVICE_ACCOUNT_KEY environment variable not set.');
     }
     const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_KEY);
+
+    // Ensure private_key format is correct
+    if (serviceAccount.private_key) {
+        serviceAccount.private_key = serviceAccount.private_key.replace(/\\n/g, '\n');
+    }
+
     const jwtClient = new google.auth.JWT(
         serviceAccount.client_email,
         undefined,
