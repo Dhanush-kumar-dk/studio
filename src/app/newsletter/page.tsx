@@ -16,7 +16,7 @@ export default function NewsletterPage() {
               Get the latest news, articles, and updates delivered straight to your inbox. Stay ahead of the curve on finance and power.
             </p>
             <div className="mt-8 w-full max-w-sm">
-              <NewsletterForm />
+                <NewsletterForm />
             </div>
         </section>
       </main>

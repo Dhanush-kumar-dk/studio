@@ -1,5 +1,5 @@
 
-import NewsletterForm from "./newsletter-form";
+import NewsletterForm from './newsletter-form';
 
 export default function Newsletter() {
   return (
