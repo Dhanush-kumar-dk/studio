@@ -1,3 +1,4 @@
+
 'use server';
 
 import { summarizeArticle as summarizeArticleFlow } from '@/ai/flows/article-summarization';
@@ -42,6 +43,28 @@ export async function getArticles(): Promise<(Article & { _id: string })[]> {
 export async function getArticleBySlug(slug: string) {
   const articles = await getArticles();
   return articles.find(article => article.slug === slug) || null;
+}
+
+export async function getUsers(): Promise<User[]> {
+  const usersRef = rtdb.ref('users');
+  const snapshot = await usersRef.get();
+
+  if (snapshot.exists()) {
+    const usersData = snapshot.val();
+    return Object.keys(usersData).map(key => usersData[key]);
+  }
+  return [];
+}
+
+export async function getArticlesByAuthor(authorSlug: string): Promise<(Article & { _id: string })[]> {
+  const articles = await getArticles();
+  return articles.filter(article => article.authorSlug === authorSlug);
+}
+
+export async function getAuthorSlugs(): Promise<string[]> {
+    const articles = await getArticles();
+    const slugs = articles.map(article => article.authorSlug);
+    return [...new Set(slugs)];
 }
 
 export async function checkAndCreateUser(user: {
