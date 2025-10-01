@@ -59,15 +59,14 @@ const subscribeToNewsletterFlow = ai.defineFlow(
           serviceAccount.private_key = serviceAccount.private_key.replace(/\\n/g, '\n');
       }
 
-      const sheets = google.sheets({
-        version: 'v4',
-        auth: new google.auth.JWT(
-          serviceAccount.client_email,
-          undefined,
-          serviceAccount.private_key,
-          ['https://www.googleapis.com/auth/spreadsheets']
-        ),
-      });
+      const auth = new google.auth.JWT(
+        serviceAccount.client_email,
+        undefined,
+        serviceAccount.private_key,
+        ['https://www.googleapis.com/auth/spreadsheets']
+      );
+
+      const sheets = google.sheets({ version: 'v4', auth });
 
       await sheets.spreadsheets.values.append({
         spreadsheetId: process.env.GOOGLE_SHEET_ID,
@@ -81,8 +80,8 @@ const subscribeToNewsletterFlow = ai.defineFlow(
     } catch (error: any) {
       console.error('Error subscribing to newsletter:', error);
       let userMessage = 'Subscription failed. Please try again.';
-      if (error.message.includes('UNAUTHENTICATED') || error.message.includes('permission') || error.message.includes('Invalid PEM')) {
-          userMessage = 'Could not access the newsletter service. Please check configuration.';
+      if (error.message.includes('PEM') || error.message.includes('credential')) {
+          userMessage = 'Could not access the newsletter service due to a configuration error.';
       }
       return { success: false, message: userMessage };
     }
