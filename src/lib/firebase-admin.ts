@@ -18,7 +18,8 @@ if (!getApps().length) {
         if (!process.env.FIREBASE_SERVICE_ACCOUNT_KEY) {
             throw new Error('FIREBASE_SERVICE_ACCOUNT_KEY environment variable not set for local development.');
         }
-        const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_KEY as string);
+        const serviceAccountString = process.env.FIREBASE_SERVICE_ACCOUNT_KEY;
+        const serviceAccount = JSON.parse(serviceAccountString);
         
         // This is the critical fix for local development
         if (serviceAccount.private_key) {
