@@ -28,7 +28,7 @@ export default function AboutPublication() {
                 What sets Debt & Dominion apart is our unique editorial structure: we are powered entirely by students, yet guided by the same rigour expected in policy circles and professional journalism. Our contributors include aspiring economists, diplomats, and scholars from leading global institutions—united by a shared desire to challenge surface-level narratives and produce writing that matters.
                 </p>
                 <p>
-                Published bimonthly, our magazine features deeply researched, visually bold, and thematically sharp content that aims to inform, provoke, and elevate. Whether it’s analysing central bank influence, dissecting global trade deals, or mapping the political consequences of inflation, we write to make sense of the systems that shape our world.
+                Published monthly, our magazine features deeply researched, visually bold, and thematically sharp content that aims to inform, provoke, and elevate. Whether it’s analysing central bank influence, dissecting global trade deals, or mapping the political consequences of inflation, we write to make sense of the systems that shape our world.
                 </p>
                 <p>
                 We don’t just follow the headlines. We explain what makes them possible.
