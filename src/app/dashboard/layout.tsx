@@ -13,7 +13,7 @@ import {
   } from '@/components/ui/sidebar';
 import { Home, User, Cog, Newspaper, Settings, LayoutDashboard, Info } from 'lucide-react';
 import Link from 'next/link';
-import Logo from '@/components/logo';
+import Logo from '@/Assest/signal-2025-09-01-172433.jpeg';
   
   export default function DashboardLayout({
     children,
@@ -25,7 +25,7 @@ import Logo from '@/components/logo';
         <Sidebar>
           <SidebarHeader>
             <Link href="/" className="flex items-center gap-2">
-                <Logo />
+                <img src={Logo.src} alt="Debt & Dominion" className="h-8 w-auto" />
                 <span className="text-xl font-bold">Debt & Dominion</span>
             </Link>
           </SidebarHeader>
