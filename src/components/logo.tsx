@@ -25,13 +25,15 @@ export default function Logo() {
         fillRule="evenodd"
         clipRule="evenodd"
         d="M43.25 32.75H48.125V28H20.875V72.25H48.125V42.5H43.25V32.75ZM25.75 67.25V32.75H35.5V67.25H25.75Z"
-        fill="#F7691A"
+        fill="currentColor"
+        className="text-primary"
       />
       <path
         fillRule="evenodd"
         clipRule="evenodd"
         d="M70 32.75H74.875V28H47.625V72.25H74.875V42.5H70V32.75ZM52.5 67.25V32.75H62.25V67.25H52.5Z"
-        fill="#F7691A"
+        fill="currentColor"
+        className="text-primary"
       />
     </svg>
   );
