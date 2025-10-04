@@ -8,7 +8,7 @@ import { Input } from './ui/input';
 import UserNav from './user-nav';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { FormEvent, useState } from 'react';
-import Logo from './logo';
+import Logo from '../Assest/signal-2025-09-01-172433.jpeg';
 import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
 import { useAuth } from '@/hooks/use-auth';
 
@@ -45,7 +45,7 @@ export default function Header() {
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center justify-between gap-4">
         <Link href="/" className="flex items-center gap-2 text-foreground hover:text-foreground">
-          <Logo />
+        <img src={Logo.src} alt="Debt & Dominion" className="h-8 w-auto" />
           <span className="hidden sm:inline-block text-xl font-bold tracking-tight">Debt & Dominion</span>
         </Link>
 
