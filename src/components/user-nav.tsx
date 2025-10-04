@@ -62,7 +62,7 @@ export default function UserNav() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+        <Button variant="ghost" className="relative h-8 w-8 rounded-full hover:ring-2 hover:ring-primary hover:ring-offset-2 hover:ring-offset-background transition-all">
           <Avatar className="h-8 w-8">
             <AvatarImage src={user?.photoURL ?? undefined} alt={displayName} />
             <AvatarFallback>{getInitials(user?.displayName)}</AvatarFallback>
