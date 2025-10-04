@@ -42,7 +42,7 @@ export default function Header() {
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 p-1">
       <div className="container flex h-16 items-center justify-between gap-4">
         <Link href="/" className="flex items-center gap-2 text-foreground hover:text-foreground">
         <img src={Logo.src} alt="Debt & Dominion" className="h-8 w-auto" />
