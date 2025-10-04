@@ -84,3 +84,9 @@
     @apply bg-background text-foreground;
   }
 }
+
+@layer components {
+    .dark .prose-a {
+        @apply text-orange-400;
+    }
+}
