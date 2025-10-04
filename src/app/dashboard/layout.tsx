@@ -25,7 +25,7 @@ import Logo from '@/Assest/signal-2025-09-01-172433.jpeg';
         <Sidebar>
           <SidebarHeader>
             <Link href="/" className="flex items-center gap-2">
-                <img src={Logo.src} alt="Debt & Dominion" className="h-8 w-auto" />
+                <img src={Logo.src} alt="Debt & Dominion" className="h-8 w-auto rounded-md pl-1" />
                 <span className="text-xl font-bold">Debt & Dominion</span>
             </Link>
           </SidebarHeader>
