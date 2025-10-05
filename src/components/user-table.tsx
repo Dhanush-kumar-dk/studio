@@ -112,7 +112,6 @@ export default function UserTable({ users: initialUsers, searchQuery }: UserTabl
                   </Badge>
                 </TableCell>
                 <TableCell>
-                    {currentUser?.uid !== user.id && (
                     <AlertDialog>
                         <AlertDialogTrigger asChild>
                             <Button
@@ -143,7 +142,6 @@ export default function UserTable({ users: initialUsers, searchQuery }: UserTabl
                         </AlertDialogFooter>
                         </AlertDialogContent>
                     </AlertDialog>
-                    )}
                 </TableCell>
               </TableRow>
             ))}
