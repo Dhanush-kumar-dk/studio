@@ -84,22 +84,29 @@ export async function checkAndCreateUser(user: {
   photoURL: string | null;
 }) {
   try {
-    const userRef = rtdb.ref(`users/${user.uid}`);
+    const usersRef = rtdb.ref('users');
+    const userRef = usersRef.child(user.uid);
     const snapshot = await userRef.get();
 
     if (!snapshot.exists()) {
+      // Check if any other users exist to determine if this is the first user.
+      const allUsersSnapshot = await usersRef.limitToFirst(1).get();
+      const isFirstUser = !allUsersSnapshot.exists();
+      
+      const role = isFirstUser ? 'Admin' : 'Subscriber';
+
       await userRef.set({
         id: user.uid,
         name: user.displayName || (user.email ? user.email.split('@')[0] : 'Anonymous'),
         email: user.email,
-        role: 'Subscriber',
+        role: role,
         avatarUrl: user.photoURL || `https://picsum.photos/seed/${user.uid}/40/40`,
         createdAt: new Date().toISOString(),
       });
-      return { created: true };
+      return { created: true, role };
     }
 
-    return { created: false };
+    return { created: false, role: snapshot.val().role };
   } catch (error) {
     console.error('Error creating user:', error);
     return { error: 'Failed to create user in database.' };
