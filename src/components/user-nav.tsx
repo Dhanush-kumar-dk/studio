@@ -22,12 +22,32 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { auth } from '@/lib/firebase';
 import { useToast } from '@/hooks/use-toast';
+import { useEffect, useState } from 'react';
+import type { User } from '@/lib/types';
+import { rtdb } from '@/lib/firebase';
+import { ref, get } from 'firebase/database';
 
 export default function UserNav() {
   const { setTheme } = useTheme();
   const { user } = useAuth();
   const router = useRouter();
   const { toast } = useToast();
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    async function fetchUserRole() {
+      if (user) {
+        const userRef = ref(rtdb, `users/${user.uid}`);
+        const snapshot = await get(userRef);
+        if (snapshot.exists()) {
+          setCurrentUser(snapshot.val());
+        }
+      } else {
+        setCurrentUser(null);
+      }
+    }
+    fetchUserRole();
+  }, [user]);
 
   const getInitials = (name?: string | null) => {
     if (!name) return 'U';
@@ -90,12 +110,14 @@ export default function UserNav() {
                       <span>Profile</span>
                   </Link>
               </DropdownMenuItem>
-              <DropdownMenuItem asChild>
+              {currentUser?.role === 'Admin' && (
+                <DropdownMenuItem asChild>
                   <Link href="/dashboard">
                     <LayoutDashboard className="mr-2 h-4 w-4" />
                     <span>Dashboard</span>
                   </Link>
                 </DropdownMenuItem>
+              )}
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
           </>

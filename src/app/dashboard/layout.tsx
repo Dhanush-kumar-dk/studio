@@ -1,5 +1,7 @@
 
 
+'use client';
+
 import {
     Sidebar,
     SidebarContent,
@@ -14,12 +16,57 @@ import {
 import { Home, User, Cog, Newspaper, Settings, LayoutDashboard, Info } from 'lucide-react';
 import Link from 'next/link';
 import Logo from '@/Assest/signal-2025-09-01-172433.jpeg';
+import { useAuth } from '@/hooks/use-auth';
+import { useEffect, useState } from 'react';
+import { ref, get } from 'firebase/database';
+import { rtdb } from '@/lib/firebase';
+import type { User as AppUser } from '@/lib/types';
+import { useRouter } from 'next/navigation';
   
   export default function DashboardLayout({
     children,
   }: Readonly<{
     children: React.ReactNode;
   }>) {
+    const { user, loading } = useAuth();
+    const [currentUser, setCurrentUser] = useState<AppUser | null>(null);
+    const router = useRouter();
+
+    useEffect(() => {
+        async function fetchUserRole() {
+          if (user) {
+            const userRef = ref(rtdb, `users/${user.uid}`);
+            const snapshot = await get(userRef);
+            if (snapshot.exists()) {
+              setCurrentUser(snapshot.val());
+            } else {
+              // User exists in auth but not in DB, maybe redirect or handle
+              setCurrentUser(null);
+              router.push('/');
+            }
+          } else if (!loading) {
+             // No user, not loading, so redirect
+             router.push('/login');
+          }
+        }
+        fetchUserRole();
+      }, [user, loading, router]);
+    
+      if (loading || !currentUser) {
+        return (
+            <div className="flex h-screen items-center justify-center">
+              <div>Loading...</div>
+            </div>
+          );
+      }
+    
+      if (currentUser.role !== 'Admin') {
+        // Or show a 'not authorized' component
+        router.push('/');
+        return null;
+      }
+
+
     return (
       <SidebarProvider>
         <Sidebar>
@@ -76,4 +123,3 @@ import Logo from '@/Assest/signal-2025-09-01-172433.jpeg';
       </SidebarProvider>
     );
   }
-  

@@ -6,10 +6,13 @@ import { Button } from './ui/button';
 import { Input } from './ui/input';
 import UserNav from './user-nav';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { FormEvent, useState } from 'react';
+import { FormEvent, useState, useEffect } from 'react';
 import Logo from '../Assest/signal-2025-09-01-172433.jpeg';
 import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
 import { useAuth } from '@/hooks/use-auth';
+import type { User } from '@/lib/types';
+import { rtdb } from '@/lib/firebase';
+import { ref, get } from 'firebase/database';
 
 export default function Header() {
   const router = useRouter();
@@ -18,6 +21,23 @@ export default function Header() {
   const defaultSearch = searchParams.get('search') ?? '';
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const { user } = useAuth();
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    async function fetchUserRole() {
+      if (user) {
+        const userRef = ref(rtdb, `users/${user.uid}`);
+        const snapshot = await get(userRef);
+        if (snapshot.exists()) {
+          setCurrentUser(snapshot.val());
+        }
+      } else {
+        setCurrentUser(null);
+      }
+    }
+    fetchUserRole();
+  }, [user]);
+
 
   const handleSearch = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -74,7 +94,7 @@ export default function Header() {
             </PopoverContent>
           </Popover>
           
-          {user && (
+          {currentUser?.role === 'Admin' && (
             <Button asChild variant="ghost" size="sm">
               <Link href="/create-post">
                 <PlusCircle className="mr-2 h-4 w-4" />
