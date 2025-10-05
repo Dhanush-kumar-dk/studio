@@ -106,6 +106,18 @@ export async function checkAndCreateUser(user: {
   }
 }
 
+export async function updateUserRole(userId: string, role: 'Admin' | 'Subscriber') {
+    try {
+      const userRef = rtdb.ref(`users/${userId}/role`);
+      await userRef.set(role);
+      revalidatePath('/dashboard');
+      return { success: true };
+    } catch (error) {
+      console.error('Error updating user role:', error);
+      return { error: 'Failed to update user role.' };
+    }
+}
+
 export const createArticle = createArticleAction;
 export const updateArticle = updateArticleAction;
 export const deleteArticle = deleteArticleAction;

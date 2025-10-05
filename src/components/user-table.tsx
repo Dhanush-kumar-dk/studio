@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, useMemo, useEffect } from 'react';
@@ -13,6 +12,22 @@ import {
 } from '@/components/ui/table';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
+import { updateUserRole } from '@/app/actions';
+import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/hooks/use-auth';
+import { Loader2 } from 'lucide-react';
 
 type UserTableProps = {
   users: User[];
@@ -21,6 +36,9 @@ type UserTableProps = {
 
 export default function UserTable({ users: initialUsers, searchQuery }: UserTableProps) {
   const [users, setUsers] = useState(initialUsers);
+  const [isLoading, setIsLoading] = useState<string | null>(null);
+  const { toast } = useToast();
+  const { user: currentUser } = useAuth();
 
   useEffect(() => {
     setUsers(initialUsers);
@@ -33,6 +51,24 @@ export default function UserTable({ users: initialUsers, searchQuery }: UserTabl
     );
   }, [users, searchQuery]);
 
+  const handleRoleChange = async (userId: string, newRole: 'Admin' | 'Subscriber') => {
+    setIsLoading(userId);
+    const result = await updateUserRole(userId, newRole);
+    if (result.success) {
+      setUsers(prevUsers => prevUsers.map(u => u.id === userId ? { ...u, role: newRole } : u));
+      toast({
+        title: 'Success',
+        description: `User role has been updated to ${newRole}.`,
+      });
+    } else {
+      toast({
+        title: 'Error',
+        description: result.error,
+        variant: 'destructive',
+      });
+    }
+    setIsLoading(null);
+  };
 
   const getInitials = (name: string) => {
     if (!name) return '';
@@ -53,6 +89,7 @@ export default function UserTable({ users: initialUsers, searchQuery }: UserTabl
               <TableHead>Email</TableHead>
               <TableHead>ID</TableHead>
               <TableHead>Role</TableHead>
+              <TableHead>Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -73,6 +110,40 @@ export default function UserTable({ users: initialUsers, searchQuery }: UserTabl
                   <Badge variant={user.role === 'Admin' ? 'default' : 'secondary'}>
                     {user.role}
                   </Badge>
+                </TableCell>
+                <TableCell>
+                    {currentUser?.uid !== user.id && (
+                    <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                            <Button
+                                size="sm"
+                                variant={user.role === 'Admin' ? 'destructive' : 'outline'}
+                                disabled={isLoading === user.id}
+                            >
+                                {isLoading === user.id ? (
+                                    <Loader2 className="h-4 w-4 animate-spin" />
+                                ) : user.role === 'Admin' ? 'Remove Admin' : 'Make Admin'}
+                            </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                        <AlertDialogHeader>
+                            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                            <AlertDialogDescription>
+                                Do you want to {user.role === 'Admin' ? 'remove admin privileges from' : 'make'} {user.name} {user.role === 'Admin' ? '' : 'an admin'}?
+                            </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                            <AlertDialogCancel>No</AlertDialogCancel>
+                            <AlertDialogAction
+                                onClick={() => handleRoleChange(user.id, user.role === 'Admin' ? 'Subscriber' : 'Admin')}
+                                className={user.role === 'Admin' ? 'bg-red-600 hover:bg-red-700' : 'bg-green-600 hover:bg-green-700'}
+                            >
+                            Yes
+                            </AlertDialogAction>
+                        </AlertDialogFooter>
+                        </AlertDialogContent>
+                    </AlertDialog>
+                    )}
                 </TableCell>
               </TableRow>
             ))}
