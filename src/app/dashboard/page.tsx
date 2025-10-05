@@ -9,6 +9,9 @@ import type { User } from '@/lib/types';
 import { Loader2 } from 'lucide-react';
 import { getUsers } from '@/app/actions';
 
+/**
+ * Inner dashboard logic component — runs after client hydration.
+ */
 function DashboardContent() {
   const [searchQuery, setSearchQuery] = useState('');
   const { user, loading: authLoading } = useAuth();
@@ -29,22 +32,25 @@ function DashboardContent() {
           const fetchedUsers = await getUsers();
           setUsers(fetchedUsers);
           setError(null);
-        } catch (err: any) {
+        } catch (err: unknown) {
           console.error("Failed to fetch users:", err);
-          if (err.message.includes('Permission denied')) {
-            setError("Permission denied. Please check your Realtime Database security rules in the Firebase Console.");
-          } else {
-            setError("Could not fetch user data. Please try again later.");
-          }
+          const message =
+            err instanceof Error && err.message.includes('Permission denied')
+              ? "Permission denied. Please check your Firebase Realtime Database rules."
+              : "Could not fetch user data. Please try again later.";
+          setError(message);
         } finally {
           setLoading(false);
         }
       }
     }
 
-    if (!authLoading) fetchUsers();
+    if (!authLoading) {
+      fetchUsers();
+    }
   }, [user, authLoading]);
 
+  // Loading or auth in progress
   if (loading || authLoading) {
     return (
       <div className="flex h-screen items-center justify-center">
@@ -53,13 +59,17 @@ function DashboardContent() {
     );
   }
 
+  // Render main dashboard
   return (
     <div className="container mx-auto px-4 py-8 sm:px-6 lg:px-8">
       <Card>
         <CardHeader>
           <CardTitle>Users</CardTitle>
-          <CardDescription>A list of all users in your application.</CardDescription>
+          <CardDescription>
+            A list of all users in your application.
+          </CardDescription>
         </CardHeader>
+
         <CardContent>
           {error ? (
             <div className="text-center text-red-500 py-8">
@@ -89,6 +99,9 @@ function DashboardContent() {
   );
 }
 
+/**
+ * Outer component — wrapped in Suspense to satisfy Next.js 15 requirements.
+ */
 export default function DashboardPage() {
   return (
     <Suspense
