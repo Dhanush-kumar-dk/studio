@@ -1,5 +1,8 @@
 'use client';
 
+export const dynamic = 'force-dynamic';
+
+import { Suspense } from 'react';
 import Header from '@/components/header';
 import Footer from '@/components/footer';
 import Newsletter from '@/components/newsletter';
@@ -22,7 +25,11 @@ export default function CreatePostPage() {
             </h1>
             <p className="mt-2 text-muted-foreground">Share your story with the world.</p>
           </div>
-          <CreateArticleForm />
+
+          {/* Suspense ensures client hooks (like useSearchParams, useRouter) load safely */}
+          <Suspense fallback={<div className="p-10 text-center">Loading form...</div>}>
+            <CreateArticleForm />
+          </Suspense>
         </div>
       </main>
       <Newsletter />
