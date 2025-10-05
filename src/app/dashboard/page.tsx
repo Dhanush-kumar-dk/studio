@@ -23,39 +23,41 @@ function DashboardContent() {
 
   useEffect(() => {
     async function fetchUsers() {
-      if (!authLoading && !user) {
+      if (authLoading) {
+        // Wait until authentication status is resolved
+        return;
+      }
+
+      if (!user) {
         setLoading(false);
         setError("You must be logged in to view the dashboard.");
         return;
       }
 
-      if (user) {
-        try {
-          const fetchedUsers = await getUsers();
-          setUsers(fetchedUsers);
-          setError(null);
-        } catch (err: unknown) {
-          console.error("Failed to fetch users:", err);
-          const message =
-            err instanceof Error && err.message.includes('Permission denied')
-              ? "Permission denied. Please check your Firebase Realtime Database rules."
-              : "Could not fetch user data. Please try again later.";
-          setError(message);
-        } finally {
-          setLoading(false);
-        }
+      setLoading(true);
+      try {
+        const fetchedUsers = await getUsers();
+        setUsers(fetchedUsers);
+        setError(null);
+      } catch (err: unknown) {
+        console.error("Failed to fetch users:", err);
+        const message =
+          err instanceof Error && err.message.includes('permission_denied') // Firebase RTDB error code
+            ? "Permission denied. Please check your Firebase Realtime Database rules."
+            : "Could not fetch user data. Please try again later.";
+        setError(message);
+      } finally {
+        setLoading(false);
       }
     }
 
-    if (!authLoading) {
-      fetchUsers();
-    }
+    fetchUsers();
   }, [user, authLoading]);
 
   // Loading or auth in progress
   if (loading || authLoading) {
     return (
-      <div className="flex h-screen items-center justify-center">
+      <div className="flex h-[calc(100vh-150px)] items-center justify-center">
         <Loader2 className="h-8 w-8 animate-spin" />
       </div>
     );
@@ -78,10 +80,6 @@ function DashboardContent() {
               <p className="font-bold">An Error Occurred</p>
               <p>{error}</p>
             </div>
-          ) : !user ? (
-            <div className="text-center text-muted-foreground py-8">
-              <p>Please log in to view users.</p>
-            </div>
           ) : (
             <>
               <div className="mb-4">
@@ -102,7 +100,7 @@ function DashboardContent() {
 }
 
 /**
- * Outer component — wrapped in Suspense to satisfy Next.js 15 requirements.
+ * Outer component — wrapped in Suspense to satisfy Next.js requirements.
  */
 export default function DashboardPage() {
   return (

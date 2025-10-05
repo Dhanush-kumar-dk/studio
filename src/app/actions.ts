@@ -49,14 +49,21 @@ export async function getArticleBySlug(slug: string) {
 }
 
 export async function getUsers(): Promise<User[]> {
-  const usersRef = rtdb.ref('users');
-  const snapshot = await usersRef.get();
+  try {
+    const usersRef = rtdb.ref('users');
+    const snapshot = await usersRef.get();
 
-  if (snapshot.exists()) {
-    const usersData = snapshot.val();
-    return Object.keys(usersData).map(key => usersData[key]);
+    if (snapshot.exists()) {
+      const usersData = snapshot.val();
+      return Object.keys(usersData).map(key => usersData[key]);
+    }
+    return [];
+  } catch(error) {
+    console.error("Error fetching users from RTDB:", error);
+    // In case of a permissions error or other issue, return an empty array
+    // The client-side will handle displaying the error message.
+    return [];
   }
-  return [];
 }
 
 export async function getArticlesByAuthor(authorSlug: string): Promise<(Article & { _id: string })[]> {
