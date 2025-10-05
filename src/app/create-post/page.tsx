@@ -1,7 +1,12 @@
-import CreateArticleForm from '@/components/create-article-form';
 import Header from '@/components/header';
 import Footer from '@/components/footer';
 import Newsletter from '@/components/newsletter';
+import dynamic from 'next/dynamic';
+
+const CreateArticleForm = dynamic(() => import('@/components/create-article-form'), {
+  ssr: false,
+  loading: () => <div className="p-10 text-center">Loading form...</div>,
+});
 
 export default function CreatePostPage() {
   return (
