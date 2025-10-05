@@ -1,14 +1,14 @@
 'use client';
 
-export const dynamic = 'force-dynamic';
+export const dynamicMode = 'force-dynamic'; // ✅ renamed to avoid conflict
 
 import { Suspense } from 'react';
 import Header from '@/components/header';
 import Footer from '@/components/footer';
 import Newsletter from '@/components/newsletter';
-import dynamic from 'next/dynamic';
+import nextDynamic from 'next/dynamic'; // ✅ renamed import
 
-const CreateArticleForm = dynamic(() => import('@/components/create-article-form'), {
+const CreateArticleForm = nextDynamic(() => import('@/components/create-article-form'), {
   ssr: false,
   loading: () => <div className="p-10 text-center">Loading form...</div>,
 });
@@ -26,7 +26,6 @@ export default function CreatePostPage() {
             <p className="mt-2 text-muted-foreground">Share your story with the world.</p>
           </div>
 
-          {/* Suspense ensures client hooks (like useSearchParams, useRouter) load safely */}
           <Suspense fallback={<div className="p-10 text-center">Loading form...</div>}>
             <CreateArticleForm />
           </Suspense>

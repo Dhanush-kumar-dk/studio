@@ -1,4 +1,5 @@
 'use client';
+export const dynamic = 'force-dynamic';
 
 import { User, ArrowLeft, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -19,7 +20,7 @@ export default function ProfilePage() {
     if (!loading && user) {
       checkAndCreateUser(user);
     }
-  }, [loading]);
+  }, [loading, user]);
 
   if (loading || !user) {
     return (
