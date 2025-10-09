@@ -45,12 +45,12 @@
     "googleapis": "^140.0.1",
     "lucide-react": "^0.417.0",
     "mongodb": "^6.8.0",
-    "next": "15.0.0-rc.0",
+    "next": "14.2.5",
     "next-themes": "^0.3.0",
     "patch-package": "^8.0.0",
-    "react": "19.0.0-rc-f994737d14-20240522",
+    "react": "^18.3.1",
     "react-day-picker": "^8.10.1",
-    "react-dom": "19.0.0-rc-f994737d14-20240522",
+    "react-dom": "^18.3.1",
     "react-hook-form": "^7.64.0",
     "recharts": "^2.12.7",
     "tailwind-merge": "^2.4.0",
@@ -70,9 +70,5 @@
     "tailwindcss": "^3.4.1",
     "ts-node": "^10.9.2",
     "typescript": "^5.5.4"
-  },
-  "overrides": {
-    "react": "19.0.0-rc-f994737d14-20240522",
-    "react-dom": "19.0.0-rc-f994737d14-20240522"
   }
 }

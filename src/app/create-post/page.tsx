@@ -1,14 +1,14 @@
 'use client';
 
-export const dynamicMode = 'force-dynamic'; // ✅ renamed to avoid conflict
+export const dynamic = 'force-dynamic';
 
 import { Suspense } from 'react';
 import Header from '@/components/header';
 import Footer from '@/components/footer';
 import Newsletter from '@/components/newsletter';
-import nextDynamic from 'next/dynamic'; // ✅ renamed import
+import dynamic_ from 'next/dynamic';
 
-const CreateArticleForm = nextDynamic(() => import('@/components/create-article-form'), {
+const CreateArticleForm = dynamic_(() => import('@/components/create-article-form'), {
   ssr: false,
   loading: () => <div className="p-10 text-center">Loading form...</div>,
 });
