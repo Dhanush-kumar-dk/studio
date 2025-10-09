@@ -4,7 +4,6 @@ import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import { Badge } from '@/components/ui/badge';
 import { Calendar, Pencil } from 'lucide-react';
-import SummarizeButton from '@/components/summarize-button';
 import DeleteArticleButton from '@/components/delete-article-button';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -80,7 +79,6 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
                       <span className="sr-only">Edit Article</span>
                   </Link>
               </Button>
-              <SummarizeButton articleContent={article.content} />
               <DeleteArticleButton articleId={articleId} />
             </div>
             <div className="prose-p:leading-relaxed whitespace-pre-wrap" dangerouslySetInnerHTML={{ __html: article.content }} />

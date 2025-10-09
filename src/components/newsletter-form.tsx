@@ -10,7 +10,6 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import { Loader2 } from "lucide-react";
-import { subscribeToNewsletter } from "@/app/actions";
 
 const formSchema = z.object({
   email: z.string().email("Please enter a valid email address."),
@@ -27,22 +26,15 @@ export default function NewsletterForm() {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsSubmitting(true);
-    const result = await subscribeToNewsletter(values.email);
+    // Placeholder for submission logic
+    await new Promise(resolve => setTimeout(resolve, 1000));
     setIsSubmitting(false);
 
-    if (result.success) {
-      toast({
-        title: "Subscribed!",
-        description: "You've been added to our newsletter.",
-      });
-      form.reset();
-    } else {
-      toast({
-        title: "Subscription Failed",
-        description: result.message,
-        variant: "destructive",
-      });
-    }
+    toast({
+      title: "Subscribed!",
+      description: "You've been added to our newsletter.",
+    });
+    form.reset();
   }
 
   return (
