@@ -1,11 +1,10 @@
 import { rtdb } from '@/lib/firebase-admin';
-import { ref, set } from 'firebase/database';
 import { articles as articleData } from '@/lib/data';
 import { v4 as uuidv4 } from 'uuid';
 
 async function seedDB() {
   try {
-    const articlesRef = ref(rtdb, 'articles');
+    const articlesRef = rtdb.ref('articles');
     
     // Create a map of articles with UUIDs as keys
     const articlesToInsert: { [key: string]: any } = {};
@@ -17,7 +16,7 @@ async function seedDB() {
         };
     });
 
-    await set(articlesRef, articlesToInsert);
+    await articlesRef.set(articlesToInsert);
     console.log('Seeded the "articles" collection in Realtime Database');
 
   } catch (err) {

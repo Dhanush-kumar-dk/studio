@@ -1,8 +1,6 @@
-
 import { getArticleBySlug, getArticles } from '@/app/actions';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
-import { Badge } from '@/components/ui/badge';
 import { Calendar, Pencil } from 'lucide-react';
 import DeleteArticleButton from '@/components/delete-article-button';
 import Link from 'next/link';
@@ -34,33 +32,48 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
   
   const articleId = article._id;
 
-
   return (
     <>
       <Header />
-      <main className="flex-1">
-        <article className="container mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
-          <div className="mb-8">
-            <Badge variant="secondary" className="mb-4">{article.category}</Badge>
-            <h1 className="font-headline text-3xl font-extrabold tracking-tight md:text-5xl">
+      <main className="flex-1 bg-background">
+        <article className="container mx-auto max-w-4xl px-4 py-10 sm:px-6 lg:px-8">
+          <div className="mb-8 space-y-4">
+            <span className="inline-flex items-center rounded-md border border-emerald-500/20 bg-emerald-500/10 px-3 py-1 text-xs font-bold uppercase tracking-wider text-emerald-700 dark:text-emerald-300">
+              {article.category}
+            </span>
+            <h1 className="font-headline text-3xl font-extrabold tracking-tight text-foreground md:text-5xl leading-tight">
               {article.title}
             </h1>
-            <div className="mt-4 flex items-center space-x-4 text-sm text-muted-foreground">
-              <Link href={`/author/${article.authorSlug}`} className="flex items-center gap-2 hover:text-primary">
-                <Avatar className="h-6 w-6">
-                  <AvatarImage src={article.authorImageUrl} alt={article.author} />
-                  <AvatarFallback>{article.author.charAt(0)}</AvatarFallback>
-                </Avatar>
-                <span>{article.author}</span>
-              </Link>
+            
+            <div className="flex flex-wrap items-center justify-between gap-4 border-b border-border/50 pb-6 text-sm text-muted-foreground">
+              <div className="flex items-center gap-4">
+                <Link href={`/author/${article.authorSlug}`} className="group flex items-center gap-2 font-medium text-foreground hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors">
+                  <Avatar className="h-8 w-8 border border-border">
+                    <AvatarImage src={article.authorImageUrl} alt={article.author} />
+                    <AvatarFallback>{article.author.charAt(0)}</AvatarFallback>
+                  </Avatar>
+                  <span>{article.author}</span>
+                </Link>
+                <span className="text-border">•</span>
+                <div className="flex items-center gap-1.5">
+                  <Calendar className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
+                  <span>{new Date(article.publishedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+                </div>
+              </div>
+
               <div className="flex items-center gap-2">
-                <Calendar className="h-4 w-4" />
-                <span>{new Date(article.publishedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+                <Button asChild variant="outline" size="sm" className="h-9 gap-1.5 border-border/80 text-xs font-medium hover:border-emerald-500 hover:text-emerald-600 dark:hover:text-emerald-400">
+                  <Link href={`/edit-post/${article.slug}`}>
+                    <Pencil className="h-3.5 w-3.5" />
+                    <span>Edit Article</span>
+                  </Link>
+                </Button>
+                <DeleteArticleButton articleId={articleId} />
               </div>
             </div>
           </div>
 
-          <div className="relative mb-8 h-64 w-full overflow-hidden rounded-lg md:h-96">
+          <div className="relative mb-10 h-72 sm:h-96 md:h-[460px] w-full overflow-hidden rounded-2xl border border-border/60 bg-muted shadow-sm">
             <Image
               src={article.imageUrl}
               alt={article.title}
@@ -71,19 +84,9 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
             />
           </div>
           
-          <div className="prose prose-lg dark:prose-invert max-w-none prose-a:text-blue-600 dark:prose-a:text-blue-400 hover:prose-a:underline">
-            <div className="mb-8 flex justify-end gap-2">
-              <Button asChild variant="outline" size="icon">
-                  <Link href={`/edit-post/${article.slug}`}>
-                      <Pencil className="h-4 w-4" />
-                      <span className="sr-only">Edit Article</span>
-                  </Link>
-              </Button>
-              <DeleteArticleButton articleId={articleId} />
-            </div>
-            <div className="prose-p:leading-relaxed whitespace-pre-wrap" dangerouslySetInnerHTML={{ __html: article.content }} />
+          <div className="prose prose-lg dark:prose-invert max-w-none prose-headings:font-headline prose-headings:font-bold prose-p:leading-relaxed prose-a:text-emerald-600 dark:prose-a:text-emerald-400 hover:prose-a:underline">
+            <div className="whitespace-pre-wrap text-foreground/90 font-body leading-relaxed text-base sm:text-lg" dangerouslySetInnerHTML={{ __html: article.content }} />
           </div>
-
         </article>
       </main>
       <Newsletter />

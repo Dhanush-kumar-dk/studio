@@ -1,4 +1,5 @@
 import { Card, CardContent } from '@/components/ui/card';
+import { Users } from 'lucide-react';
 
 const teamMembers = [
   {
@@ -19,37 +20,45 @@ const teamMembers = [
 ];
 
 export default function Team() {
-    return (
-        <section className="w-full border-t bg-muted/20 py-16">
-          <div className="container mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-            <div className="text-center">
-              <h2 className="font-headline text-3xl font-extrabold tracking-tight sm:text-4xl">
-                Meet Our Team
-              </h2>
-              <p className="mx-auto mt-4 max-w-3xl text-lg text-muted-foreground">
-                The intellectual engine behind Debt & Dominion is powered by a diverse cohort of students, recent graduates, and early-career thinkers from leading universities around the world. While we may not bring decades of experience, we bring something different—unfiltered curiosity, fresh academic thinking, and a commitment to tackling complexity with clarity.
-              </p>
-            </div>
-            <div className="mt-12 grid grid-cols-1 gap-8 md:grid-cols-2">
-              {teamMembers.map((member) => (
-                <Card key={member.name} className="bg-card">
-                  <CardContent className="pt-6">
-                    <h3 className="text-xl font-bold text-primary">{member.name}</h3>
-                    <p className="mt-1 font-semibold">{member.role}</p>
-                    <p className="mt-4 text-muted-foreground">{member.bio}</p>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-            <div className="mt-12 text-center">
-              <p className="mx-auto max-w-4xl text-muted-foreground">
-                At Debt & Dominion, our core editorial team is strengthened by a growing international network of contributors and collaborators—from students and researchers to aspiring analysts—based in leading academic institutions and global cities across the world.
-              </p>
-              <p className="mx-auto mt-4 max-w-4xl text-muted-foreground">
-                Rather than relying on traditional bureaus, we draw insights from individuals embedded in the cultural, academic, and political environments of their regions. This decentralised model allows us to bring local context, emerging perspectives, and first-hand insights into global economic debates and international developments.
-              </p>
-            </div>
+  return (
+    <section className="w-full border-t border-border/60 bg-muted/20 py-20 transition-colors duration-200">
+      <div className="container mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+        <div className="text-center space-y-3">
+          <div className="inline-flex items-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3.5 py-1 text-xs font-semibold text-emerald-700 dark:text-emerald-300">
+            <Users className="h-3.5 w-3.5" />
+            <span>Leadership & Editorial</span>
           </div>
-        </section>
-      );
+          <h2 className="font-headline text-3xl font-extrabold tracking-tight sm:text-4xl text-foreground">
+            Meet Our Leadership Team
+          </h2>
+          <p className="mx-auto max-w-3xl text-sm leading-relaxed text-muted-foreground sm:text-base">
+            The intellectual engine behind Debt & Dominion is powered by a diverse cohort of researchers, graduates, and analysts across global institutions.
+          </p>
+        </div>
+
+        <div className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-3">
+          {teamMembers.map((member) => (
+            <Card key={member.name} className="flex flex-col justify-between border border-border/60 bg-card p-6 rounded-xl shadow-sm transition-all hover:border-emerald-500/40">
+              <CardContent className="p-0 space-y-3">
+                <div>
+                  <h3 className="font-headline text-lg font-bold text-foreground">{member.name}</h3>
+                  <p className="text-xs font-semibold text-emerald-600 dark:text-emerald-400 mt-0.5">{member.role}</p>
+                </div>
+                <p className="text-xs leading-relaxed text-muted-foreground">{member.bio}</p>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+
+        <div className="mt-12 rounded-xl border border-border/60 bg-card p-6 sm:p-8 text-center space-y-3">
+          <p className="mx-auto max-w-4xl text-xs sm:text-sm leading-relaxed text-muted-foreground">
+            At Debt & Dominion, our core editorial team is strengthened by a growing international network of contributors based in leading academic institutions across the world.
+          </p>
+          <p className="mx-auto max-w-4xl text-xs sm:text-sm leading-relaxed text-muted-foreground">
+            Rather than relying on traditional bureaus, we draw insights from individuals embedded directly in the cultural and economic environments of their regions.
+          </p>
+        </div>
+      </div>
+    </section>
+  );
 }

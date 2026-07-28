@@ -21,18 +21,25 @@ const generateSlug = (title: string) => {
 
 
 export async function getArticles(): Promise<(Article & { _id: string })[]> {
-  const articlesRef = rtdb.ref('articles');
-  const snapshot = await articlesRef.get();
+  try {
+    const articlesRef = rtdb.ref('articles');
+    const snapshot = await Promise.race([
+      articlesRef.get(),
+      new Promise<never>((_, reject) => setTimeout(() => reject(new Error('RTDB get timeout')), 5000))
+    ]);
 
-  if (snapshot.exists()) {
-    const articlesData = snapshot.val();
-    const articlesList = Object.keys(articlesData).map(key => ({
-      ...articlesData[key],
-      _id: key,
-    }));
-    return articlesList.sort(
-      (a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
-    );
+    if (snapshot.exists()) {
+      const articlesData = snapshot.val();
+      const articlesList = Object.keys(articlesData).map(key => ({
+        ...articlesData[key],
+        _id: key,
+      }));
+      return articlesList.sort(
+        (a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
+      );
+    }
+  } catch (error) {
+    console.error('Error fetching articles from RTDB:', error);
   }
 
   // Fallback to sample data

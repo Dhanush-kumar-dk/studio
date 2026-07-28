@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useForm } from "react-hook-form";
@@ -9,7 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
-import { Loader2 } from "lucide-react";
+import { Loader2, ArrowRight } from "lucide-react";
 
 const formSchema = z.object({
   email: z.string().email("Please enter a valid email address."),
@@ -26,40 +25,50 @@ export default function NewsletterForm() {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsSubmitting(true);
-    // Placeholder for submission logic
     await new Promise(resolve => setTimeout(resolve, 1000));
     setIsSubmitting(false);
 
     toast({
       title: "Subscribed!",
-      description: "You've been added to our newsletter.",
+      description: "You've been added to our weekly intelligence digest.",
     });
     form.reset();
   }
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="flex w-full items-start gap-2">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-2.5 sm:flex-row sm:items-center">
         <FormField
           control={form.control}
           name="email"
           render={({ field }) => (
-            <FormItem className="flex-1">
+            <FormItem className="flex-1 space-y-0">
               <FormControl>
-                <Input placeholder="Enter your email" {...field} />
+                <Input
+                  placeholder="Enter your email address"
+                  className="h-11 border-border/80 text-sm focus-visible:ring-emerald-500"
+                  {...field}
+                />
               </FormControl>
-              <FormMessage />
+              <FormMessage className="text-xs text-destructive mt-1" />
             </FormItem>
           )}
         />
-        <Button type="submit" disabled={isSubmitting}>
+        <Button
+          type="submit"
+          disabled={isSubmitting}
+          className="h-11 bg-emerald-600 font-semibold text-white hover:bg-emerald-700 dark:bg-emerald-500 dark:text-slate-950 dark:hover:bg-emerald-400 sm:w-auto"
+        >
           {isSubmitting ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Subscribing...
+              Joining...
             </>
           ) : (
-            "Subscribe"
+            <span className="flex items-center gap-1.5">
+              Subscribe
+              <ArrowRight className="h-4 w-4" />
+            </span>
           )}
         </Button>
       </form>
