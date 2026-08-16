@@ -1,7 +1,5 @@
-"use client";
-
 import { useState, useMemo, useEffect } from 'react';
-import type { User } from '@/lib/types';
+import type { User, UserRole } from '@/lib/types';
 import {
   Table,
   TableBody,
@@ -14,16 +12,12 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from '@/components/ui/alert-dialog';
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { updateUserRole } from '@/app/actions';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/use-auth';
@@ -34,9 +28,17 @@ type UserTableProps = {
   searchQuery: string;
 };
 
+const ROLE_COLORS: Record<string, 'default' | 'destructive' | 'outline' | 'secondary'> = {
+  Admin: 'destructive',
+  Editor: 'default',
+  Author: 'outline',
+  Subscriber: 'secondary',
+  User: 'secondary',
+};
+
 export default function UserTable({ users: initialUsers, searchQuery }: UserTableProps) {
   const [users, setUsers] = useState(initialUsers);
-  const [isLoading, setIsLoading] = useState<string | null>(null);
+  const [loadingId, setLoadingId] = useState<string | null>(null);
   const { toast } = useToast();
   const { user: currentUser } = useAuth();
 
@@ -47,107 +49,108 @@ export default function UserTable({ users: initialUsers, searchQuery }: UserTabl
   const filteredUsers = useMemo(() => {
     if (!searchQuery) return users;
     return users.filter(user => 
-        (user.email || '').toLowerCase().includes(searchQuery.toLowerCase())
+        (user.email || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (user.name || '').toLowerCase().includes(searchQuery.toLowerCase())
     );
   }, [users, searchQuery]);
 
-  const handleRoleChange = async (userId: string, newRole: 'Admin' | 'Subscriber') => {
-    setIsLoading(userId);
+  const handleRoleChange = async (userId: string, newRole: UserRole) => {
+    setLoadingId(userId);
     const result = await updateUserRole(userId, newRole);
     if (result.success) {
       setUsers(prevUsers => prevUsers.map(u => u.id === userId ? { ...u, role: newRole } : u));
       toast({
-        title: 'Success',
+        title: 'Role Updated',
         description: `User role has been updated to ${newRole}.`,
       });
     } else {
       toast({
         title: 'Error',
-        description: result.error,
+        description: result.error || 'Failed to update role.',
         variant: 'destructive',
       });
     }
-    setIsLoading(null);
+    setLoadingId(null);
   };
 
   const getInitials = (name: string) => {
-    if (!name) return '';
+    if (!name) return 'U';
     const names = name.split(' ');
     if (names.length > 1 && names[0] && names[names.length - 1]) {
       return names[0][0] + names[names.length - 1][0];
     }
     return name[0];
-  }
+  };
 
   return (
-    <>
-      <div className="rounded-lg border">
-        <Table>
-          <TableHeader>
+    <div className="rounded-lg border bg-card">
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>User</TableHead>
+            <TableHead>Email</TableHead>
+            <TableHead>Role</TableHead>
+            <TableHead className="text-right">Change Role</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {filteredUsers.length === 0 ? (
             <TableRow>
-              <TableHead>User</TableHead>
-              <TableHead>Email</TableHead>
-              <TableHead>ID</TableHead>
-              <TableHead>Role</TableHead>
-              <TableHead>Actions</TableHead>
+              <TableCell colSpan={4} className="text-center py-6 text-muted-foreground">
+                No users found.
+              </TableCell>
             </TableRow>
-          </TableHeader>
-          <TableBody>
-            {filteredUsers.map((user) => (
+          ) : (
+            filteredUsers.map((user) => (
               <TableRow key={user.id}>
                 <TableCell>
                   <div className="flex items-center gap-3">
-                    <Avatar>
+                    <Avatar className="h-9 w-9">
                       <AvatarImage src={user.avatarUrl} alt={user.name} />
                       <AvatarFallback>{getInitials(user.name)}</AvatarFallback>
                     </Avatar>
-                    <span className="font-medium">{user.name}</span>
+                    <div>
+                      <p className="font-medium text-sm">{user.name}</p>
+                      <p className="text-xs text-muted-foreground sm:hidden">{user.email}</p>
+                    </div>
                   </div>
                 </TableCell>
-                <TableCell>{user.email}</TableCell>
-                <TableCell>{user.id}</TableCell>
+                <TableCell className="text-sm">{user.email || 'N/A'}</TableCell>
                 <TableCell>
-                  <Badge variant={user.role === 'Admin' ? 'default' : 'secondary'}>
+                  <Badge variant={ROLE_COLORS[user.role] || 'secondary'} className="capitalize">
                     {user.role}
                   </Badge>
                 </TableCell>
-                <TableCell>
-                    <AlertDialog>
-                        <AlertDialogTrigger asChild>
-                            <Button
-                                size="sm"
-                                variant={user.role === 'Admin' ? 'destructive' : 'outline'}
-                                disabled={isLoading === user.id}
-                            >
-                                {isLoading === user.id ? (
-                                    <Loader2 className="h-4 w-4 animate-spin" />
-                                ) : user.role === 'Admin' ? 'Remove Admin' : 'Make Admin'}
-                            </Button>
-                        </AlertDialogTrigger>
-                        <AlertDialogContent>
-                        <AlertDialogHeader>
-                            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                            <AlertDialogDescription>
-                                Do you want to {user.role === 'Admin' ? 'remove admin privileges from' : 'make'} {user.name} {user.role === 'Admin' ? '' : 'an admin'}?
-                            </AlertDialogDescription>
-                        </AlertDialogHeader>
-                        <AlertDialogFooter>
-                            <AlertDialogCancel>No</AlertDialogCancel>
-                            <AlertDialogAction
-                                onClick={() => handleRoleChange(user.id, user.role === 'Admin' ? 'Subscriber' : 'Admin')}
-                                className={user.role === 'Admin' ? 'bg-red-600 hover:bg-red-700' : 'bg-green-600 hover:bg-green-700'}
-                            >
-                            Yes
-                            </AlertDialogAction>
-                        </AlertDialogFooter>
-                        </AlertDialogContent>
-                    </AlertDialog>
+                <TableCell className="text-right">
+                  <div className="flex items-center justify-end gap-2">
+                    {loadingId === user.id ? (
+                      <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+                    ) : (
+                      <Select
+                        value={user.role}
+                        onValueChange={(val: UserRole) => handleRoleChange(user.id, val)}
+                        disabled={user.id === currentUser?.uid}
+                      >
+                        <SelectTrigger className="w-[130px] h-8 text-xs">
+                          <SelectValue placeholder="Select role" />
+                        </SelectTrigger>
+                        <SelectContent align="end">
+                          <SelectItem value="Admin">Admin</SelectItem>
+                          <SelectItem value="Editor">Editor</SelectItem>
+                          <SelectItem value="Author">Author</SelectItem>
+                          <SelectItem value="Subscriber">Subscriber</SelectItem>
+                          <SelectItem value="User">User</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    )}
+                  </div>
                 </TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </div>
-    </>
+            ))
+          )}
+        </TableBody>
+      </Table>
+    </div>
   );
 }
+

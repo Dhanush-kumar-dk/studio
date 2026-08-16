@@ -18,8 +18,7 @@ import Link from 'next/link';
 import Logo from '@/Assest/signal-2025-09-01-172433.jpeg';
 import { useAuth } from '@/hooks/use-auth';
 import { useEffect, useState } from 'react';
-import { ref, get } from 'firebase/database';
-import { rtdb } from '@/lib/firebase';
+import { createClient } from '@/lib/supabase/client';
 import type { User as AppUser } from '@/lib/types';
 import { useRouter } from 'next/navigation';
   
@@ -30,21 +29,25 @@ import { useRouter } from 'next/navigation';
   }>) {
     const { user, loading } = useAuth();
     const [currentUser, setCurrentUser] = useState<AppUser | null>(null);
-    const router = useRouter();
+  const supabase = createClient();
 
-    useEffect(() => {
-        async function fetchUserRole() {
-          if (user) {
-            const userRef = ref(rtdb, `users/${user.uid}`);
-            const snapshot = await get(userRef);
-            if (snapshot.exists()) {
-              setCurrentUser(snapshot.val());
-            } else {
-              // User exists in auth but not in DB, maybe redirect or handle
-              setCurrentUser(null);
-              router.push('/');
-            }
-          } else if (!loading) {
+  useEffect(() => {
+      async function fetchUserRole() {
+        if (user) {
+          const { data, error } = await supabase
+            .from('users')
+            .select('*')
+            .eq('id', user.id)
+            .single();
+            
+          if (data) {
+            setCurrentUser(data);
+          } else {
+            // User exists in auth but not in DB, maybe redirect or handle
+            setCurrentUser(null);
+            router.push('/');
+          }
+        } else if (!loading) {
              // No user, not loading, so redirect
              router.push('/login');
           }
@@ -60,11 +63,12 @@ import { useRouter } from 'next/navigation';
           );
       }
     
-      if (currentUser.role !== 'Admin') {
-        // Or show a 'not authorized' component
+      const allowedRoles = ['Admin', 'Editor', 'Author', 'Subscriber', 'User'];
+      if (!allowedRoles.includes(currentUser.role)) {
         router.push('/');
         return null;
       }
+
 
 
     return (

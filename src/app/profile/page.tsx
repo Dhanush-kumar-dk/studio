@@ -6,43 +6,64 @@ import { Button } from '@/components/ui/button';
 import ProfileForm from '@/components/profile-form';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/hooks/use-auth';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { checkAndCreateUser } from '@/app/actions';
+import { createClient } from '@/lib/supabase/client';
+import type { UserRole } from '@/lib/types';
 
 export default function ProfilePage() {
   const router = useRouter();
   const { user, loading } = useAuth();
+  const [profileData, setProfileData] = useState<any>(null);
+  const [fetching, setFetching] = useState(true);
 
   useEffect(() => {
-    if (!loading && !user) {
-      router.push('/login');
-    }
-    if (!loading && user) {
-      checkAndCreateUser(user);
-    }
-  }, [loading, user]);
+    async function loadProfile() {
+      if (!loading && !user) {
+        router.push('/login');
+        return;
+      }
+      if (!loading && user) {
+        try {
+          await checkAndCreateUser(user);
+          const supabase = createClient();
+          const { data: dbUser, error } = await supabase
+            .from('users')
+            .select('*')
+            .eq('id', user.id)
+            .single();
 
-  if (loading || !user) {
+          const displayName = dbUser?.name || user.user_metadata?.full_name || user.email?.split('@')[0] || 'User';
+          const nameParts = displayName.split(' ');
+
+          setProfileData({
+            id: user.id,
+            username: user.email?.split('@')[0] || 'user',
+            firstName: dbUser?.first_name || nameParts[0] || '',
+            lastName: dbUser?.last_name || nameParts.slice(1).join(' ') || '',
+            email: user.email || '',
+            avatarUrl: dbUser?.avatar_url || user.user_metadata?.avatar_url || `https://picsum.photos/seed/${user.id}/150/150`,
+            role: dbUser?.role || 'Subscriber',
+            website: dbUser?.website || '',
+            bio: dbUser?.bio || 'Welcome to my Debt & Dominion profile.',
+          });
+        } catch (error) {
+          console.error("Failed to load profile:", error);
+        } finally {
+          setFetching(false);
+        }
+      }
+    }
+    loadProfile();
+  }, [loading, user, router]);
+
+  if (loading || fetching || !profileData) {
     return (
       <div className="flex h-screen items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin" />
+        <Loader2 className="h-8 w-8 animate-spin text-emerald-600" />
       </div>
     );
   }
-
-  const profileData = {
-    username:
-      user.displayName?.toLowerCase().replace(' ', '.') ||
-      user.email?.split('@')[0] ||
-      'user',
-    firstName: user.displayName?.split(' ')[0] || '',
-    lastName: user.displayName?.split(' ').slice(1).join(' ') || '',
-    email: user.email || '',
-    avatarUrl: user.photoURL || `https://picsum.photos/seed/${user.uid}/150/150`,
-    role: 'subscriber',
-    website: '',
-    bio: 'This is a default bio. Please update it.',
-  };
 
   return (
     <div className="container mx-auto px-4 py-8 sm:px-6 lg:px-8">

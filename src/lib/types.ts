@@ -18,10 +18,18 @@ export type Article = {
   metaDescription: string;
 };
 
+export type UserRole = 'Admin' | 'Editor' | 'Author' | 'Subscriber' | 'User';
+
 export type User = {
   id: string;
   name: string;
   email: string | null;
-  role: 'Admin' | 'Subscriber';
+  role: UserRole;
   avatarUrl: string;
-}
+  firstName?: string;
+  lastName?: string;
+  bio?: string;
+  website?: string;
+  createdAt?: string;
+};
+

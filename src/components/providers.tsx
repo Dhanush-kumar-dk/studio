@@ -1,8 +1,7 @@
 "use client";
 
-import { auth } from '@/lib/firebase';
-import type { User } from 'firebase/auth';
-import { onAuthStateChanged } from 'firebase/auth';
+import { createClient } from '@/lib/supabase/client';
+import type { User } from '@supabase/supabase-js';
 import type { ReactNode } from 'react';
 import { createContext, useEffect, useState } from 'react';
 
@@ -16,14 +15,22 @@ export const AuthContext = createContext<AuthContextType | undefined>(undefined)
 export function Providers({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const supabase = createClient();
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setUser(user);
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
       setLoading(false);
     });
 
-    return () => unsubscribe();
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+      setLoading(false);
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
 
   return (

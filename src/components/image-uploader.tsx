@@ -15,9 +15,7 @@ import {
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { useToast } from '@/hooks/use-toast';
-import { auth, storage } from '@/lib/firebase';
-import { ref, uploadString, getDownloadURL } from 'firebase/storage';
-import { updateProfile } from 'firebase/auth';
+import { createClient } from '@/lib/supabase/client';
 import { Loader2 } from 'lucide-react';
 
 type ImageUploaderProps = {
@@ -32,6 +30,7 @@ export default function ImageUploader({ children, onUploadComplete }: ImageUploa
   const cropperRef = useRef<React.FC<any>>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
+  const supabase = createClient();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
@@ -60,22 +59,39 @@ export default function ImageUploader({ children, onUploadComplete }: ImageUploa
       }
       const dataUrl = croppedCanvas.toDataURL('image/jpeg', 0.7);
       
-      const user = auth.currentUser;
+      const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
         toast({ title: 'Error', description: 'You must be logged in to upload an image.', variant: 'destructive' });
         setIsLoading(false);
         return;
       }
 
-      const storageRef = ref(storage, `avatars/${user.uid}`);
-
       try {
-        await uploadString(storageRef, dataUrl, 'data_url');
-        const downloadURL = await getDownloadURL(storageRef);
+        // Convert base64 dataUrl to Blob for Supabase Storage
+        const res = await fetch(dataUrl);
+        const blob = await res.blob();
         
-        await updateProfile(user, { photoURL: downloadURL });
+        const filePath = `${user.id}/${Date.now()}.jpg`;
+        const { error: uploadError } = await supabase.storage
+          .from('avatars')
+          .upload(filePath, blob, {
+            contentType: 'image/jpeg',
+            upsert: true
+          });
+          
+        if (uploadError) {
+          throw uploadError;
+        }
 
-        onUploadComplete(downloadURL);
+        const { data: { publicUrl } } = supabase.storage
+          .from('avatars')
+          .getPublicUrl(filePath);
+        
+        await supabase.auth.updateUser({
+            data: { avatar_url: publicUrl }
+        });
+
+        onUploadComplete(publicUrl);
         toast({ title: 'Success', description: 'Profile picture updated!' });
         setIsOpen(false);
         setImage(null);

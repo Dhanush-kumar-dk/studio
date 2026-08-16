@@ -88,7 +88,7 @@ function NewsFeedContent({ articles }: { articles: (Article & {_id: any})[] }) {
                 onClick={() => handleCategoryChange(cat)}
                 className={`rounded-full px-4 py-1.5 text-sm font-medium transition-all duration-200 ${
                   isActive
-                    ? "bg-emerald-600 text-white shadow-sm dark:bg-emerald-500 dark:text-slate-950"
+                    ? "bg-orange-600 text-white shadow-sm dark:bg-orange-500 dark:text-slate-950"
                     : "text-muted-foreground hover:bg-muted hover:text-foreground"
                 }`}
               >
@@ -99,7 +99,7 @@ function NewsFeedContent({ articles }: { articles: (Article & {_id: any})[] }) {
         </div>
         {searchQuery && (
           <div className="text-xs text-muted-foreground">
-            Filter: <span className="font-semibold text-emerald-600 dark:text-emerald-400">"{searchQuery}"</span>
+            Filter: <span className="font-semibold text-orange-600 dark:text-orange-400">"{searchQuery}"</span>
           </div>
         )}
       </div>
@@ -135,7 +135,7 @@ function NewsFeedContent({ articles }: { articles: (Article & {_id: any})[] }) {
                           
                           <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-8 md:p-10 text-white">
                             <div className="flex items-center gap-3 mb-3">
-                              <span className="inline-flex items-center rounded-md bg-emerald-500 px-3 py-1 text-xs font-bold uppercase tracking-wider text-slate-950 shadow-sm">
+                              <span className="inline-flex items-center rounded-md bg-orange-500 px-3 py-1 text-xs font-bold uppercase tracking-wider text-slate-950 shadow-sm">
                                 {article.category}
                               </span>
                               <span className="text-xs text-slate-300 flex items-center gap-1">
@@ -144,7 +144,7 @@ function NewsFeedContent({ articles }: { articles: (Article & {_id: any})[] }) {
                               </span>
                             </div>
 
-                            <h2 className="font-headline text-2xl font-extrabold sm:text-3xl md:text-4xl leading-tight text-white transition-colors group-hover:text-emerald-300">
+                            <h2 className="font-headline text-2xl font-extrabold sm:text-3xl md:text-4xl leading-tight text-white transition-colors group-hover:text-orange-300">
                               {article.title}
                             </h2>
 
@@ -152,7 +152,7 @@ function NewsFeedContent({ articles }: { articles: (Article & {_id: any})[] }) {
                               {article.excerpt}
                             </p>
 
-                            <div className="mt-5 flex items-center gap-2 font-semibold text-emerald-400 text-sm group-hover:translate-x-1 transition-transform">
+                            <div className="mt-5 flex items-center gap-2 font-semibold text-orange-400 text-sm group-hover:translate-x-1 transition-transform">
                               <span>Read Full Article</span>
                               <ArrowRight className="h-4 w-4" />
                             </div>
@@ -187,7 +187,7 @@ function NewsFeedContent({ articles }: { articles: (Article & {_id: any})[] }) {
               </div>
             ) : (
               <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-border/80 bg-muted/30 py-20 text-center">
-                <div className="h-12 w-12 rounded-full bg-emerald-500/10 p-3 text-emerald-600 dark:text-emerald-400 mb-3 flex items-center justify-center font-bold">
+                <div className="h-12 w-12 rounded-full bg-orange-500/10 p-3 text-orange-600 dark:text-orange-400 mb-3 flex items-center justify-center font-bold">
                   !
                 </div>
                 <h4 className="font-headline text-lg font-semibold text-foreground">No articles found</h4>
@@ -196,7 +196,7 @@ function NewsFeedContent({ articles }: { articles: (Article & {_id: any})[] }) {
                 </p>
                 <button
                   onClick={() => handleCategoryChange('All')}
-                  className="mt-4 rounded-md bg-emerald-600 px-4 py-2 text-xs font-semibold text-white hover:bg-emerald-700 dark:bg-emerald-500 dark:text-slate-950 dark:hover:bg-emerald-400"
+                  className="mt-4 rounded-md bg-orange-600 px-4 py-2 text-xs font-semibold text-white hover:bg-orange-700 dark:bg-orange-500 dark:text-slate-950 dark:hover:bg-orange-400"
                 >
                   Show All Articles
                 </button>

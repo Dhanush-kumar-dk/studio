@@ -12,8 +12,7 @@ import Logo from '../Assest/signal-2025-09-01-172433.jpeg';
 import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
 import { useAuth } from '@/hooks/use-auth';
 import type { User } from '@/lib/types';
-import { rtdb } from '@/lib/firebase';
-import { ref, get } from 'firebase/database';
+import { createClient } from '@/lib/supabase/client';
 
 function HeaderContent() {
   const router = useRouter();
@@ -24,13 +23,19 @@ function HeaderContent() {
   const { user } = useAuth();
   const [currentUser, setCurrentUser] = useState<User | null>(null);
 
+  const supabase = createClient();
+
   useEffect(() => {
     async function fetchUserRole() {
       if (user) {
-        const userRef = ref(rtdb, `users/${user.uid}`);
-        const snapshot = await get(userRef);
-        if (snapshot.exists()) {
-          setCurrentUser(snapshot.val());
+        const { data, error } = await supabase
+          .from('users')
+          .select('*')
+          .eq('id', user.id)
+          .single();
+          
+        if (data) {
+          setCurrentUser(data);
         }
       } else {
         setCurrentUser(null);
@@ -102,8 +107,8 @@ function HeaderContent() {
           {/* Light / Dark Mode Toggle */}
           <ThemeToggle />
 
-          {/* Create Post Action for Admin */}
-          {currentUser?.role === 'Admin' && (
+          {/* Create Post Action for Admin, Editor, Author */}
+          {(currentUser?.role === 'Admin' || currentUser?.role === 'Editor' || currentUser?.role === 'Author') && (
             <Button asChild size="sm" className="bg-emerald-600 font-medium text-white hover:bg-emerald-700 dark:bg-emerald-500 dark:text-slate-950 dark:hover:bg-emerald-400">
               <Link href="/create-post" className="flex items-center gap-1.5">
                 <PlusCircle className="h-4 w-4" />

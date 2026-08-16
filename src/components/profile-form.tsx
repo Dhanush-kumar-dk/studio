@@ -22,8 +22,8 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import UserProfileCard from "./user-profile-card";
 import { useToast } from "@/hooks/use-toast";
-import { auth } from "@/lib/firebase";
-import { updateProfile } from "firebase/auth";
+import { createClient } from "@/lib/supabase/client";
+import { updateUserProfile } from "@/app/actions";
 import { Loader2 } from "lucide-react";
 
 const mockData = {
@@ -48,6 +48,7 @@ export default function ProfileForm({ initialData = mockData, isCurrentUser = fa
   const { toast } = useToast();
 
   const [userData, setUserData] = useState(initialData);
+  const supabase = createClient();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { id, value } = e.target;
@@ -64,17 +65,24 @@ export default function ProfileForm({ initialData = mockData, isCurrentUser = fa
 
   const handleSave = async () => {
     setIsSaving(true);
-    const currentUser = auth.currentUser;
-    if (currentUser && isCurrentUser) {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user && isCurrentUser) {
         try {
-            await updateProfile(currentUser, {
-                displayName: `${userData.firstName} ${userData.lastName}`.trim(),
+            const fullName = `${userData.firstName} ${userData.lastName}`.trim();
+            await supabase.auth.updateUser({
+                data: { full_name: fullName }
             });
-            // The avatar is updated via ImageUploader now.
-            // Here you would also save other data (bio, website, etc.) to your database (e.g., Firestore)
+            await updateUserProfile(user.id, {
+                name: fullName,
+                firstName: userData.firstName,
+                lastName: userData.lastName,
+                bio: userData.bio,
+                website: userData.website,
+                avatarUrl: userData.avatarUrl,
+            });
             toast({
                 title: "Profile Updated",
-                description: "Your profile has been successfully updated.",
+                description: "Your profile has been successfully saved to database.",
             });
             setIsEditing(false);
         } catch (error) {
@@ -88,6 +96,7 @@ export default function ProfileForm({ initialData = mockData, isCurrentUser = fa
     }
     setIsSaving(false);
   };
+
   
   const handleEdit = () => {
     if(isCurrentUser) {

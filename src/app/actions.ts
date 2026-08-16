@@ -1,10 +1,9 @@
-
 'use server';
 
 import { createArticle as createArticleAction, updateArticle as updateArticleAction, deleteArticle as deleteArticleAction } from '@/lib/articles';
-import type { Article, User } from '@/lib/types';
+import type { Article, User, UserRole } from '@/lib/types';
 import { revalidatePath } from 'next/cache';
-import { rtdb } from '@/lib/firebase-admin';
+import { createClient } from '@/lib/supabase/server';
 import { v4 as uuidv4 } from 'uuid';
 import { articles as sampleArticles } from '@/lib/data';
 
@@ -19,27 +18,34 @@ const generateSlug = (title: string) => {
     .replace(/-+$/, ''); // Trim hyphen from end
 };
 
-
 export async function getArticles(): Promise<(Article & { _id: string })[]> {
   try {
-    const articlesRef = rtdb.ref('articles');
-    const snapshot = await Promise.race([
-      articlesRef.get(),
-      new Promise<never>((_, reject) => setTimeout(() => reject(new Error('RTDB get timeout')), 5000))
-    ]);
+    const supabase = createClient();
+    const { data: articlesData, error } = await supabase
+      .from('articles')
+      .select('*')
+      .order('published_at', { ascending: false });
 
-    if (snapshot.exists()) {
-      const articlesData = snapshot.val();
-      const articlesList = Object.keys(articlesData).map(key => ({
-        ...articlesData[key],
-        _id: key,
+    if (error) {
+      console.error('Error fetching articles from Supabase:', error);
+      throw error;
+    }
+
+    if (articlesData && articlesData.length > 0) {
+      return articlesData.map(a => ({
+        ...a,
+        _id: a.id, // Map Supabase id to _id
+        imageUrl: a.image_url,
+        imageHint: a.image_hint,
+        authorSlug: a.author_slug,
+        authorImageUrl: a.author_image_url,
+        publishedAt: a.published_at,
+        focusKeywords: a.focus_keywords,
+        metaDescription: a.meta_description,
       }));
-      return articlesList.sort(
-        (a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
-      );
     }
   } catch (error) {
-    console.error('Error fetching articles from RTDB:', error);
+    console.error('Error in getArticles:', error);
   }
 
   // Fallback to sample data
@@ -55,18 +61,28 @@ export async function getArticleBySlug(slug: string) {
 
 export async function getUsers(): Promise<User[]> {
   try {
-    const usersRef = rtdb.ref('users');
-    const snapshot = await usersRef.get();
+    const supabase = createClient();
+    const { data: usersData, error } = await supabase
+      .from('users')
+      .select('*');
 
-    if (snapshot.exists()) {
-      const usersData = snapshot.val();
-      return Object.keys(usersData).map(key => usersData[key]);
+    if (error) {
+      console.error("Error fetching users from Supabase:", error);
+      return [];
+    }
+
+    if (usersData) {
+      return usersData.map(u => ({
+        ...u,
+        avatarUrl: u.avatar_url,
+        firstName: u.first_name,
+        lastName: u.last_name,
+        createdAt: u.created_at,
+      }));
     }
     return [];
   } catch(error) {
-    console.error("Error fetching users from RTDB:", error);
-    // In case of a permissions error or other issue, return an empty array
-    // The client-side will handle displaying the error message.
+    console.error("Error in getUsers:", error);
     return [];
   }
 }
@@ -82,52 +98,63 @@ export async function getAuthorSlugs(): Promise<string[]> {
     return [...new Set(slugs)];
 }
 
-export async function checkAndCreateUser(user: {
-  uid: string;
-  displayName: string | null;
-  email: string | null;
-  photoURL: string | null;
-}) {
-  try {
-    const usersRef = rtdb.ref('users');
-    const userRef = usersRef.child(user.uid);
-    const snapshot = await userRef.get();
-
-    if (!snapshot.exists()) {
-      // Check if any other users exist to determine if this is the first user.
-      const allUsersSnapshot = await usersRef.limitToFirst(1).get();
-      const isFirstUser = !allUsersSnapshot.exists();
-      
-      const role = isFirstUser ? 'Admin' : 'Subscriber';
-
-      await userRef.set({
-        id: user.uid,
-        name: user.displayName || (user.email ? user.email.split('@')[0] : 'Anonymous'),
-        email: user.email,
-        role: role,
-        avatarUrl: user.photoURL || `https://picsum.photos/seed/${user.uid}/40/40`,
-        createdAt: new Date().toISOString(),
-      });
-      return { created: true, role };
-    }
-
-    return { created: false, role: snapshot.val().role };
-  } catch (error) {
-    console.error('Error creating user:', error);
-    return { error: 'Failed to create user in database.' };
-  }
+export async function checkAndCreateUser(user: any) {
+  // Supabase Auth handles user creation in public.users via PostgreSQL trigger.
+  // We can just verify it here or do nothing since the trigger handles the row creation.
+  return { created: true };
 }
 
-export async function updateUserRole(userId: string, role: 'Admin' | 'Subscriber') {
+export async function updateUserRole(userId: string, role: UserRole) {
     try {
-      const userRef = rtdb.ref(`users/${userId}/role`);
-      await userRef.set(role);
+      const supabase = createClient();
+      const { error } = await supabase
+        .from('users')
+        .update({ role })
+        .eq('id', userId);
+        
+      if (error) throw error;
+      
       revalidatePath('/dashboard');
       return { success: true };
     } catch (error) {
       console.error('Error updating user role:', error);
       return { error: 'Failed to update user role.' };
     }
+}
+
+export async function updateUserProfile(userId: string, data: {
+  name?: string;
+  firstName?: string;
+  lastName?: string;
+  bio?: string;
+  website?: string;
+  avatarUrl?: string;
+}) {
+  try {
+    const supabase = createClient();
+    
+    // Map camelCase to snake_case
+    const updatedData: any = { ...data };
+    if (data.firstName) { updatedData.first_name = data.firstName; delete updatedData.firstName; }
+    if (data.lastName) { updatedData.last_name = data.lastName; delete updatedData.lastName; }
+    if (data.avatarUrl) { updatedData.avatar_url = data.avatarUrl; delete updatedData.avatarUrl; }
+
+    const { data: userData, error } = await supabase
+      .from('users')
+      .update(updatedData)
+      .eq('id', userId)
+      .select()
+      .single();
+
+    if (error) throw error;
+    
+    revalidatePath('/profile');
+    revalidatePath('/dashboard');
+    return { success: true, user: userData };
+  } catch (error) {
+    console.error('Error updating user profile:', error);
+    return { error: 'Failed to update user profile.' };
+  }
 }
 
 export const createArticle = createArticleAction;

@@ -16,12 +16,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import {
-  signInWithEmailAndPassword,
-  signInWithPopup,
-  GoogleAuthProvider,
-} from "firebase/auth";
-import { auth } from "@/lib/firebase";
+import { createClient } from "@/lib/supabase/client";
 import { useState } from "react";
 import {
   Card,
@@ -46,6 +41,7 @@ export default function LoginForm() {
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isGoogleSubmitting, setIsGoogleSubmitting] = useState(false);
+  const supabase = createClient();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -55,33 +51,32 @@ export default function LoginForm() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsSubmitting(true);
     try {
-      const userCredential = await signInWithEmailAndPassword(
-        auth,
-        values.email,
-        values.password
-      );
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: values.email,
+        password: values.password,
+      });
+
+      if (error) throw error;
 
       try {
-        await checkAndCreateUser(userCredential.user);
+        await checkAndCreateUser(data.user);
       } catch (dbError) {
-        console.warn("User created in Firebase Auth but failed in DB:", dbError);
+        console.warn("User created in Supabase Auth but failed in DB:", dbError);
       }
 
       toast({
         title: "Login Successful",
         description: `Welcome back, ${
-          userCredential.user.displayName || userCredential.user.email
+          data.user?.user_metadata?.full_name || data.user?.email
         }!`,
       });
       router.push("/");
     } catch (error: any) {
       let message = "Could not log in. Please try again.";
-      if (error.code === "auth/invalid-credential" || error.code === "auth/wrong-password") {
+      if (error.message.includes("Invalid login credentials")) {
         message = "Invalid email or password.";
-      } else if (error.code === "auth/user-not-found") {
-        message = "No account found with this email.";
-      } else if (error.code === "auth/too-many-requests") {
-        message = "Too many failed attempts. Please try again later.";
+      } else if (error.message.includes("Email not confirmed")) {
+        message = "Please confirm your email address.";
       }
       toast({
         title: "Login Failed",
@@ -93,23 +88,50 @@ export default function LoginForm() {
     }
   }
 
+  async function handleForgotPassword() {
+    const email = form.getValues("email");
+    if (!email) {
+      toast({
+        title: "Email Required",
+        description: "Please enter your email address to reset your password.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/reset-password`,
+      });
+      if (error) throw error;
+      toast({
+        title: "Reset Link Sent",
+        description: "Check your email for instructions to reset your password.",
+      });
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: "Failed to send reset email. Please verify your email address.",
+        variant: "destructive",
+      });
+    }
+  }
+
   async function handleGoogleSignIn() {
     setIsGoogleSubmitting(true);
     try {
-      const provider = new GoogleAuthProvider();
-      const result = await signInWithPopup(auth, provider);
-
-      try {
-        await checkAndCreateUser(result.user);
-      } catch (dbError) {
-        console.warn("Google login succeeded but DB update failed:", dbError);
-      }
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: `${window.location.origin}/auth/callback`,
+        }
+      });
+      if (error) throw error;
 
       toast({
-        title: "Login Successful",
-        description: `Welcome, ${result.user.displayName || result.user.email}!`,
+        title: "Redirecting...",
+        description: "You will be redirected to Google to sign in.",
       });
-      router.push("/");
     } catch {
       toast({
         title: "Login Failed",
@@ -150,7 +172,16 @@ export default function LoginForm() {
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Password</FormLabel>
+                  <div className="flex items-center justify-between">
+                    <FormLabel>Password</FormLabel>
+                    <button
+                      type="button"
+                      onClick={handleForgotPassword}
+                      className="text-sm font-medium text-primary hover:underline"
+                    >
+                      Forgot password?
+                    </button>
+                  </div>
                   <FormControl>
                     <Input type="password" {...field} />
                   </FormControl>

@@ -18,14 +18,11 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { LayoutDashboard, Monitor, Moon, Sun, User as UserIcon, LogOut, LogIn } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { useAuth } from '@/hooks/use-auth';
+import { useToast } from '@/hooks/use-toast';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { auth } from '@/lib/firebase';
-import { useToast } from '@/hooks/use-toast';
-import { useEffect, useState } from 'react';
-import type { User } from '@/lib/types';
-import { rtdb } from '@/lib/firebase';
-import { ref, get } from 'firebase/database';
+import { createClient } from '@/lib/supabase/client';
 
 export default function UserNav() {
   const { setTheme } = useTheme();
@@ -34,13 +31,19 @@ export default function UserNav() {
   const { toast } = useToast();
   const [currentUser, setCurrentUser] = useState<User | null>(null);
 
+  const supabase = createClient();
+
   useEffect(() => {
     async function fetchUserRole() {
       if (user) {
-        const userRef = ref(rtdb, `users/${user.uid}`);
-        const snapshot = await get(userRef);
-        if (snapshot.exists()) {
-          setCurrentUser(snapshot.val());
+        const { data, error } = await supabase
+          .from('users')
+          .select('*')
+          .eq('id', user.id)
+          .single();
+          
+        if (data) {
+          setCurrentUser(data);
         }
       } else {
         setCurrentUser(null);
@@ -60,7 +63,7 @@ export default function UserNav() {
 
   const handleLogout = async () => {
     try {
-      await auth.signOut();
+      await supabase.auth.signOut();
       toast({
         title: 'Logged out',
         description: 'You have been successfully logged out.',
@@ -77,15 +80,15 @@ export default function UserNav() {
     }
   };
 
-  const displayName = user?.displayName || user?.email?.split('@')[0] || 'Anonymous User';
+  const displayName = user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'Anonymous User';
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="relative h-8 w-8 rounded-full hover:ring-2 hover:ring-primary hover:ring-offset-2 hover:ring-offset-background transition-all">
           <Avatar className="h-8 w-8">
-            <AvatarImage src={user?.photoURL ?? undefined} alt={displayName} />
-            <AvatarFallback>{getInitials(user?.displayName)}</AvatarFallback>
+            <AvatarImage src={user?.user_metadata?.avatar_url ?? undefined} alt={displayName} />
+            <AvatarFallback>{getInitials(displayName)}</AvatarFallback>
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
@@ -110,14 +113,12 @@ export default function UserNav() {
                       <span>Profile</span>
                   </Link>
               </DropdownMenuItem>
-              {currentUser?.role === 'Admin' && (
-                <DropdownMenuItem asChild>
-                  <Link href="/dashboard">
-                    <LayoutDashboard className="mr-2 h-4 w-4" />
-                    <span>Dashboard</span>
-                  </Link>
-                </DropdownMenuItem>
-              )}
+              <DropdownMenuItem asChild>
+                <Link href="/dashboard">
+                  <LayoutDashboard className="mr-2 h-4 w-4" />
+                  <span>Dashboard</span>
+                </Link>
+              </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
           </>

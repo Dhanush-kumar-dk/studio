@@ -9,11 +9,11 @@ import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
-import { auth } from "@/lib/firebase";
+import { createClient } from "@/lib/supabase/client";
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
+import GoogleIcon from "@/components/icons/google";
 import Link from "next/link";
 import { checkAndCreateUser } from "@/app/actions";
 
@@ -27,6 +27,8 @@ export default function SignupForm() {
   const router = useRouter();
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isGoogleSubmitting, setIsGoogleSubmitting] = useState(false);
+  const supabase = createClient();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -36,21 +38,28 @@ export default function SignupForm() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsSubmitting(true);
     try {
-      const userCredential = await createUserWithEmailAndPassword(auth, values.email, values.password);
-      await updateProfile(userCredential.user, { displayName: values.name });
-      await checkAndCreateUser({
-        uid: userCredential.user.uid,
-        displayName: values.name,
-        email: userCredential.user.email,
-        photoURL: userCredential.user.photoURL,
+      const { data, error } = await supabase.auth.signUp({
+        email: values.email,
+        password: values.password,
+        options: {
+          data: {
+            full_name: values.name,
+          }
+        }
       });
+      
+      if (error) throw error;
+      
+      if (data.user) {
+        await checkAndCreateUser(data.user);
+      }
       toast({ title: "Account created!", description: "You have successfully signed up." });
-      router.push("/login");
+      router.push("/");
     } catch (error: any) {
       toast({
         title: "Signup Failed",
         description:
-          error.code === "auth/email-already-in-use"
+          error.message.includes("User already registered")
             ? "This email is already in use."
             : "Could not sign up. Please try again.",
         variant: "destructive",
@@ -60,13 +69,39 @@ export default function SignupForm() {
     }
   }
 
+  async function handleGoogleSignIn() {
+    setIsGoogleSubmitting(true);
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: `${window.location.origin}/auth/callback`,
+        }
+      });
+      if (error) throw error;
+
+      toast({
+        title: "Redirecting...",
+        description: "You will be redirected to Google to sign in.",
+      });
+    } catch {
+      toast({
+        title: "Login Failed",
+        description: "Could not sign up with Google.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsGoogleSubmitting(false);
+    }
+  }
+
   return (
     <Card className="w-full max-w-sm">
       <CardHeader>
         <CardTitle className="text-2xl">Sign Up</CardTitle>
         <CardDescription>Enter your information to create an account.</CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className="grid gap-4">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField
@@ -108,7 +143,7 @@ export default function SignupForm() {
                 </FormItem>
               )}
             />
-            <Button type="submit" disabled={isSubmitting} className="w-full">
+            <Button type="submit" disabled={isSubmitting || isGoogleSubmitting} className="w-full">
               {isSubmitting ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Signing up...
@@ -119,6 +154,28 @@ export default function SignupForm() {
             </Button>
           </form>
         </Form>
+        <div className="relative">
+          <div className="absolute inset-0 flex items-center">
+            <span className="w-full border-t" />
+          </div>
+          <div className="relative flex justify-center text-xs uppercase">
+            <span className="bg-background px-2 text-muted-foreground">
+              Or continue with
+            </span>
+          </div>
+        </div>
+        <Button
+          variant="outline"
+          onClick={handleGoogleSignIn}
+          disabled={isSubmitting || isGoogleSubmitting}
+        >
+          {isGoogleSubmitting ? (
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+          ) : (
+            <GoogleIcon className="mr-2 h-4 w-4" />
+          )}{" "}
+          Google
+        </Button>
       </CardContent>
       <CardFooter className="justify-center text-sm">
         <p>
@@ -131,3 +188,4 @@ export default function SignupForm() {
     </Card>
   );
 }
+

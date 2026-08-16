@@ -1,9 +1,7 @@
-
 'use server';
 
-import { rtdb } from '@/lib/firebase-admin';
 import { revalidatePath } from 'next/cache';
-import { v4 as uuidv4 } from 'uuid';
+import { createClient } from '@/lib/supabase/server';
 
 const generateSlug = (title: string) => {
   return title
@@ -31,28 +29,30 @@ export async function createArticle(data: {
   slug?: string;
 }) {
   try {
-    const id = uuidv4();
     const slug = data.slug || generateSlug(data.title);
     const authorSlug = generateAuthorSlug(data.author);
 
     const newArticle = {
-      id,
       slug,
-      authorSlug,
+      author_slug: authorSlug,
       title: data.title,
       content: data.content,
-      imageUrl: data.imageUrl,
+      image_url: data.imageUrl,
       category: data.category,
       excerpt: data.excerpt,
       author: data.author,
-      authorImageUrl: `https://picsum.photos/seed/${authorSlug}/40/40`,
-      focusKeywords: data.focusKeywords.split(',').map(kw => kw.trim()),
-      metaDescription: data.metaDescription,
-      publishedAt: new Date().toISOString(),
-      imageHint: 'new article',
+      author_image_url: `https://picsum.photos/seed/${authorSlug}/40/40`,
+      focus_keywords: data.focusKeywords.split(',').map(kw => kw.trim()),
+      meta_description: data.metaDescription,
+      image_hint: 'new article',
     };
 
-    await rtdb.ref(`articles/${id}`).set(newArticle);
+    const supabase = createClient();
+    const { error } = await supabase
+      .from('articles')
+      .insert([newArticle]);
+
+    if (error) throw error;
 
     revalidatePath('/');
     revalidatePath(`/articles/${slug}`);
@@ -79,37 +79,43 @@ export async function updateArticle(
   }
 ) {
   try {
-    const articleRef = rtdb.ref(`articles/${articleId}`);
-    const snapshot = await articleRef.get();
-    if (!snapshot.exists()) {
-      return { error: 'Article not found.' };
-    }
-
-    const existingArticle = snapshot.val();
     const slug = data.slug || generateSlug(data.title);
     const authorSlug = generateAuthorSlug(data.author);
 
     const updatedArticle = {
-      ...existingArticle,
       title: data.title,
       content: data.content,
-      imageUrl: data.imageUrl,
+      image_url: data.imageUrl,
       category: data.category,
       excerpt: data.excerpt,
       author: data.author,
-      authorSlug,
-      authorImageUrl: `https://picsum.photos/seed/${authorSlug}/40/40`,
-      focusKeywords: data.focusKeywords.split(',').map(kw => kw.trim()),
-      metaDescription: data.metaDescription,
+      author_slug: authorSlug,
+      author_image_url: `https://picsum.photos/seed/${authorSlug}/40/40`,
+      focus_keywords: data.focusKeywords.split(',').map(kw => kw.trim()),
+      meta_description: data.metaDescription,
       slug,
     };
 
-    await articleRef.set(updatedArticle);
+    const supabase = createClient();
+    const { data: existingData, error: fetchError } = await supabase
+      .from('articles')
+      .select('slug')
+      .eq('id', articleId)
+      .single();
+
+    if (fetchError) throw fetchError;
+
+    const { error: updateError } = await supabase
+      .from('articles')
+      .update(updatedArticle)
+      .eq('id', articleId);
+
+    if (updateError) throw updateError;
 
     revalidatePath('/');
     revalidatePath(`/articles/${slug}`);
-    if (existingArticle.slug && existingArticle.slug !== slug) {
-      revalidatePath(`/articles/${existingArticle.slug}`);
+    if (existingData.slug && existingData.slug !== slug) {
+      revalidatePath(`/articles/${existingData.slug}`);
     }
 
     return { slug };
@@ -121,14 +127,21 @@ export async function updateArticle(
 
 export async function deleteArticle(articleId: string) {
     try {
-        const articleRef = rtdb.ref(`articles/${articleId}`);
-        const snapshot = await articleRef.get();
-        if (!snapshot.exists()) {
-            return { error: 'Article not found.' };
-        }
-        const article = snapshot.val();
+        const supabase = createClient();
+        const { data: article, error: fetchError } = await supabase
+          .from('articles')
+          .select('slug')
+          .eq('id', articleId)
+          .single();
 
-        await articleRef.remove();
+        if (fetchError) throw fetchError;
+
+        const { error: deleteError } = await supabase
+          .from('articles')
+          .delete()
+          .eq('id', articleId);
+
+        if (deleteError) throw deleteError;
         
         revalidatePath('/');
         revalidatePath(`/articles/${article.slug}`);
