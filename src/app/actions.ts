@@ -3,7 +3,7 @@
 import { createArticle as createArticleAction, updateArticle as updateArticleAction, deleteArticle as deleteArticleAction } from '@/lib/articles';
 import type { Article, User, UserRole } from '@/lib/types';
 import { revalidatePath } from 'next/cache';
-import { createClient } from '@/lib/supabase/server';
+import { createClient, createPublicClient } from '@/lib/supabase/server';
 import { v4 as uuidv4 } from 'uuid';
 import { articles as sampleArticles } from '@/lib/data';
 
@@ -20,7 +20,7 @@ const generateSlug = (title: string) => {
 
 export async function getArticles(): Promise<(Article & { _id: string })[]> {
   try {
-    const supabase = createClient();
+    const supabase = createPublicClient();
     const { data: articlesData, error } = await supabase
       .from('articles')
       .select('*')
@@ -66,7 +66,7 @@ export async function getArticleBySlug(slug: string) {
 
 export async function getUsers(): Promise<User[]> {
   try {
-    const supabase = createClient();
+    const supabase = createPublicClient();
     const { data: usersData, error } = await supabase
       .from('users')
       .select('*');
