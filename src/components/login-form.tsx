@@ -144,10 +144,10 @@ export default function LoginForm() {
         title: "Redirecting...",
         description: "You will be redirected to Google to sign in.",
       });
-    } catch {
+    } catch (error: any) {
       toast({
         title: "Login Failed",
-        description: "Could not log in with Google.",
+        description: error?.message || "Could not log in with Google.",
         variant: "destructive",
       });
     } finally {
