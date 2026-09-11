@@ -4,7 +4,7 @@ import Image from 'next/image';
 import { Calendar, Pencil } from 'lucide-react';
 import DeleteArticleButton from '@/components/delete-article-button';
 import Link from 'next/link';
-import TextToSpeech from '@/components/text-to-speech';
+import ArticleAudioPlayer from '@/components/article-audio-player';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import Header from '@/components/header';
@@ -63,7 +63,6 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
               </div>
 
               <div className="flex items-center gap-2">
-                <TextToSpeech text={`${article.title}. ${article.content}`} />
                 <Button asChild variant="outline" size="sm" className="h-9 gap-1.5 border-border/80 text-xs font-medium hover:border-orange-500 hover:text-orange-600 dark:hover:text-orange-400">
                   <Link href={`/edit-post/${article.slug}`}>
                     <Pencil className="h-3.5 w-3.5" />
@@ -73,6 +72,13 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
                 <DeleteArticleButton articleId={articleId} />
               </div>
             </div>
+
+            {/* Prominent Audio Narration Player */}
+            <ArticleAudioPlayer 
+              title={article.title} 
+              content={article.content} 
+              author={article.author} 
+            />
           </div>
 
           <div className="relative mb-10 h-72 sm:h-96 md:h-[460px] w-full overflow-hidden rounded-2xl border border-border/60 bg-muted shadow-sm">
