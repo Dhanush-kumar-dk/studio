@@ -215,16 +215,18 @@ export default function LoginForm() {
           </div>
         </div>
         <Button
+          type="button"
           variant="outline"
+          className="w-full flex items-center justify-center gap-2 border-border/80 hover:bg-muted/80"
           onClick={handleGoogleSignIn}
           disabled={isSubmitting || isGoogleSubmitting}
         >
           {isGoogleSubmitting ? (
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            <Loader2 className="h-4 w-4 animate-spin" />
           ) : (
-            <GoogleIcon className="mr-2 h-4 w-4" />
-          )}{" "}
-          Google
+            <GoogleIcon className="h-4 w-4" />
+          )}
+          <span>Sign in with Google</span>
         </Button>
       </CardContent>
       <CardFooter className="justify-center text-sm">

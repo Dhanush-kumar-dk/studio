@@ -27,11 +27,12 @@ export async function getArticles(): Promise<(Article & { _id: string })[]> {
       .order('published_at', { ascending: false });
 
     if (error) {
-      console.error('Error fetching articles from Supabase:', error);
-      throw error;
-    }
-
-    if (articlesData && articlesData.length > 0) {
+      if (error.message?.includes('fetch failed') || error.details?.includes('ENOTFOUND')) {
+        console.warn('[Supabase] Unable to connect to Supabase (project may be paused or starting up). Serving local fallback articles.');
+      } else {
+        console.error('Error fetching articles from Supabase:', error);
+      }
+    } else if (articlesData && articlesData.length > 0) {
       return articlesData.map(a => ({
         ...a,
         _id: a.id, // Map Supabase id to _id
@@ -44,8 +45,12 @@ export async function getArticles(): Promise<(Article & { _id: string })[]> {
         metaDescription: a.meta_description,
       }));
     }
-  } catch (error) {
-    console.error('Error in getArticles:', error);
+  } catch (error: any) {
+    if (error?.message?.includes('fetch failed') || error?.cause?.code === 'ENOTFOUND') {
+      console.warn('[Supabase] Connection failed (project may be paused or starting up). Serving local fallback articles.');
+    } else {
+      console.error('Error in getArticles:', error);
+    }
   }
 
   // Fallback to sample data

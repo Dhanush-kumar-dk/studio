@@ -82,12 +82,12 @@ export default function SignupForm() {
 
       toast({
         title: "Redirecting...",
-        description: "You will be redirected to Google to sign in.",
+        description: "You will be redirected to Google to sign up.",
       });
-    } catch {
+    } catch (error: any) {
       toast({
-        title: "Login Failed",
-        description: "Could not sign up with Google.",
+        title: "Google Sign-Up Failed",
+        description: error?.message || "Could not sign up with Google.",
         variant: "destructive",
       });
     } finally {
@@ -165,16 +165,18 @@ export default function SignupForm() {
           </div>
         </div>
         <Button
+          type="button"
           variant="outline"
+          className="w-full flex items-center justify-center gap-2 border-border/80 hover:bg-muted/80"
           onClick={handleGoogleSignIn}
           disabled={isSubmitting || isGoogleSubmitting}
         >
           {isGoogleSubmitting ? (
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            <Loader2 className="h-4 w-4 animate-spin" />
           ) : (
-            <GoogleIcon className="mr-2 h-4 w-4" />
-          )}{" "}
-          Google
+            <GoogleIcon className="h-4 w-4" />
+          )}
+          <span>Sign up with Google</span>
         </Button>
       </CardContent>
       <CardFooter className="justify-center text-sm">
