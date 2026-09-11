@@ -23,13 +23,14 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
+import type { User as AppUser } from '@/lib/types';
 
 export default function UserNav() {
   const { setTheme } = useTheme();
   const { user } = useAuth();
   const router = useRouter();
   const { toast } = useToast();
-  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [currentUser, setCurrentUser] = useState<AppUser | null>(null);
 
   const supabase = createClient();
 

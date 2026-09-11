@@ -28,8 +28,9 @@ import { useRouter } from 'next/navigation';
     children: React.ReactNode;
   }>) {
     const { user, loading } = useAuth();
+    const router = useRouter();
     const [currentUser, setCurrentUser] = useState<AppUser | null>(null);
-  const supabase = createClient();
+    const supabase = createClient();
 
   useEffect(() => {
       async function fetchUserRole() {

@@ -129,7 +129,7 @@ export default function UserTable({ users: initialUsers, searchQuery }: UserTabl
                       <Select
                         value={user.role}
                         onValueChange={(val: UserRole) => handleRoleChange(user.id, val)}
-                        disabled={user.id === currentUser?.uid}
+                        disabled={user.id === currentUser?.id}
                       >
                         <SelectTrigger className="w-[130px] h-8 text-xs">
                           <SelectValue placeholder="Select role" />
