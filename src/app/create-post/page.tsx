@@ -2,11 +2,17 @@
 
 export const dynamic = 'force-dynamic';
 
-import { Suspense } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import Header from '@/components/header';
 import Footer from '@/components/footer';
 import Newsletter from '@/components/newsletter';
 import dynamic_ from 'next/dynamic';
+import { useAuth } from '@/hooks/use-auth';
+import { useRouter } from 'next/navigation';
+import { createClient } from '@/lib/supabase/client';
+import { Loader2, ShieldAlert } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import Link from 'next/link';
 
 const CreateArticleForm = dynamic_(() => import('@/components/create-article-form'), {
   ssr: false,
@@ -14,6 +20,70 @@ const CreateArticleForm = dynamic_(() => import('@/components/create-article-for
 });
 
 export default function CreatePostPage() {
+  const { user, loading } = useAuth();
+  const router = useRouter();
+  const [role, setRole] = useState<string | null>(null);
+  const [roleLoading, setRoleLoading] = useState(true);
+
+  useEffect(() => {
+    async function checkPermission() {
+      if (!loading) {
+        if (!user) {
+          router.push('/login');
+          return;
+        }
+
+        try {
+          const supabase = createClient();
+          const { data } = await supabase
+            .from('users')
+            .select('role')
+            .eq('id', user.id)
+            .maybeSingle();
+
+          setRole(data?.role || 'User');
+        } catch {
+          setRole('User');
+        } finally {
+          setRoleLoading(false);
+        }
+      }
+    }
+
+    checkPermission();
+  }, [user, loading, router]);
+
+  if (loading || roleLoading) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-orange-500" />
+      </div>
+    );
+  }
+
+  const canPost = role === 'Admin' || role === 'Editor' || role === 'Author';
+
+  if (!canPost) {
+    return (
+      <>
+        <Header />
+        <main className="flex-1 flex items-center justify-center p-8">
+          <div className="max-w-md text-center space-y-4 p-6 border rounded-lg bg-card">
+            <ShieldAlert className="h-12 w-12 text-amber-500 mx-auto" />
+            <h2 className="text-xl font-bold">Author Permission Required</h2>
+            <p className="text-sm text-muted-foreground">
+              Your current account role is <span className="font-semibold capitalize text-foreground">{role}</span>. Only Authors, Editors, and Admins can publish articles.
+            </p>
+            <Button asChild className="bg-orange-500 hover:bg-orange-600 text-white">
+              <Link href="/dashboard">Go to Dashboard</Link>
+            </Button>
+          </div>
+        </main>
+        <Footer />
+      </>
+    );
+  }
+
   return (
     <>
       <Header />

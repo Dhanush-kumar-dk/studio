@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { createServerClient } from '@supabase/ssr';
+import { createAdminClient } from '@/lib/supabase/server';
 
 export async function GET(request: NextRequest) {
   const { searchParams, origin } = new URL(request.url);
@@ -57,9 +58,37 @@ export async function GET(request: NextRequest) {
       }
     );
 
-    const { error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
+    const { data: sessionData, error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
 
     if (!exchangeError) {
+      // Sync user profile into public.users if not already created
+      if (sessionData?.user) {
+        try {
+          const adminClient = createAdminClient();
+          const { data: existingUser } = await adminClient
+            .from('users')
+            .select('id')
+            .eq('id', sessionData.user.id)
+            .maybeSingle();
+
+          if (!existingUser) {
+            const u = sessionData.user;
+            const name = u.user_metadata?.full_name || u.user_metadata?.name || u.email?.split('@')[0] || 'User';
+            const avatarUrl = u.user_metadata?.avatar_url || u.user_metadata?.picture || `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=random`;
+
+            await adminClient.from('users').insert({
+              id: u.id,
+              email: u.email,
+              name: name,
+              avatar_url: avatarUrl,
+              role: 'User',
+            });
+          }
+        } catch (syncError) {
+          console.error('Error syncing user profile in callback:', syncError);
+        }
+      }
+
       console.log('Successfully exchanged code for session. Redirecting to:', `${baseUrl}${next}`);
       return response;
     } else {

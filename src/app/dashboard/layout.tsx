@@ -21,6 +21,7 @@ import { useEffect, useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import type { User as AppUser } from '@/lib/types';
 import { useRouter } from 'next/navigation';
+import { checkAndCreateUser } from '@/app/actions';
   
   export default function DashboardLayout({
     children,
@@ -35,26 +36,42 @@ import { useRouter } from 'next/navigation';
   useEffect(() => {
       async function fetchUserRole() {
         if (user) {
-          const { data, error } = await supabase
+          const { data } = await supabase
             .from('users')
             .select('*')
             .eq('id', user.id)
-            .single();
+            .maybeSingle();
             
           if (data) {
             setCurrentUser(data);
           } else {
-            // User exists in auth but not in DB, maybe redirect or handle
-            setCurrentUser(null);
-            router.push('/');
+            // Auto-sync user in public.users
+            await checkAndCreateUser(user);
+            const { data: syncedUser } = await supabase
+              .from('users')
+              .select('*')
+              .eq('id', user.id)
+              .maybeSingle();
+
+            if (syncedUser) {
+              setCurrentUser(syncedUser);
+            } else {
+              setCurrentUser({
+                id: user.id,
+                name: user.user_metadata?.full_name || user.email?.split('@')[0] || 'User',
+                email: user.email || '',
+                role: 'User',
+                avatarUrl: user.user_metadata?.avatar_url || '',
+              });
+            }
           }
         } else if (!loading) {
-             // No user, not loading, so redirect
-             router.push('/login');
-          }
+          // No user, not loading, so redirect
+          router.push('/login');
         }
-        fetchUserRole();
-      }, [user, loading, router]);
+      }
+      fetchUserRole();
+    }, [user, loading, router]);
     
       if (loading || !currentUser) {
         return (

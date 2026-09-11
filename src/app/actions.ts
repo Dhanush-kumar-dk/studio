@@ -3,7 +3,7 @@
 import { createArticle as createArticleAction, updateArticle as updateArticleAction, deleteArticle as deleteArticleAction } from '@/lib/articles';
 import type { Article, User, UserRole } from '@/lib/types';
 import { revalidatePath } from 'next/cache';
-import { createClient, createPublicClient } from '@/lib/supabase/server';
+import { createClient, createPublicClient, createAdminClient } from '@/lib/supabase/server';
 import { v4 as uuidv4 } from 'uuid';
 import { articles as sampleArticles } from '@/lib/data';
 
@@ -104,14 +104,38 @@ export async function getAuthorSlugs(): Promise<string[]> {
 }
 
 export async function checkAndCreateUser(user: any) {
-  // Supabase Auth handles user creation in public.users via PostgreSQL trigger.
-  // We can just verify it here or do nothing since the trigger handles the row creation.
-  return { created: true };
+  if (!user || !user.id) return { created: false };
+  try {
+    const supabase = createAdminClient();
+    const { data: existingUser } = await supabase
+      .from('users')
+      .select('id, role')
+      .eq('id', user.id)
+      .maybeSingle();
+
+    if (!existingUser) {
+      const name = user.user_metadata?.full_name || user.user_metadata?.name || user.email?.split('@')[0] || 'User';
+      const avatarUrl = user.user_metadata?.avatar_url || user.user_metadata?.picture || `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=random`;
+
+      const { error } = await supabase.from('users').insert({
+        id: user.id,
+        email: user.email,
+        name: name,
+        avatar_url: avatarUrl,
+        role: 'User',
+      });
+      if (error) console.error('Error inserting user in checkAndCreateUser:', error);
+    }
+    return { created: true };
+  } catch (error) {
+    console.error('Error in checkAndCreateUser:', error);
+    return { created: false, error };
+  }
 }
 
 export async function updateUserRole(userId: string, role: UserRole) {
     try {
-      const supabase = createClient();
+      const supabase = createAdminClient();
       const { error } = await supabase
         .from('users')
         .update({ role })
@@ -136,7 +160,7 @@ export async function updateUserProfile(userId: string, data: {
   avatarUrl?: string;
 }) {
   try {
-    const supabase = createClient();
+    const supabase = createAdminClient();
     
     // Map camelCase to snake_case
     const updatedData: any = { ...data };

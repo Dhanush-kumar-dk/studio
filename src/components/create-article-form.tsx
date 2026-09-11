@@ -29,6 +29,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Loader2, X, Link as LinkIcon, Heading2, Heading3, Pilcrow } from 'lucide-react';
 import type { Article } from '@/lib/types';
+import { useAuth } from '@/hooks/use-auth';
 import LinkEditor from './link-editor';
 
 const formSchema = z.object({
@@ -50,6 +51,7 @@ type CreateArticleFormProps = {
 export default function CreateArticleForm({ article }: CreateArticleFormProps) {
   const router = useRouter();
   const { toast } = useToast();
+  const { user } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const isEditMode = !!article;
   const contentRef = useRef<HTMLTextAreaElement>(null);
@@ -89,6 +91,15 @@ export default function CreateArticleForm({ article }: CreateArticleFormProps) {
         setImageUrl('');
     }
   }, [watchedImageUrl, form, isEditMode]);
+
+  useEffect(() => {
+    if (user && !isEditMode && (!form.getValues('author') || form.getValues('author') === 'Anonymous')) {
+      const name = user.user_metadata?.full_name || user.user_metadata?.name || user.email?.split('@')[0] || '';
+      if (name) {
+        form.setValue('author', name);
+      }
+    }
+  }, [user, isEditMode, form]);
 
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
