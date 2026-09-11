@@ -4,7 +4,14 @@ import { createClient } from '@/lib/supabase/server';
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
   const code = searchParams.get('code');
+  const error = searchParams.get('error');
+  const error_description = searchParams.get('error_description');
   const next = searchParams.get('next') ?? '/';
+
+  if (error) {
+    const errorMsg = error_description || error;
+    return NextResponse.redirect(`${origin}/login?error=${encodeURIComponent(errorMsg)}`);
+  }
 
   if (code) {
     const supabase = createClient();
