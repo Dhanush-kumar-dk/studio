@@ -21,18 +21,6 @@ const teamMembers = [
     bio: 'Vedika is a student of Economics and Finance at the University of Winchester and a Royal Navy Officer Cadet (URNU)...',
     imageUrl: 'https://picsum.photos/seed/vedika-joshi/150/150',
   },
-  {
-    name: 'Mr Victor Ohagwasi',
-    role: 'Consultant',
-    bio: "Victor is a Data Analyst and Brand/Product Designer currently embedded in the World Bank-supported L-PRES project...",
-    imageUrl: 'https://picsum.photos/seed/victor-ohagwasi/150/150',
-  },
-  {
-    name: 'Mr Joshua Pinto',
-    role: 'Finance and Sponsorship Lead',
-    bio: 'Joshua is a First-Class Economics & Finance graduate from Lancaster University...',
-    imageUrl: 'https://picsum.photos/seed/joshua-pinto/150/150',
-  },
 ];
 
 function AboutContent() {

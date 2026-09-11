@@ -4,6 +4,7 @@ import { Toaster } from '@/components/ui/toaster';
 import { cn } from '@/lib/utils';
 import { ThemeProvider } from '@/components/theme-provider';
 import { Providers } from '@/components/providers';
+import ChatBot from '@/components/chat-bot';
 
 export const metadata: Metadata = {
   title: 'Debt & Dominion | Insights & Analysis',
@@ -25,7 +26,7 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body className={cn('font-body bg-background text-foreground antialiased selection:bg-emerald-500/20 selection:text-emerald-500')}>
+      <body className={cn('font-body bg-background text-foreground antialiased selection:bg-orange-500/20 selection:text-orange-500')}>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
@@ -37,6 +38,7 @@ export default function RootLayout({
               {children}
             </div>
             <Toaster />
+            <ChatBot />
           </Providers>
         </ThemeProvider>
       </body>

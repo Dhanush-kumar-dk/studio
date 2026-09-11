@@ -61,9 +61,9 @@ export default function Footer() {
             <h3 className="font-headline text-sm font-bold uppercase tracking-wider text-foreground">Connect</h3>
             <ul className="mt-4 space-y-2.5 text-sm">
               <li>
-                <a href="mailto:contact@debtanddominion.com" className="flex items-center gap-2.5 text-muted-foreground transition-colors hover:text-emerald-600 dark:hover:text-emerald-400">
+                <a href="mailto:debtdominionofficial@gmail.com" className="flex items-center gap-2.5 text-muted-foreground transition-colors hover:text-emerald-600 dark:hover:text-emerald-400">
                   <Mail className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
-                  <span>contact@debtanddominion.com</span>
+                  <span>debtdominionofficial@gmail.com</span>
                 </a>
               </li>
               <li>
