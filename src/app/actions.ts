@@ -66,10 +66,28 @@ export async function getArticleBySlug(slug: string) {
 
 export async function getUsers(): Promise<User[]> {
   try {
-    const supabase = createPublicClient();
-    const { data: usersData, error } = await supabase
+    const authClient = createClient();
+    const { data: { user } } = await authClient.auth.getUser();
+
+    // Only authenticated users can request user lists
+    if (!user) return [];
+
+    const adminClient = createAdminClient();
+    const { data: caller } = await adminClient
       .from('users')
-      .select('*');
+      .select('role')
+      .eq('id', user.id)
+      .maybeSingle();
+
+    // Only Admins and Editors are authorized to view full user management data
+    if (caller?.role !== 'Admin' && caller?.role !== 'Editor') {
+      return [];
+    }
+
+    const { data: usersData, error } = await adminClient
+      .from('users')
+      .select('*')
+      .order('created_at', { ascending: false });
 
     if (error) {
       console.error("Error fetching users from Supabase:", error);
@@ -134,21 +152,42 @@ export async function checkAndCreateUser(user: any) {
 }
 
 export async function updateUserRole(userId: string, role: UserRole) {
-    try {
-      const supabase = createAdminClient();
-      const { error } = await supabase
-        .from('users')
-        .update({ role })
-        .eq('id', userId);
-        
-      if (error) throw error;
-      
-      revalidatePath('/dashboard');
-      return { success: true };
-    } catch (error) {
-      console.error('Error updating user role:', error);
-      return { error: 'Failed to update user role.' };
+  try {
+    const authClient = createClient();
+    const { data: { user }, error: authError } = await authClient.auth.getUser();
+
+    if (authError || !user) {
+      return { error: 'Unauthorized. You must be signed in to modify roles.' };
     }
+
+    const adminClient = createAdminClient();
+    const { data: callerProfile } = await adminClient
+      .from('users')
+      .select('role')
+      .eq('id', user.id)
+      .maybeSingle();
+
+    if (callerProfile?.role !== 'Admin') {
+      return { error: 'Forbidden. Only Admins can modify user roles.' };
+    }
+
+    if (user.id === userId && role !== 'Admin') {
+      return { error: 'Cannot remove Admin role from your own account.' };
+    }
+
+    const { error } = await adminClient
+      .from('users')
+      .update({ role })
+      .eq('id', userId);
+      
+    if (error) throw error;
+    
+    revalidatePath('/dashboard');
+    return { success: true };
+  } catch (error: any) {
+    console.error('Error updating user role:', error);
+    return { error: error?.message || 'Failed to update user role.' };
+  }
 }
 
 export async function updateUserProfile(userId: string, data: {
@@ -160,15 +199,35 @@ export async function updateUserProfile(userId: string, data: {
   avatarUrl?: string;
 }) {
   try {
-    const supabase = createAdminClient();
+    const authClient = createClient();
+    const { data: { user }, error: authError } = await authClient.auth.getUser();
+
+    if (authError || !user) {
+      return { error: 'Unauthorized. You must be signed in to update a profile.' };
+    }
+
+    const adminClient = createAdminClient();
+
+    // Verify caller is either the owner or an Admin
+    if (user.id !== userId) {
+      const { data: callerProfile } = await adminClient
+        .from('users')
+        .select('role')
+        .eq('id', user.id)
+        .maybeSingle();
+
+      if (callerProfile?.role !== 'Admin') {
+        return { error: 'Forbidden. You can only update your own profile.' };
+      }
+    }
     
     // Map camelCase to snake_case
     const updatedData: any = { ...data };
-    if (data.firstName) { updatedData.first_name = data.firstName; delete updatedData.firstName; }
-    if (data.lastName) { updatedData.last_name = data.lastName; delete updatedData.lastName; }
-    if (data.avatarUrl) { updatedData.avatar_url = data.avatarUrl; delete updatedData.avatarUrl; }
+    if (data.firstName !== undefined) { updatedData.first_name = data.firstName; delete updatedData.firstName; }
+    if (data.lastName !== undefined) { updatedData.last_name = data.lastName; delete updatedData.lastName; }
+    if (data.avatarUrl !== undefined) { updatedData.avatar_url = data.avatarUrl; delete updatedData.avatarUrl; }
 
-    const { data: userData, error } = await supabase
+    const { data: userData, error } = await adminClient
       .from('users')
       .update(updatedData)
       .eq('id', userId)
@@ -180,9 +239,9 @@ export async function updateUserProfile(userId: string, data: {
     revalidatePath('/profile');
     revalidatePath('/dashboard');
     return { success: true, user: userData };
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error updating user profile:', error);
-    return { error: 'Failed to update user profile.' };
+    return { error: error?.message || 'Failed to update user profile.' };
   }
 }
 

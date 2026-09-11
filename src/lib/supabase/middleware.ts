@@ -35,8 +35,12 @@ export async function updateSession(request: NextRequest) {
     }
   );
 
-  // Refresh auth token
-  await supabase.auth.getUser();
+  // Refresh auth token safely without crashing the request if Supabase has network issues
+  try {
+    await supabase.auth.getUser();
+  } catch (err) {
+    // Ignore auth refresh errors so the page still loads
+  }
 
   return supabaseResponse;
 }
