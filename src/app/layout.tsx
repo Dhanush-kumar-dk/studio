@@ -5,6 +5,7 @@ import { cn } from '@/lib/utils';
 import { ThemeProvider } from '@/components/theme-provider';
 import { Providers } from '@/components/providers';
 import ChatBot from '@/components/chat-bot';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 
 export const metadata: Metadata = {
   title: 'Debt & Dominion | Insights & Analysis',
@@ -39,6 +40,7 @@ export default function RootLayout({
             </div>
             <Toaster />
             <ChatBot />
+            <SpeedInsights />
           </Providers>
         </ThemeProvider>
       </body>

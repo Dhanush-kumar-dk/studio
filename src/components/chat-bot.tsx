@@ -11,19 +11,39 @@ export default function ChatBot() {
     { role: 'ai', text: 'Hello! I am the Debt & Dominion AI assistant. How can I help you navigate the complex worlds of finance and power today?' }
   ]);
   const [inputValue, setInputValue] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSend = (e: React.FormEvent) => {
+  const handleSend = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!inputValue.trim()) return;
+    if (!inputValue.trim() || isLoading) return;
 
-    setMessages(prev => [...prev, { role: 'user', text: inputValue }]);
-    
-    // Simulate AI response
-    setTimeout(() => {
-      setMessages(prev => [...prev, { role: 'ai', text: "Thanks for your question! I'm currently running in demo mode without an active API key, but I'm ready to be integrated with a real LLM soon." }]);
-    }, 1000);
-
+    const userMessage = inputValue;
+    setMessages(prev => [...prev, { role: 'user', text: userMessage }]);
     setInputValue('');
+    setIsLoading(true);
+
+    try {
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ message: userMessage }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setMessages(prev => [...prev, { role: 'ai', text: data.text }]);
+      } else {
+        setMessages(prev => [...prev, { role: 'ai', text: 'Sorry, I encountered an error. Please try again later.' }]);
+      }
+    } catch (error) {
+      console.error('Chat error:', error);
+      setMessages(prev => [...prev, { role: 'ai', text: 'Sorry, there was a problem connecting to the server.' }]);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -72,6 +92,15 @@ export default function ChatBot() {
                   </div>
                 </div>
               ))}
+              {isLoading && (
+                <div className="flex justify-start">
+                  <div className="bg-card text-foreground border border-border rounded-2xl rounded-tl-sm px-4 py-3 text-sm shadow-sm flex gap-1 items-center">
+                    <span className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce [animation-delay:-0.3s]"></span>
+                    <span className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce [animation-delay:-0.15s]"></span>
+                    <span className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce"></span>
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Input Area */}
@@ -83,7 +112,7 @@ export default function ChatBot() {
                   onChange={(e) => setInputValue(e.target.value)}
                   className="rounded-full focus-visible:ring-orange-500"
                 />
-                <Button type="submit" size="icon" className="rounded-full bg-orange-600 hover:bg-orange-700 text-white">
+                <Button type="submit" size="icon" disabled={isLoading} className="rounded-full bg-orange-600 hover:bg-orange-700 text-white">
                   <Send className="h-4 w-4" />
                 </Button>
               </form>
