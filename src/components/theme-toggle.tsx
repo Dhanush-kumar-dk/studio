@@ -4,38 +4,71 @@ import * as React from "react";
 import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 
 export function ThemeToggle() {
-  const { setTheme, theme } = useTheme();
+  const { resolvedTheme, setTheme } = useTheme();
+  const [mounted, setMounted] = React.useState(false);
+  const [isAnimating, setIsAnimating] = React.useState(false);
+
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const handleToggle = () => {
+    setIsAnimating(true);
+    setTheme(resolvedTheme === "dark" ? "light" : "dark");
+    setTimeout(() => {
+      setIsAnimating(false);
+    }, 400);
+  };
+
+  if (!mounted) {
+    return (
+      <Button
+        variant="ghost"
+        size="icon"
+        className="h-9 w-9 rounded-full text-muted-foreground"
+        aria-label="Toggle theme"
+      >
+        <span className="h-4 w-4" />
+      </Button>
+    );
+  }
+
+  const isDark = resolvedTheme === "dark";
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon" className="h-9 w-9 rounded-md transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring">
-          <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0 text-emerald-600 dark:text-emerald-400" />
-          <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100 text-emerald-400" />
-          <span className="sr-only">Toggle theme</span>
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-36 rounded-lg border bg-popover text-popover-foreground shadow-md">
-        <DropdownMenuItem onClick={() => setTheme("light")} className="cursor-pointer flex items-center justify-between font-medium">
-          <span>Light</span>
-          <Sun className="h-4 w-4 text-emerald-600" />
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme("dark")} className="cursor-pointer flex items-center justify-between font-medium">
-          <span>Dark</span>
-          <Moon className="h-4 w-4 text-emerald-400" />
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme("system")} className="cursor-pointer flex items-center justify-between font-medium">
-          <span>System</span>
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <Button
+      variant="ghost"
+      size="icon"
+      onClick={handleToggle}
+      className={`relative h-9 w-9 rounded-full text-muted-foreground transition-all duration-300 hover:bg-orange-500/10 hover:text-orange-500 active:scale-75 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-orange-500/50 ${
+        isAnimating ? "scale-90" : "scale-100"
+      }`}
+      aria-label="Toggle theme"
+      title={`Switch to ${isDark ? "light" : "dark"} mode`}
+    >
+      <div
+        className={`relative flex items-center justify-center transition-transform duration-500 ease-in-out ${
+          isAnimating ? "rotate-[360deg] scale-110" : "rotate-0 scale-100"
+        }`}
+      >
+        <Sun
+          className={`h-4 w-4 text-orange-600 transition-all duration-300 ${
+            isDark
+              ? "scale-0 rotate-90 opacity-0 absolute"
+              : "scale-100 rotate-0 opacity-100 drop-shadow-[0_0_6px_rgba(234,88,12,0.4)]"
+          }`}
+        />
+        <Moon
+          className={`h-4 w-4 text-orange-400 transition-all duration-300 ${
+            isDark
+              ? "scale-100 rotate-0 opacity-100 drop-shadow-[0_0_8px_rgba(251,146,60,0.5)]"
+              : "scale-0 -rotate-90 opacity-0 absolute"
+          }`}
+        />
+      </div>
+      <span className="sr-only">Toggle theme</span>
+    </Button>
   );
 }
