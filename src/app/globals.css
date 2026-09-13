@@ -101,3 +101,11 @@
     @apply text-orange-600 dark:text-orange-400 hover:underline transition-colors;
   }
 }
+
+/* Smooth View Transitions for Theme Toggling */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.3s;
+  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+

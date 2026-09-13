@@ -5,9 +5,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuSub,
-  DropdownMenuSubTrigger,
-  DropdownMenuSubContent,
   DropdownMenuTrigger,
   DropdownMenuSeparator,
   DropdownMenuGroup,
@@ -15,7 +12,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { LayoutDashboard, Monitor, Moon, Sun, User as UserIcon, LogOut, LogIn } from 'lucide-react';
+import { LayoutDashboard, Moon, Sun, User as UserIcon, LogOut, LogIn } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { useAuth } from '@/hooks/use-auth';
 import { useToast } from '@/hooks/use-toast';
@@ -26,7 +23,7 @@ import { createClient } from '@/lib/supabase/client';
 import type { User as AppUser } from '@/lib/types';
 
 export default function UserNav() {
-  const { setTheme } = useTheme();
+  const { resolvedTheme, setTheme } = useTheme();
   const { user } = useAuth();
   const router = useRouter();
   const { toast } = useToast();
@@ -134,27 +131,28 @@ export default function UserNav() {
           </DropdownMenuGroup>
         )}
         <DropdownMenuGroup>
-          <DropdownMenuSub>
-          <DropdownMenuSubTrigger>
-              <Sun className="mr-2 h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-              <Moon className="absolute mr-2 h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+          <DropdownMenuItem
+            onClick={() => {
+              const nextTheme = resolvedTheme === 'dark' ? 'light' : 'dark';
+              if (typeof document !== 'undefined' && 'startViewTransition' in document) {
+                document.startViewTransition(() => setTheme(nextTheme));
+              } else {
+                setTheme(nextTheme);
+              }
+            }}
+            className="cursor-pointer flex items-center justify-between"
+          >
+            <div className="flex items-center">
+              <div className="relative mr-2 flex h-4 w-4 items-center justify-center">
+                <Sun className="h-4 w-4 rotate-0 scale-100 transition-all text-amber-500 dark:-rotate-90 dark:scale-0 dark:opacity-0" />
+                <Moon className="absolute h-4 w-4 rotate-90 scale-0 opacity-0 transition-all text-emerald-400 dark:rotate-0 dark:scale-100 dark:opacity-100" />
+              </div>
               <span>Toggle theme</span>
-          </DropdownMenuSubTrigger>
-          <DropdownMenuSubContent>
-              <DropdownMenuItem onClick={() => setTheme('light')}>
-              <Sun className="mr-2 h-4 w-4" />
-              Light
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setTheme('dark')}>
-              <Moon className="mr-2 h-4 w-4" />
-              Dark
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setTheme('system')}>
-              <Monitor className="mr-2 h-4 w-4" />
-              System
-              </DropdownMenuItem>
-          </DropdownMenuSubContent>
-          </DropdownMenuSub>
+            </div>
+            <span className="text-[10px] font-mono uppercase tracking-wider text-muted-foreground">
+              {resolvedTheme === 'dark' ? 'Dark' : 'Light'}
+            </span>
+          </DropdownMenuItem>
         </DropdownMenuGroup>
         {user && (
           <>
