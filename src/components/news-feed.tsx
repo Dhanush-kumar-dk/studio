@@ -171,9 +171,9 @@ function NewsFeedContent({ articles }: { articles: (Article & {_id: any})[] }) {
           {/* Article Grid */}
           <div>
             <div className="mb-6 flex items-center justify-between">
-              <h3 className="font-headline text-xl font-bold tracking-tight text-foreground">
+              <h2 className="font-headline text-xl font-bold tracking-tight text-foreground sm:text-2xl">
                 {selectedCategory === 'All' ? 'Latest Stories' : `${selectedCategory} Articles`}
-              </h3>
+              </h2>
               <span className="text-xs text-muted-foreground">
                 Showing {filteredArticles.length} {filteredArticles.length === 1 ? 'article' : 'articles'}
               </span>

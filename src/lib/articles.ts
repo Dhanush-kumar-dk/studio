@@ -5,16 +5,30 @@ import { createClient, createAdminClient } from '@/lib/supabase/server';
 
 const generateSlug = (title: string) => {
   return title
+    .normalize('NFKD')
+    .replace(/[\u0300-\u036f]/g, '')
     .toLowerCase()
+    .trim()
+    .replace(/['’]/g, '')
+    .replace(/[^a-z0-9\s-]/g, '')
     .replace(/\s+/g, '-')
-    .replace(/[^\w-]+/g, '')
-    .replace(/--+/g, '-')
-    .replace(/^-+/, '')
+    .replace(/-+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .substring(0, 100)
     .replace(/-+$/, '');
 };
 
 const generateAuthorSlug = (author: string) => {
-  return author.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, '');
+  return author
+    .normalize('NFKD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .trim()
+    .replace(/['’]/g, '')
+    .replace(/[^a-z0-9\s-]/g, '')
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-+|-+$/g, '');
 };
 
 // Helper: Check caller identity and permissions

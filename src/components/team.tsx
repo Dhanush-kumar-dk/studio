@@ -11,7 +11,7 @@ const teamMembers = [
 
 export default function Team() {
   return (
-    <section className="w-full border-t border-border/60 bg-muted/20 py-20 transition-colors duration-200">
+    <section id="team" className="w-full border-t border-border/60 bg-muted/20 py-20 transition-colors duration-200 scroll-mt-16">
       <div className="container mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <div className="text-center space-y-3">
           <div className="inline-flex items-center gap-2 rounded-full border border-orange-500/20 bg-orange-500/10 px-3.5 py-1 text-xs font-semibold text-orange-700 dark:text-orange-300">

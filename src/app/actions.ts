@@ -7,15 +7,20 @@ import { createClient, createPublicClient, createAdminClient } from '@/lib/supab
 import { v4 as uuidv4 } from 'uuid';
 import { articles as sampleArticles } from '@/lib/data';
 
-// Helper function to generate slugs
-const generateSlug = (title: string) => {
+// Helper function to generate clean, SEO-friendly URL slugs
+export const generateSlug = (title: string) => {
   return title
+    .normalize('NFKD')
+    .replace(/[\u0300-\u036f]/g, '')
     .toLowerCase()
-    .replace(/\s+/g, '-') // Replace spaces with hyphen
-    .replace(/[^\w-]+/g, '') // Remove non-alphanumeric characters
-    .replace(/--+/g, '-') // Replace multiple hyphens with a single one
-    .replace(/^-+/, '') // Trim hyphen from start
-    .replace(/-+$/, ''); // Trim hyphen from end
+    .trim()
+    .replace(/['’]/g, '')
+    .replace(/[^a-z0-9\s-]/g, '')
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .substring(0, 100)
+    .replace(/-+$/, '');
 };
 
 export async function getArticles(): Promise<(Article & { _id: string })[]> {

@@ -6,7 +6,9 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
+  compress: true,
   images: {
+    formats: ['image/avif', 'image/webp'],
     remotePatterns: [
       {
         protocol: 'https',
@@ -19,6 +21,10 @@ const nextConfig = {
       {
         source: '/(.*)',
         headers: [
+          {
+            key: 'Strict-Transport-Security',
+            value: 'max-age=63072000; includeSubDomains; preload',
+          },
           {
             key: 'X-Content-Type-Options',
             value: 'nosniff',

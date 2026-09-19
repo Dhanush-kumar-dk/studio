@@ -1,7 +1,7 @@
 "use client";
 
 import Link from 'next/link';
-import { Search, PlusCircle } from 'lucide-react';
+import { Search, PlusCircle, Menu } from 'lucide-react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import UserNav from './user-nav';
@@ -10,6 +10,7 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { FormEvent, useState, useEffect, Suspense } from 'react';
 import Logo from '../Assest/signal-2025-09-01-172433.jpeg';
 import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from './ui/sheet';
 import { useAuth } from '@/hooks/use-auth';
 import type { User } from '@/lib/types';
 import { createClient } from '@/lib/supabase/client';
@@ -20,6 +21,7 @@ function HeaderContent() {
   const searchParams = useSearchParams();
   const defaultSearch = searchParams.get('search') ?? '';
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { user } = useAuth();
   const [currentUser, setCurrentUser] = useState<User | null>(null);
 
@@ -77,6 +79,28 @@ function HeaderContent() {
           </div>
         </Link>
 
+        {/* Desktop Navigation Links */}
+        <nav className="hidden lg:flex items-center gap-6 text-sm font-medium text-muted-foreground">
+          <Link href="/" className="transition-colors hover:text-emerald-600 dark:hover:text-emerald-400">
+            Latest
+          </Link>
+          <Link href="/?category=Technology" className="transition-colors hover:text-emerald-600 dark:hover:text-emerald-400">
+            Tech & AI
+          </Link>
+          <Link href="/?category=Politics" className="transition-colors hover:text-emerald-600 dark:hover:text-emerald-400">
+            Politics
+          </Link>
+          <Link href="/?category=World" className="transition-colors hover:text-emerald-600 dark:hover:text-emerald-400">
+            World Affairs
+          </Link>
+          <Link href="/about" className="transition-colors hover:text-emerald-600 dark:hover:text-emerald-400">
+            About
+          </Link>
+          <Link href="/newsletter" className="transition-colors hover:text-emerald-600 dark:hover:text-emerald-400">
+            Newsletter
+          </Link>
+        </nav>
+
         <div className="flex items-center gap-2">
           {/* Search Popover */}
           <Popover open={isSearchOpen} onOpenChange={setIsSearchOpen}>
@@ -119,6 +143,82 @@ function HeaderContent() {
 
           {/* User Nav */}
           <UserNav />
+
+          {/* Mobile Navigation Drawer */}
+          <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
+            <SheetTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-9 w-9 text-muted-foreground hover:text-foreground lg:hidden"
+                aria-label="Open navigation menu"
+              >
+                <Menu className="h-5 w-5" />
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="left" className="w-72 p-6">
+              <SheetHeader className="text-left mb-6">
+                <SheetTitle className="flex items-center gap-2 font-headline text-lg font-bold">
+                  <img src={Logo.src} alt="Debt & Dominion" className="h-7 w-auto rounded" />
+                  <span>Debt & Dominion</span>
+                </SheetTitle>
+              </SheetHeader>
+              <nav className="flex flex-col gap-3.5 text-base font-medium">
+                <Link
+                  href="/"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="transition-colors hover:text-emerald-600 dark:hover:text-emerald-400"
+                >
+                  Latest Stories
+                </Link>
+                <div className="h-px bg-border/60 my-1" />
+                <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Categories</span>
+                <Link
+                  href="/?category=Technology"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="pl-2 text-sm text-muted-foreground hover:text-foreground"
+                >
+                  Technology & AI
+                </Link>
+                <Link
+                  href="/?category=Politics"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="pl-2 text-sm text-muted-foreground hover:text-foreground"
+                >
+                  Politics & Policy
+                </Link>
+                <Link
+                  href="/?category=World"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="pl-2 text-sm text-muted-foreground hover:text-foreground"
+                >
+                  World Affairs
+                </Link>
+                <Link
+                  href="/?category=Sports"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="pl-2 text-sm text-muted-foreground hover:text-foreground"
+                >
+                  Sports & Analytics
+                </Link>
+                <div className="h-px bg-border/60 my-1" />
+                <Link
+                  href="/about"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="transition-colors hover:text-emerald-600 dark:hover:text-emerald-400"
+                >
+                  About Publication
+                </Link>
+                <Link
+                  href="/newsletter"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="transition-colors hover:text-emerald-600 dark:hover:text-emerald-400"
+                >
+                  Newsletter
+                </Link>
+              </nav>
+            </SheetContent>
+          </Sheet>
         </div>
       </div>
     </header>

@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import { getArticleBySlug, getArticles } from '@/app/actions';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
@@ -5,6 +6,9 @@ import { Calendar, Pencil } from 'lucide-react';
 import DeleteArticleButton from '@/components/delete-article-button';
 import Link from 'next/link';
 import ArticleAudioPlayer from '@/components/article-audio-player';
+import ArticleShareBar from '@/components/article-share-bar';
+import RelatedArticles from '@/components/related-articles';
+import { ArticleJsonLd, BreadcrumbJsonLd } from '@/components/schema-org';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import Header from '@/components/header';
@@ -24,8 +28,56 @@ export async function generateStaticParams() {
   }));
 }
 
-export default async function ArticlePage({ params }: ArticlePageProps) {
+export async function generateMetadata({ params }: ArticlePageProps): Promise<Metadata> {
   const article = await getArticleBySlug(params.slug);
+  if (!article) {
+    return {
+      title: 'Article Not Found',
+    };
+  }
+
+  const description =
+    article.excerpt ||
+    article.content.substring(0, 160).replace(/<[^>]*>/g, '').trim();
+  const canonicalUrl = `/articles/${article.slug}`;
+
+  return {
+    title: article.title,
+    description,
+    alternates: {
+      canonical: canonicalUrl,
+    },
+    openGraph: {
+      type: 'article',
+      title: article.title,
+      description,
+      url: canonicalUrl,
+      publishedTime: article.publishedAt,
+      authors: [article.author],
+      section: article.category,
+      images: [
+        {
+          url: article.imageUrl,
+          width: 1200,
+          height: 630,
+          alt: article.title,
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: article.title,
+      description,
+      images: [article.imageUrl],
+    },
+  };
+}
+
+export default async function ArticlePage({ params }: ArticlePageProps) {
+  const [article, allArticles] = await Promise.all([
+    getArticleBySlug(params.slug),
+    getArticles(),
+  ]);
 
   if (!article) {
     notFound();
@@ -33,8 +85,34 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
   
   const articleId = article._id;
 
+  // Filter related articles from same category, with fallback to latest
+  const categoryRelated = allArticles.filter(
+    (a) => a.slug !== article.slug && a.category === article.category
+  );
+  const otherRelated = allArticles.filter(
+    (a) => a.slug !== article.slug && a.category !== article.category
+  );
+  const relatedArticles = [...categoryRelated, ...otherRelated].slice(0, 3);
+
   return (
     <>
+      <ArticleJsonLd
+        title={article.title}
+        excerpt={article.excerpt || article.title}
+        imageUrl={article.imageUrl}
+        datePublished={article.publishedAt}
+        authorName={article.author}
+        authorSlug={article.authorSlug}
+        slug={article.slug}
+        category={article.category}
+      />
+      <BreadcrumbJsonLd
+        items={[
+          { name: 'Home', item: '/' },
+          { name: article.category, item: `/?category=${encodeURIComponent(article.category)}` },
+          { name: article.title, item: `/articles/${article.slug}` },
+        ]}
+      />
       <Header />
       <main className="flex-1 bg-background">
         <article className="container mx-auto max-w-4xl px-4 py-10 sm:px-6 lg:px-8">
@@ -79,6 +157,14 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
               content={article.content} 
               author={article.author} 
             />
+
+            {/* Social Share & Citation Bar */}
+            <ArticleShareBar
+              title={article.title}
+              slug={article.slug}
+              author={article.author}
+              publishedAt={article.publishedAt}
+            />
           </div>
 
           <div className="relative mb-10 h-72 sm:h-96 md:h-[460px] w-full overflow-hidden rounded-2xl border border-border/60 bg-muted shadow-sm">
@@ -86,6 +172,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
               src={article.imageUrl}
               alt={article.title}
               fill
+              sizes="(max-width: 1024px) 100vw, 896px"
               className="object-cover"
               priority
               data-ai-hint={article.imageHint}
@@ -95,6 +182,9 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
           <div className="prose prose-lg dark:prose-invert max-w-none prose-headings:font-headline prose-headings:font-bold prose-p:leading-relaxed prose-a:text-orange-600 dark:prose-a:text-orange-400 hover:prose-a:underline">
             <div className="whitespace-pre-wrap text-foreground/90 font-body leading-relaxed text-base sm:text-lg" dangerouslySetInnerHTML={{ __html: article.content }} />
           </div>
+
+          {/* Contextual Related Stories */}
+          <RelatedArticles articles={relatedArticles} category={article.category} />
         </article>
       </main>
       <Newsletter />

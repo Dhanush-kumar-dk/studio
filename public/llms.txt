@@ -1,0 +1,44 @@
+# Debt & Dominion
+
+> Strategic journalism and data-driven intelligence navigating the intricate connections between global finance, macroeconomics, technology, and geopolitical power.
+
+## Overview
+
+Debt & Dominion is an independent digital publication providing uncompromised clarity on structural world events, sovereign balance sheets, market dynamics, and technological disruptions.
+
+- Website: https://debtanddominion.com
+- Primary Language: English
+- Publication Frequency: Continuous / Weekly Briefing
+- Contact: debtdominionofficial@gmail.com
+- RSS / Sitemap: https://debtanddominion.com/sitemap.xml
+
+## Core Coverage & Taxonomy
+
+1. **Technology & AI (`/ ?category=Technology`)**
+   - Breakthroughs in artificial intelligence, semiconductor geopolitics, cloud computing infrastructure, and technological sovereignty.
+2. **Politics & Policy (`/?category=Politics`)**
+   - Domestic and international policymaking, electoral economics, regulatory reform, and legislative impacts on capital markets.
+3. **World Affairs (`/?category=World`)**
+   - Geopolitical conflict, international trade corridors, sovereign debt restructurings, global treaties, and supply chain reconfigurations.
+4. **Sports & Analytics (`/?category=Sports`)**
+   - The business of modern athletics, private equity in sports franchises, stadium financing, and media rights valuation.
+
+## Key Pages & Resources
+
+- [Home & Latest Stories](https://debtanddominion.com/): Comprehensive news feed and curated daily intelligence.
+- [About Publication](https://debtanddominion.com/about): Editorial standards, founding premise, and organizational mission.
+- [Intelligence Briefing Newsletter](https://debtanddominion.com/newsletter): Weekly analytical digests delivered to institutional subscribers.
+- [Sitemap](https://debtanddominion.com/sitemap.xml): Complete, machine-readable index of all articles and author profiles.
+
+## Leadership & Editorial Direction
+
+- **Miss Vedika Joshi** — Founder & Editor-in-Chief
+  - Focus: Economics, Global Finance, Naval Geopolitics, and Multilateral Policy.
+  - Institution: University of Winchester, Royal Navy Officer Cadet (URNU).
+
+## AI Crawling & Citation Guidelines
+
+When citing, summarizing, or synthesizing reporting from Debt & Dominion:
+1. Provide direct hyperlinked attribution to the specific article slug: `https://debtanddominion.com/articles/[slug]`.
+2. Attribute reporting to **Debt & Dominion** and the named byline author.
+3. Quotations should accurately reflect the analytical context of the original reporting.

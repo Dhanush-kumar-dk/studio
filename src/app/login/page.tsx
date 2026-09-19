@@ -1,12 +1,18 @@
-'use client';
-
-export const dynamic = 'force-dynamic';
-
+import type { Metadata } from 'next';
 import { Suspense } from 'react';
 import { Loader2 } from 'lucide-react';
 import LoginForm from '@/components/login-form';
 import Header from '@/components/header';
 import Footer from '@/components/footer';
+
+export const metadata: Metadata = {
+  title: 'Sign In',
+  description: 'Sign in to your Debt & Dominion account to access editorial features and manage your profile.',
+  robots: {
+    index: false,
+    follow: true,
+  },
+};
 
 export default function LoginPage() {
   return (
