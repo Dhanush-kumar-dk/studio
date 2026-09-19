@@ -126,6 +126,7 @@ function NewsFeedContent({ articles }: { articles: (Article & {_id: any})[] }) {
                               src={article.imageUrl}
                               alt={article.title}
                               fill
+                              sizes="(max-width: 1280px) 100vw, 1200px"
                               className="object-cover transition-transform duration-700 group-hover:scale-105"
                               priority
                               data-ai-hint={article.imageHint}

@@ -51,8 +51,9 @@ export default function AboutPublication() {
             <div className="relative aspect-[3/4] w-full max-w-md overflow-hidden rounded-2xl border border-border/60 bg-muted shadow-md">
               <Image 
                 src="https://picsum.photos/seed/publication-books/600/800"
-                alt="Stack of economics books"
+                alt="Stack of economics and political science publications"
                 fill
+                sizes="(max-width: 768px) 100vw, 448px"
                 className="object-cover"
                 data-ai-hint="books stack"
               />

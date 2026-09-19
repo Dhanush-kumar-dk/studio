@@ -37,11 +37,14 @@ export default function AuthorPageContent({ articles }: AuthorPageContentProps) 
 
       <section className="py-16">
         <div className="container mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-          <div className="mb-8">
+          <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
               <Button variant="outline" onClick={() => router.back()}>
                   <ArrowLeft className="mr-2 h-4 w-4" />
                   Back to articles
               </Button>
+              <h2 className="font-headline text-2xl font-bold tracking-tight text-foreground">
+                Published Dispatches
+              </h2>
           </div>
           {articles.length > 0 ? (
               <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
