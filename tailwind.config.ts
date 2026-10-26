@@ -10,9 +10,8 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        headline: ['var(--font-headline)', 'Montserrat', 'sans-serif'],
-        body: ['var(--font-body)', 'Lato', 'sans-serif'],
-        button: ['var(--font-button)', 'Nunito', 'sans-serif'],
+        body: ['Inter', 'sans-serif'],
+        headline: ['"Plus Jakarta Sans"', 'Inter', 'sans-serif'],
         code: ['monospace'],
       },
       colors: {
@@ -49,14 +48,6 @@ export default {
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
         ring: 'hsl(var(--ring))',
-        wptuts: {
-          orange: '#e95f3c',
-          rust: '#ad3b1e',
-          navy: '#162536',
-          'navy-dark': '#111c29',
-          'navy-light': '#1e344d',
-          heading: '#152333',
-        },
         chart: {
           '1': 'hsl(var(--chart-1))',
           '2': 'hsl(var(--chart-2))',

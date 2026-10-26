@@ -14,12 +14,12 @@ export default function AboutPublication() {
       <div className="container mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
           <div className="space-y-6">
-            <div className="inline-flex items-center gap-2 rounded-full border border-[#e95f3c]/20 bg-[#e95f3c]/10 px-3.5 py-1 text-xs font-bold uppercase tracking-wider text-[#e95f3c]">
+            <div className="inline-flex items-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3.5 py-1 text-xs font-semibold text-emerald-700 dark:text-emerald-300">
               <BookOpen className="h-3.5 w-3.5" />
               <span>About Our Mission</span>
             </div>
-            <h2 className="font-headline text-3xl font-extrabold tracking-tight sm:text-4xl leading-tight text-foreground uppercase">
-              Analysing Financial Systems and Sovereign Power
+            <h2 className="font-headline text-3xl font-extrabold tracking-tight sm:text-4xl leading-tight text-foreground">
+              Analysing Financial Systems and International Relations
             </h2>
 
             <div className="space-y-4 text-sm sm:text-base leading-relaxed text-muted-foreground">
@@ -39,7 +39,7 @@ export default function AboutPublication() {
               <ul className="space-y-2.5">
                 {deliverables.map((item, index) => (
                   <li key={index} className="flex items-start text-sm text-muted-foreground">
-                    <CheckCircle2 className="mr-2.5 mt-0.5 h-4 w-4 flex-shrink-0 text-[#e95f3c]" />
+                    <CheckCircle2 className="mr-2.5 mt-0.5 h-4 w-4 flex-shrink-0 text-emerald-600 dark:text-emerald-400" />
                     <span>{item}</span>
                   </li>
                 ))}
@@ -59,7 +59,7 @@ export default function AboutPublication() {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-slate-950/60 via-transparent to-transparent" />
               <div className="absolute bottom-6 left-6 right-6 text-white">
-                <span className="text-xs font-bold uppercase tracking-wider text-[#e95f3c]">Monthly Edition</span>
+                <span className="text-xs font-semibold uppercase tracking-wider text-emerald-400">Monthly Edition</span>
                 <h4 className="font-headline text-lg font-bold">Debt & Dominion Intelligence Digest</h4>
               </div>
             </div>

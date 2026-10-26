@@ -1,43 +1,15 @@
 import type { Metadata } from 'next';
-import dynamic from 'next/dynamic';
-import { Montserrat, Lato, Nunito } from 'next/font/google';
 import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
 import { cn } from '@/lib/utils';
 import { ThemeProvider } from '@/components/theme-provider';
 import { Providers } from '@/components/providers';
+import ChatBot from '@/components/chat-bot';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import { Analytics } from '@vercel/analytics/next';
 
 import { siteConfig, getBaseUrl } from '@/lib/site-config';
 import { WebSiteJsonLd, OrganizationJsonLd } from '@/components/schema-org';
-
-// Exact fonts from https://wptuts.co.uk/ (Montserrat, Lato, Nunito)
-const montserrat = Montserrat({
-  subsets: ['latin'],
-  variable: '--font-headline',
-  display: 'swap',
-  weight: ['400', '500', '600', '700', '800', '900'],
-});
-
-const lato = Lato({
-  subsets: ['latin'],
-  variable: '--font-body',
-  display: 'swap',
-  weight: ['300', '400', '700', '900'],
-});
-
-const nunito = Nunito({
-  subsets: ['latin'],
-  variable: '--font-button',
-  display: 'swap',
-  weight: ['600', '700', '800'],
-});
-
-// Defer non-critical ChatBot to avoid blocking initial hydration
-const ChatBot = dynamic(() => import('@/components/chat-bot'), {
-  ssr: false,
-});
 
 const baseUrl = getBaseUrl();
 
@@ -116,14 +88,20 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={cn(montserrat.variable, lato.variable, nunito.variable)} suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning>
       <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://picsum.photos" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://images.unsplash.com" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap"
+          rel="stylesheet"
+        />
         <WebSiteJsonLd />
         <OrganizationJsonLd />
       </head>
-      <body className="font-body bg-background text-foreground antialiased selection:bg-[#e95f3c]/20 selection:text-[#e95f3c]">
+      <body className={cn('font-body bg-background text-foreground antialiased selection:bg-orange-500/20 selection:text-orange-500')}>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
