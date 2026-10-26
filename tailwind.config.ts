@@ -10,8 +10,9 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        body: ['var(--font-body)', 'Inter', 'sans-serif'],
-        headline: ['var(--font-headline)', '"Plus Jakarta Sans"', 'Inter', 'sans-serif'],
+        headline: ['var(--font-headline)', 'Montserrat', 'sans-serif'],
+        body: ['var(--font-body)', 'Lato', 'sans-serif'],
+        button: ['var(--font-button)', 'Nunito', 'sans-serif'],
         code: ['monospace'],
       },
       colors: {

@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import dynamic from 'next/dynamic';
-import { Plus_Jakarta_Sans, Inter } from 'next/font/google';
+import { Montserrat, Lato, Nunito } from 'next/font/google';
 import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
 import { cn } from '@/lib/utils';
@@ -12,19 +12,26 @@ import { Analytics } from '@vercel/analytics/next';
 import { siteConfig, getBaseUrl } from '@/lib/site-config';
 import { WebSiteJsonLd, OrganizationJsonLd } from '@/components/schema-org';
 
-// Self-hosted, zero-CLS Google Fonts via next/font
-const plusJakartaSans = Plus_Jakarta_Sans({
+// Exact fonts from https://wptuts.co.uk/ (Montserrat, Lato, Nunito)
+const montserrat = Montserrat({
   subsets: ['latin'],
   variable: '--font-headline',
   display: 'swap',
-  weight: ['400', '500', '600', '700', '800'],
+  weight: ['400', '500', '600', '700', '800', '900'],
 });
 
-const inter = Inter({
+const lato = Lato({
   subsets: ['latin'],
   variable: '--font-body',
   display: 'swap',
-  weight: ['400', '500', '600', '700'],
+  weight: ['300', '400', '700', '900'],
+});
+
+const nunito = Nunito({
+  subsets: ['latin'],
+  variable: '--font-button',
+  display: 'swap',
+  weight: ['600', '700', '800'],
 });
 
 // Defer non-critical ChatBot to avoid blocking initial hydration
@@ -109,7 +116,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={cn(plusJakartaSans.variable, inter.variable)} suppressHydrationWarning>
+    <html lang="en" className={cn(montserrat.variable, lato.variable, nunito.variable)} suppressHydrationWarning>
       <head>
         <link rel="preconnect" href="https://picsum.photos" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://images.unsplash.com" />

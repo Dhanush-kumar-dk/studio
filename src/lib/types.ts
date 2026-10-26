@@ -5,7 +5,7 @@ export type Article = {
   id: string;
   slug: string;
   title: string;
-  category: 'Politics' | 'Sports' | 'Technology' | 'World';
+  category: string;
   imageUrl: string;
   imageHint: string;
   excerpt: string;

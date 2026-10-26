@@ -69,7 +69,7 @@ export default function CreateArticleForm({ article }: CreateArticleFormProps) {
       slug: article?.slug || '',
       metaDescription: article?.metaDescription || '',
       author: article?.author || 'Anonymous',
-      category: article?.category || 'Technology',
+      category: (article?.category as 'Technology' | 'Politics' | 'Sports' | 'World') || 'Technology',
       excerpt: article?.excerpt || '',
     },
   });

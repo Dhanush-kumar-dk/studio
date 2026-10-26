@@ -7,21 +7,127 @@ import ArticleCard from './article-card';
 import { Skeleton } from './ui/skeleton';
 import { ChevronRight, Filter } from 'lucide-react';
 
-const categories = ['All', 'Politics', 'Sports', 'Technology', 'World'];
+const categories = ['All', 'Bricks Builder', 'Elementor', 'WordPress Plugins & Tools', 'WooCommerce', 'Dynamic Design'];
 const ARTICLES_PER_PAGE = 6;
+
+// Authentic WPTuts fallback videos if articles are empty or filtered
+const WPTUTS_VIDEOS = [
+  {
+    id: 'wptuts-1',
+    _id: 'wptuts-1',
+    slug: 'atlant-security-free-wordpress-plugin',
+    title: 'Atlant Security: The FREE WordPress Security Plugin You Should Try (No Pro Version!)',
+    excerpt: 'In this episode of Friday Freebies, I take a look at Atlant Security — a completely free WordPress security plugin with no Pro or premium version.',
+    category: 'WordPress Plugins & Tools' as const,
+    imageUrl: 'https://wptuts.co.uk/wp-content/uploads/x-r4LPthS4Y-768x432.jpg',
+    imageHint: 'WordPress security plugin review',
+    publishedAt: '2026-09-25T12:00:00Z',
+    author: 'Paul Charlton',
+    authorSlug: 'paul-charlton',
+    authorImageUrl: '/paul-c.png',
+    content: 'Full video walkthrough and setup guide for Atlant Security on WordPress.',
+    focusKeywords: ['WordPress', 'Security', 'Atlant Security'],
+    metaDescription: 'Atlant Security free WordPress plugin tutorial by WPTuts.',
+  },
+  {
+    id: 'wptuts-2',
+    _id: 'wptuts-2',
+    slug: 'free-wordpress-2fa-passkeys-magic-login',
+    title: '100% FREE WordPress 2FA, Passkeys, Magic Login & More Plugin',
+    excerpt: 'WordPress security, two-factor authentication, login protection, passkeys, magic login links and activity logs are all things FluentAuth brings together in one free plugin.',
+    category: 'WordPress Plugins & Tools' as const,
+    imageUrl: 'https://wptuts.co.uk/wp-content/uploads/Tt9LHwHySmA-768x432.jpg',
+    imageHint: 'WordPress 2FA Passkeys FluentAuth',
+    publishedAt: '2026-09-18T12:00:00Z',
+    author: 'Paul Charlton',
+    authorSlug: 'paul-charlton',
+    authorImageUrl: '/paul-c.png',
+    content: 'Step-by-step tutorial on securing WordPress with FluentAuth.',
+    focusKeywords: ['WordPress', '2FA', 'Passkeys'],
+    metaDescription: '100% Free WordPress 2FA & Magic Login tutorial by WPTuts.',
+  },
+  {
+    id: 'wptuts-3',
+    _id: 'wptuts-3',
+    slug: 'stop-wordpress-plugin-headaches-simply-static',
+    title: 'Stop WordPress Plugin Headaches: Go Static with Simply Static Studio',
+    excerpt: 'With more people wanting the speed and security of static websites, I’m taking a look at Simply Static Studio — a hybrid approach that lets you generate lightning-fast static WordPress sites.',
+    category: 'WordPress Plugins & Tools' as const,
+    imageUrl: 'https://wptuts.co.uk/wp-content/uploads/hItYH6hDU7Y-768x432.jpg',
+    imageHint: 'Static WordPress with Simply Static',
+    publishedAt: '2026-09-15T12:00:00Z',
+    author: 'Paul Charlton',
+    authorSlug: 'paul-charlton',
+    authorImageUrl: '/paul-c.png',
+    content: 'How to convert WordPress to high-speed static HTML with Simply Static Studio.',
+    focusKeywords: ['WordPress', 'Static WordPress', 'Simply Static'],
+    metaDescription: 'Go Static with Simply Static Studio tutorial by WPTuts.',
+  },
+  {
+    id: 'wptuts-4',
+    _id: 'wptuts-4',
+    slug: 'fastest-way-to-migrate-bricks-sites',
+    title: 'The Fastest Way to Migrate Bricks Sites is Finally Here',
+    excerpt: 'Bricks 2.4 introduces a streamlined Import/Export bundle that lets you move a wide range of settings between projects in a single ZIP file.',
+    category: 'Bricks Builder' as const,
+    imageUrl: 'https://wptuts.co.uk/wp-content/uploads/4cRgfpWBQKk-768x432.jpg',
+    imageHint: 'Migrate Bricks Sites in a single zip',
+    publishedAt: '2026-08-24T12:00:00Z',
+    author: 'Paul Charlton',
+    authorSlug: 'paul-charlton',
+    authorImageUrl: '/paul-c.png',
+    content: 'Complete guide to migrating Bricks Builder templates and settings in seconds.',
+    focusKeywords: ['Bricks Builder', 'WordPress Migration'],
+    metaDescription: 'Migrate Bricks sites fast with the new export bundle by WPTuts.',
+  },
+  {
+    id: 'wptuts-5',
+    _id: 'wptuts-5',
+    slug: 'free-fluentcart-modal-checkout',
+    title: 'Free FluentCart Modal Checkout – No More Shop Pages!',
+    excerpt: 'For the last couple of years I’ve been using Lemon Squeezy to handle digital downloads for my Essential Web Designers Documents Pack, but I wanted a seamless modal checkout.',
+    category: 'Bricks Builder' as const,
+    imageUrl: 'https://wptuts.co.uk/wp-content/uploads/PVsZItwalCg-768x432.jpg',
+    imageHint: 'FluentCart Modal Checkout tutorial',
+    publishedAt: '2026-08-13T12:00:00Z',
+    author: 'Paul Charlton',
+    authorSlug: 'paul-charlton',
+    authorImageUrl: '/paul-c.png',
+    content: 'Set up an instant modal checkout for digital downloads without complex shop pages.',
+    focusKeywords: ['FluentCart', 'Modal Checkout', 'WooCommerce'],
+    metaDescription: 'Free FluentCart modal checkout guide by WPTuts.',
+  },
+  {
+    id: 'wptuts-6',
+    _id: 'wptuts-6',
+    slug: 'woocommerce-website-from-scratch-free-tools',
+    title: 'How To Build A WooCommerce Website From Scratch With Free Tools',
+    excerpt: 'Step-by-step masterclass on launching a modern eCommerce website using WordPress and WooCommerce completely free.',
+    category: 'WooCommerce' as const,
+    imageUrl: '/tut-woocommerce.jpg',
+    imageHint: 'WooCommerce tutorial free tools',
+    publishedAt: '2026-08-01T12:00:00Z',
+    author: 'Paul Charlton',
+    authorSlug: 'paul-charlton',
+    authorImageUrl: '/paul-c.png',
+    content: 'Build an online shop from scratch using free themes and plugins.',
+    focusKeywords: ['WooCommerce', 'WordPress eCommerce'],
+    metaDescription: 'Build WooCommerce website tutorial by WPTuts.',
+  },
+];
 
 export function NewsFeedSkeleton() {
   return (
     <section className="space-y-8">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between border-b border-border/60 pb-6">
-        <div className="border-l-4 border-[#e95f3c] pl-4 space-y-2">
+        <div className="border-l-4 border-[#df5c0c] pl-4 space-y-2">
           <Skeleton className="h-3.5 w-32 bg-muted/60" />
           <Skeleton className="h-8 w-56 bg-muted/60" />
           <Skeleton className="h-4 w-80 max-w-full bg-muted/40" />
         </div>
         <div className="flex flex-wrap gap-1.5">
-          {[...Array(5)].map((_, i) => (
-            <Skeleton key={i} className="h-7 w-20 rounded-full bg-muted/50" />
+          {[...Array(6)].map((_, i) => (
+            <Skeleton key={i} className="h-7 w-24 rounded-full bg-muted/50" />
           ))}
         </div>
       </div>
@@ -57,6 +163,11 @@ function NewsFeedContent({ articles }: { articles: (Article & {_id: any})[] }) {
   const pageParam = parseInt(searchParams.get('page') ?? '1', 10);
   const currentPage = isNaN(pageParam) || pageParam < 1 ? 1 : pageParam;
 
+  // Merge database articles with WPTuts authentic tutorial posts
+  const allTutorials = useMemo(() => {
+    return [...WPTUTS_VIDEOS, ...articles];
+  }, [articles]);
+
   const handleCategoryChange = (cat: string) => {
     const params = new URLSearchParams(searchParams);
     if (cat === 'All') {
@@ -64,9 +175,9 @@ function NewsFeedContent({ articles }: { articles: (Article & {_id: any})[] }) {
     } else {
       params.set('category', cat);
     }
-    params.delete('page'); // Reset to page 1
+    params.delete('page');
     startTransition(() => {
-      router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+      router.replace(`${pathname}?${params.toString()}#tutorials`, { scroll: false });
     });
   };
 
@@ -78,20 +189,21 @@ function NewsFeedContent({ articles }: { articles: (Article & {_id: any})[] }) {
       params.set('page', newPage.toString());
     }
     startTransition(() => {
-      router.replace(`${pathname}?${params.toString()}#dispatches`, { scroll: true });
+      router.replace(`${pathname}?${params.toString()}#tutorials`, { scroll: true });
     });
   };
 
   const filteredArticles = useMemo(() => {
-    return articles
-      .filter((article) =>
-        selectedCategory === 'All' ? true : article.category === selectedCategory
-      )
+    return allTutorials
+      .filter((article) => {
+        if (selectedCategory === 'All') return true;
+        return article.category.toLowerCase().includes(selectedCategory.toLowerCase());
+      })
       .filter((article) =>
         article.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
         article.excerpt.toLowerCase().includes(searchQuery.toLowerCase())
       );
-  }, [articles, selectedCategory, searchQuery]);
+  }, [allTutorials, selectedCategory, searchQuery]);
 
   // Pagination calculation
   const totalPages = Math.ceil(filteredArticles.length / ARTICLES_PER_PAGE) || 1;
@@ -101,18 +213,18 @@ function NewsFeedContent({ articles }: { articles: (Article & {_id: any})[] }) {
   }, [filteredArticles, currentPage]);
 
   return (
-    <section id="dispatches" className="space-y-8 scroll-mt-20">
-      {/* WPTuts Style Section Header with Accent Bar */}
+    <section id="tutorials" className="space-y-8 scroll-mt-20">
+      {/* WPTuts Exact Section Header: "Latest Videos" */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between border-b border-border/60 pb-6">
-        <div className="border-l-4 border-[#e95f3c] pl-4">
-          <div className="text-xs font-bold uppercase tracking-wider text-[#e95f3c]">
-            Continuous Intelligence
+        <div className="border-l-4 border-[#df5c0c] pl-4">
+          <div className="text-xs font-bold uppercase tracking-wider text-[#df5c0c]">
+            Free WordPress Tutorials
           </div>
-          <h2 className="font-headline text-2xl font-extrabold tracking-tight sm:text-3xl text-[#152333] dark:text-white uppercase mt-0.5">
-            {selectedCategory === 'All' ? 'Latest Dispatches' : `${selectedCategory} Dispatches`}
+          <h2 className="font-headline text-3xl sm:text-4xl font-extrabold tracking-tight text-[#152333] dark:text-white mt-0.5">
+            Latest Videos
           </h2>
-          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1 max-w-xl">
-            In-depth reporting, sovereign debt tracking, and policy intelligence updated throughout the week.
+          <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-1 max-w-xl">
+            Unlock the potential of WordPress with over 700 FREE WordPress Tutorials. Elementor, ACF, Crocoblock, Brizy &amp; More.
           </p>
         </div>
 
@@ -124,10 +236,10 @@ function NewsFeedContent({ articles }: { articles: (Article & {_id: any})[] }) {
               <button
                 key={cat}
                 onClick={() => handleCategoryChange(cat)}
-                className={`rounded-full px-3.5 py-1 text-xs font-bold uppercase tracking-wider transition-all duration-200 ${
+                className={`rounded-full px-3.5 py-1 font-button text-xs font-bold uppercase tracking-wider transition-all duration-200 ${
                   isActive
-                    ? "bg-[#e95f3c] text-white shadow-md"
-                    : "bg-muted/60 text-slate-600 hover:bg-muted hover:text-foreground dark:text-slate-300"
+                    ? "bg-[#df5c0c] text-white shadow-md"
+                    : "bg-muted/60 text-slate-700 hover:bg-muted hover:text-foreground dark:text-slate-300"
                 }`}
               >
                 {cat}
@@ -139,9 +251,9 @@ function NewsFeedContent({ articles }: { articles: (Article & {_id: any})[] }) {
 
       {searchQuery && (
         <div className="flex items-center gap-2 rounded-lg bg-muted/40 p-3 text-xs text-muted-foreground border border-border/50">
-          <Filter className="h-4 w-4 text-[#e95f3c]" />
+          <Filter className="h-4 w-4 text-[#df5c0c]" />
           <span>Showing results for search term:</span>
-          <span className="font-bold text-[#e95f3c]">"{searchQuery}"</span>
+          <span className="font-bold text-[#df5c0c]">"{searchQuery}"</span>
           <button
             onClick={() => {
               const params = new URLSearchParams(searchParams);
@@ -159,7 +271,7 @@ function NewsFeedContent({ articles }: { articles: (Article & {_id: any})[] }) {
         <NewsFeedSkeleton />
       ) : (
         <>
-          {/* Article Enhanced Grid */}
+          {/* Article Enhanced Grid (WPTuts) */}
           {paginatedArticles.length > 0 ? (
             <div className="grid grid-cols-1 gap-7 sm:grid-cols-2 lg:grid-cols-3">
               {paginatedArticles.map((article) => (
@@ -168,18 +280,18 @@ function NewsFeedContent({ articles }: { articles: (Article & {_id: any})[] }) {
             </div>
           ) : (
             <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-border/80 bg-muted/20 py-20 text-center">
-              <div className="h-12 w-12 rounded-full bg-[#e95f3c]/10 p-3 text-[#e95f3c] mb-3 flex items-center justify-center font-bold text-lg">
+              <div className="h-12 w-12 rounded-full bg-[#df5c0c]/10 p-3 text-[#df5c0c] mb-3 flex items-center justify-center font-bold text-lg">
                 !
               </div>
-              <h3 className="font-headline text-lg font-bold text-foreground">No Dispatches Found</h3>
+              <h3 className="font-headline text-lg font-bold text-foreground">No Tutorials Found</h3>
               <p className="mt-1 text-xs sm:text-sm text-muted-foreground max-w-sm">
-                No articles matched your criteria. Try selecting another category or resetting the search.
+                No videos matched your criteria. Try selecting another category or resetting the search.
               </p>
               <button
                 onClick={() => handleCategoryChange('All')}
-                className="mt-4 rounded bg-[#e95f3c] px-4 py-2 text-xs font-bold uppercase tracking-wide text-white hover:bg-[#ad3b1e]"
+                className="mt-4 rounded bg-[#df5c0c] px-4 py-2 font-button text-xs font-bold uppercase tracking-wide text-white hover:bg-[#ad3b1e]"
               >
-                Show All Dispatches
+                Show All Videos
               </button>
             </div>
           )}
@@ -194,10 +306,10 @@ function NewsFeedContent({ articles }: { articles: (Article & {_id: any})[] }) {
                   <button
                     key={pageNum}
                     onClick={() => handlePageChange(pageNum)}
-                    className={`flex h-9 w-9 items-center justify-center rounded text-xs font-bold transition-all ${
+                    className={`flex h-9 w-9 items-center justify-center rounded font-button text-xs font-bold transition-all ${
                       isCurrent
-                        ? "bg-[#e95f3c] text-white shadow-sm"
-                        : "border border-border/70 bg-card text-foreground hover:border-[#e95f3c] hover:text-[#e95f3c]"
+                        ? "bg-[#df5c0c] text-white shadow-sm"
+                        : "border border-border/70 bg-card text-foreground hover:border-[#df5c0c] hover:text-[#df5c0c]"
                     }`}
                     aria-current={isCurrent ? "page" : undefined}
                   >
@@ -209,7 +321,7 @@ function NewsFeedContent({ articles }: { articles: (Article & {_id: any})[] }) {
               {currentPage < totalPages && (
                 <button
                   onClick={() => handlePageChange(currentPage + 1)}
-                  className="flex h-9 items-center gap-1 rounded border border-border/70 bg-card px-3 text-xs font-bold text-foreground transition-all hover:border-[#e95f3c] hover:text-[#e95f3c]"
+                  className="flex h-9 items-center gap-1 rounded border border-border/70 bg-card px-3 font-button text-xs font-bold text-foreground transition-all hover:border-[#df5c0c] hover:text-[#df5c0c]"
                 >
                   <span>Next</span>
                   <ChevronRight className="h-3.5 w-3.5" />

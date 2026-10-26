@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { Search, PlusCircle, Menu, ChevronDown, BookOpen, Layers, Newspaper, ExternalLink } from 'lucide-react';
+import { Search, PlusCircle, Menu, ChevronDown, Coffee, GraduationCap } from 'lucide-react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import UserNav from './user-nav';
@@ -77,51 +77,51 @@ function HeaderContent() {
 
   return (
     <div className="w-full">
-      {/* WPTuts Style Top Bar */}
+      {/* WPTuts Exact Top Bar */}
       <div className="hidden sm:block w-full bg-[#111c29] text-white border-b border-white/10 text-xs">
         <div className="container mx-auto flex h-9 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
           <div className="flex items-center gap-3">
-            <span className="text-slate-400 font-medium">Follow Our Desks:</span>
+            <span className="text-slate-400 font-medium">Follow WPTuts:</span>
             <div className="flex items-center gap-2">
               <a
-                href="https://www.youtube.com/@debtanddominion"
+                href="https://www.youtube.com/c/wptuts"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex h-6 w-6 items-center justify-center rounded-full bg-white/5 hover:bg-[#e95f3c] transition-colors"
+                className="flex h-6 w-6 items-center justify-center rounded-full bg-white/5 hover:bg-[#df5c0c] transition-colors"
                 aria-label="YouTube"
               >
                 <YouTubeFavicon className="h-3.5 w-3.5" />
               </a>
               <a
-                href="https://x.com/debtanddominion"
+                href="https://twitter.com/WPTutz"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex h-6 w-6 items-center justify-center rounded-full bg-white/5 hover:bg-[#e95f3c] transition-colors"
-                aria-label="X Twitter"
+                className="flex h-6 w-6 items-center justify-center rounded-full bg-white/5 hover:bg-[#df5c0c] transition-colors"
+                aria-label="Twitter / X"
               >
                 <XFavicon className="h-3.5 w-3.5" />
               </a>
               <a
-                href="https://www.linkedin.com/company/debt-dominion/"
+                href="https://www.facebook.com/groups/wpcrue"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex h-6 w-6 items-center justify-center rounded-full bg-white/5 hover:bg-[#e95f3c] transition-colors"
-                aria-label="LinkedIn"
+                className="flex h-6 w-6 items-center justify-center rounded-full bg-white/5 hover:bg-[#df5c0c] transition-colors"
+                aria-label="Facebook Group"
               >
                 <LinkedInFavicon className="h-3.5 w-3.5" />
               </a>
               <a
-                href="https://www.tiktok.com/@debtanddominion"
+                href="https://www.instagram.com/wptuts/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex h-6 w-6 items-center justify-center rounded-full bg-white/5 hover:bg-[#e95f3c] transition-colors"
-                aria-label="TikTok"
+                className="flex h-6 w-6 items-center justify-center rounded-full bg-white/5 hover:bg-[#df5c0c] transition-colors"
+                aria-label="Instagram"
               >
                 <TikTokFavicon className="h-3.5 w-3.5" />
               </a>
               <a
-                href="mailto:debtdominionofficial@gmail.com"
-                className="flex h-6 w-6 items-center justify-center rounded-full bg-white/5 hover:bg-[#e95f3c] transition-colors"
+                href="mailto:contact@wptuts.co.uk"
+                className="flex h-6 w-6 items-center justify-center rounded-full bg-white/5 hover:bg-[#df5c0c] transition-colors"
                 aria-label="Email"
               >
                 <GmailFavicon className="h-3 w-3" />
@@ -131,13 +131,14 @@ function HeaderContent() {
 
           <div className="flex items-center gap-4">
             <span className="text-slate-400 hidden md:inline">
-              Over 700+ Global Dispatches &amp; Intelligence Briefings
+              Over 700 Free WordPress Tutorials
             </span>
             <Link
               href={user ? "/dashboard" : "/login"}
-              className="inline-flex items-center gap-1.5 rounded bg-[#e95f3c] px-3 py-1 font-semibold text-white text-[11px] uppercase tracking-wider hover:bg-[#ad3b1e] transition-colors"
+              className="inline-flex items-center gap-1.5 rounded bg-[#df5c0c] px-3 py-1 font-button text-[11px] font-bold uppercase tracking-wider text-white hover:bg-[#ad3b1e] transition-colors"
             >
-              {user ? "Member Dashboard" : "Student / Member Login"}
+              <GraduationCap className="h-3 w-3" />
+              <span>{user ? "Dashboard" : "Student Login"}</span>
             </Link>
           </div>
         </div>
@@ -146,91 +147,163 @@ function HeaderContent() {
       {/* Main Sticky Navbar */}
       <header className="sticky top-0 z-50 w-full border-b border-border/60 bg-background/95 backdrop-blur-md transition-colors duration-200 shadow-sm">
         <div className="container mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-          <Link href="/" className="group flex items-center gap-3 transition-opacity hover:opacity-90">
-            <Image src={Logo} alt="Debt & Dominion" width={32} height={32} priority className="h-8 w-8 rounded-md object-contain shadow-sm shrink-0" />
-            <div className="flex items-center gap-1.5">
-              <span className="font-headline text-xl font-extrabold tracking-tight text-foreground transition-colors group-hover:text-[#e95f3c]">
-                Debt &amp; Dominion
+          <Link href="/" className="group flex items-center gap-2.5 transition-opacity hover:opacity-90">
+            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#df5c0c] text-white font-headline text-lg font-black shadow-md">
+              W
+            </span>
+            <div className="flex items-center gap-1">
+              <span className="font-headline text-2xl font-black tracking-tight text-foreground transition-colors group-hover:text-[#df5c0c]">
+                WPTuts
               </span>
-              <span className="h-2 w-2 rounded-full bg-[#e95f3c]" />
+              <span className="h-2 w-2 rounded-full bg-[#df5c0c]" />
             </div>
           </Link>
 
-          {/* Desktop Navigation Links with WPTuts-Style Dropdowns */}
-          <nav className="hidden lg:flex items-center gap-7 text-sm font-semibold text-foreground/80">
-            <Link href="/" className="transition-colors hover:text-[#e95f3c]">
+          {/* Desktop Navigation Links with Exact WPTuts Menus */}
+          <nav className="hidden lg:flex items-center gap-6 text-sm font-semibold text-foreground/85">
+            <Link href="/" className="transition-colors hover:text-[#df5c0c]">
               Home
             </Link>
 
-            {/* Dispatches Dropdown */}
+            {/* Tutorials Dropdown */}
             <DropdownMenu>
-              <DropdownMenuTrigger className="flex items-center gap-1 transition-colors hover:text-[#e95f3c] outline-none">
-                <span>Dispatches</span>
+              <DropdownMenuTrigger className="flex items-center gap-1 transition-colors hover:text-[#df5c0c] outline-none">
+                <span>Tutorials</span>
                 <ChevronDown className="h-3.5 w-3.5 opacity-70" />
               </DropdownMenuTrigger>
               <DropdownMenuContent align="start" className="w-56 p-2 border-border/80 shadow-xl bg-card">
                 <DropdownMenuItem asChild>
-                  <Link href="/#dispatches" className="cursor-pointer font-medium">
-                    All Dispatches
+                  <Link href="/#tutorials" className="cursor-pointer font-medium">
+                    All Tutorials
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
-                  <Link href="/?category=Technology" className="cursor-pointer">
-                    Technology &amp; AI
+                  <Link href="/#tutorials" className="cursor-pointer">
+                    Beginners
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                  <Link href="/?category=Politics" className="cursor-pointer">
-                    Politics &amp; Policy
+                  <Link href="/#tutorials" className="cursor-pointer">
+                    Intermediate
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                  <Link href="/?category=World" className="cursor-pointer">
-                    World Affairs
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link href="/?category=Sports" className="cursor-pointer">
-                    Sports &amp; Analytics
+                  <Link href="/#tutorials" className="cursor-pointer">
+                    Advanced
                   </Link>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
 
-            {/* Intelligence Dossiers Dropdown */}
+            {/* WordPress Dropdown */}
             <DropdownMenu>
-              <DropdownMenuTrigger className="flex items-center gap-1 transition-colors hover:text-[#e95f3c] outline-none">
-                <span>Dossiers</span>
+              <DropdownMenuTrigger className="flex items-center gap-1 transition-colors hover:text-[#df5c0c] outline-none">
+                <span>WordPress</span>
+                <ChevronDown className="h-3.5 w-3.5 opacity-70" />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start" className="w-60 p-2 border-border/80 shadow-xl bg-card">
+                <DropdownMenuItem asChild>
+                  <Link href="/#tutorials" className="cursor-pointer">
+                    WordPress Tutorials
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/#tutorials" className="cursor-pointer">
+                    Backup &amp; Maintenance
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/#tutorials" className="cursor-pointer">
+                    Design Tips
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/#tutorials" className="cursor-pointer">
+                    Gutenberg
+                  </Link>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            {/* Dynamic Design Dropdown */}
+            <DropdownMenu>
+              <DropdownMenuTrigger className="flex items-center gap-1 transition-colors hover:text-[#df5c0c] outline-none">
+                <span>Dynamic Design</span>
                 <ChevronDown className="h-3.5 w-3.5 opacity-70" />
               </DropdownMenuTrigger>
               <DropdownMenuContent align="start" className="w-64 p-2 border-border/80 shadow-xl bg-card">
                 <DropdownMenuItem asChild>
-                  <Link href="/#dossier" className="cursor-pointer font-medium flex items-center justify-between">
-                    <span>Sovereign Analyst Pack</span>
-                    <span className="text-[10px] font-bold uppercase bg-[#e95f3c]/15 text-[#e95f3c] px-1.5 py-0.5 rounded">Free</span>
+                  <Link href="/#tutorials" className="cursor-pointer">
+                    Advanced Custom Fields
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                  <Link href="/#featured" className="cursor-pointer font-medium">
-                    Featured Deep Dives
+                  <Link href="/#tutorials" className="cursor-pointer">
+                    JetEngine
                   </Link>
                 </DropdownMenuItem>
-                <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
-                  <Link href="/newsletter" className="cursor-pointer">
-                    Weekly Intelligence Briefing
+                  <Link href="/#tutorials" className="cursor-pointer">
+                    PODS
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/#tutorials" className="cursor-pointer">
+                    Toolset
                   </Link>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
 
-            <Link href="/about" className="transition-colors hover:text-[#e95f3c]">
-              About
+            {/* Page Builders Dropdown */}
+            <DropdownMenu>
+              <DropdownMenuTrigger className="flex items-center gap-1 transition-colors hover:text-[#df5c0c] outline-none">
+                <span>Page Builders</span>
+                <ChevronDown className="h-3.5 w-3.5 opacity-70" />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start" className="w-56 p-2 border-border/80 shadow-xl bg-card">
+                <DropdownMenuItem asChild>
+                  <Link href="/#tutorials" className="cursor-pointer">
+                    Bricks Builder
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/#tutorials" className="cursor-pointer">
+                    Brizy Page Builder
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/#tutorials" className="cursor-pointer">
+                    Divi Page Builder
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/#tutorials" className="cursor-pointer">
+                    Elementor
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/#tutorials" className="cursor-pointer">
+                    Oxygen Builder
+                  </Link>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            <Link href="#documents" className="transition-colors hover:text-[#df5c0c]">
+              Documents
             </Link>
-            <Link href="/newsletter" className="transition-colors hover:text-[#e95f3c]">
-              Newsletter
-            </Link>
+
+            <a
+              href="https://www.buymeacoffee.com/wptuts"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 text-xs font-bold text-[#df5c0c] hover:underline"
+            >
+              <Coffee className="h-3.5 w-3.5" />
+              <span>Buy me a coffee</span>
+            </a>
           </nav>
 
           <div className="flex items-center gap-2">
@@ -248,8 +321,8 @@ function HeaderContent() {
                     <Input
                       type="search"
                       name="search"
-                      placeholder="Search articles & topics..."
-                      className="pl-9 text-sm focus-visible:ring-[#e95f3c]"
+                      placeholder="Search 700+ tutorials..."
+                      className="pl-9 text-sm focus-visible:ring-[#df5c0c]"
                       defaultValue={defaultSearch}
                       autoFocus
                     />
@@ -265,10 +338,10 @@ function HeaderContent() {
 
             {/* Create Post Action for Admin, Editor, Author */}
             {(currentUser?.role === 'Admin' || currentUser?.role === 'Editor' || currentUser?.role === 'Author') && (
-              <Button asChild size="sm" className="bg-[#e95f3c] font-medium text-white hover:bg-[#ad3b1e]">
+              <Button asChild size="sm" className="bg-[#df5c0c] font-button text-xs font-bold uppercase tracking-wider text-white hover:bg-[#ad3b1e]">
                 <Link href="/create-post" className="flex items-center gap-1.5">
                   <PlusCircle className="h-4 w-4" />
-                  <span className="hidden sm:inline">Create Post</span>
+                  <span className="hidden sm:inline">Add Tutorial</span>
                 </Link>
               </Button>
             )}
@@ -291,70 +364,72 @@ function HeaderContent() {
               <SheetContent side="left" className="w-72 p-6 flex flex-col justify-between">
                 <div>
                   <SheetHeader className="text-left mb-6">
-                    <SheetTitle className="flex items-center gap-2 font-headline text-lg font-bold">
-                      <Image src={Logo} alt="Debt & Dominion" width={28} height={28} className="h-7 w-7 rounded object-contain shrink-0" />
-                      <span>Debt &amp; Dominion</span>
+                    <SheetTitle className="flex items-center gap-2 font-headline text-xl font-black">
+                      <span className="flex h-7 w-7 items-center justify-center rounded bg-[#df5c0c] text-white text-sm font-black">
+                        W
+                      </span>
+                      <span>WPTuts</span>
                     </SheetTitle>
                   </SheetHeader>
-                  <nav className="flex flex-col gap-3 text-base font-medium">
+                  <nav className="flex flex-col gap-3 text-sm font-semibold">
                     <Link
                       href="/"
                       onClick={() => setIsMobileMenuOpen(false)}
-                      className="transition-colors hover:text-[#e95f3c]"
+                      className="transition-colors hover:text-[#df5c0c]"
                     >
                       Home
                     </Link>
                     <div className="h-px bg-border/60 my-1" />
-                    <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Dispatches</span>
+                    <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Tutorials</span>
                     <Link
-                      href="/#dispatches"
+                      href="/#tutorials"
                       onClick={() => setIsMobileMenuOpen(false)}
-                      className="pl-2 text-sm text-muted-foreground hover:text-foreground"
+                      className="pl-2 text-muted-foreground hover:text-foreground"
                     >
-                      All Stories
+                      All Tutorials (700+)
                     </Link>
                     <Link
-                      href="/?category=Technology"
+                      href="/#tutorials"
                       onClick={() => setIsMobileMenuOpen(false)}
-                      className="pl-2 text-sm text-muted-foreground hover:text-foreground"
+                      className="pl-2 text-muted-foreground hover:text-foreground"
                     >
-                      Technology &amp; AI
+                      Bricks Builder
                     </Link>
                     <Link
-                      href="/?category=Politics"
+                      href="/#tutorials"
                       onClick={() => setIsMobileMenuOpen(false)}
-                      className="pl-2 text-sm text-muted-foreground hover:text-foreground"
+                      className="pl-2 text-muted-foreground hover:text-foreground"
                     >
-                      Politics &amp; Policy
+                      Elementor Tutorials
                     </Link>
                     <Link
-                      href="/?category=World"
+                      href="/#tutorials"
                       onClick={() => setIsMobileMenuOpen(false)}
-                      className="pl-2 text-sm text-muted-foreground hover:text-foreground"
+                      className="pl-2 text-muted-foreground hover:text-foreground"
                     >
-                      World Affairs
+                      WordPress Plugins &amp; Tools
                     </Link>
                     <Link
-                      href="/?category=Sports"
+                      href="/#tutorials"
                       onClick={() => setIsMobileMenuOpen(false)}
-                      className="pl-2 text-sm text-muted-foreground hover:text-foreground"
+                      className="pl-2 text-muted-foreground hover:text-foreground"
                     >
-                      Sports &amp; Analytics
+                      WooCommerce Tutorials
                     </Link>
                     <div className="h-px bg-border/60 my-1" />
                     <Link
-                      href="/about"
+                      href="#documents"
                       onClick={() => setIsMobileMenuOpen(false)}
-                      className="transition-colors hover:text-[#e95f3c]"
+                      className="transition-colors hover:text-[#df5c0c]"
                     >
-                      About Publication
+                      Essential Documents
                     </Link>
                     <Link
-                      href="/newsletter"
+                      href="#newsletter"
                       onClick={() => setIsMobileMenuOpen(false)}
-                      className="transition-colors hover:text-[#e95f3c]"
+                      className="transition-colors hover:text-[#df5c0c]"
                     >
-                      Weekly Newsletter
+                      Subscribe
                     </Link>
                   </nav>
                 </div>
@@ -363,9 +438,9 @@ function HeaderContent() {
                   <Link
                     href={user ? "/dashboard" : "/login"}
                     onClick={() => setIsMobileMenuOpen(false)}
-                    className="flex w-full items-center justify-center rounded bg-[#e95f3c] py-2 text-center text-xs font-bold uppercase text-white hover:bg-[#ad3b1e]"
+                    className="flex w-full items-center justify-center rounded bg-[#df5c0c] py-2 text-center font-button text-xs font-bold uppercase text-white hover:bg-[#ad3b1e]"
                   >
-                    {user ? "Member Dashboard" : "Member Login"}
+                    {user ? "Student Dashboard" : "Student Login"}
                   </Link>
                 </div>
               </SheetContent>
@@ -383,8 +458,10 @@ export default function Header() {
       <header className="sticky top-0 z-50 w-full border-b border-border/60 bg-background/80 backdrop-blur-md">
         <div className="container mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
           <Link href="/" className="flex items-center gap-2">
-            <Image src={Logo} alt="Debt & Dominion" width={32} height={32} priority className="h-8 w-8 rounded-md object-contain shrink-0" />
-            <span className="font-headline text-xl font-bold tracking-tight text-foreground">Debt &amp; Dominion</span>
+            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#df5c0c] text-white font-headline text-lg font-black">
+              W
+            </span>
+            <span className="font-headline text-xl font-black tracking-tight text-foreground">WPTuts</span>
           </Link>
         </div>
       </header>
