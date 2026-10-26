@@ -2,23 +2,13 @@
 
 import type { Article } from '@/lib/types';
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
-import { useMemo, useState, useTransition, useEffect, Suspense } from 'react';
+import { useMemo, useState, useTransition, Suspense } from 'react';
 import ArticleCard from './article-card';
-import Image from 'next/image';
-import Link from 'next/link';
-import { Badge } from './ui/badge';
 import { Skeleton } from './ui/skeleton';
-import { Calendar, User, ArrowRight } from 'lucide-react';
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel";
-import Autoplay from "embla-carousel-autoplay";
+import { ChevronRight, Filter } from 'lucide-react';
 
 const categories = ['All', 'Politics', 'Sports', 'Technology', 'World'];
+const ARTICLES_PER_PAGE = 6;
 
 function NewsFeedContent({ articles }: { articles: (Article & {_id: any})[] }) {
   const searchParams = useSearchParams();
@@ -28,13 +18,8 @@ function NewsFeedContent({ articles }: { articles: (Article & {_id: any})[] }) {
 
   const selectedCategory = searchParams.get('category') ?? 'All';
   const searchQuery = searchParams.get('search') ?? '';
-
-  const [carouselArticles, setCarouselArticles] = useState<(Article & {_id: any})[]>([]);
-
-  useEffect(() => {
-    const sortedArticles = [...articles].sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime());
-    setCarouselArticles(sortedArticles.slice(0, 5));
-  }, [articles]);
+  const pageParam = parseInt(searchParams.get('page') ?? '1', 10);
+  const currentPage = isNaN(pageParam) || pageParam < 1 ? 1 : pageParam;
 
   const handleCategoryChange = (cat: string) => {
     const params = new URLSearchParams(searchParams);
@@ -43,8 +28,21 @@ function NewsFeedContent({ articles }: { articles: (Article & {_id: any})[] }) {
     } else {
       params.set('category', cat);
     }
+    params.delete('page'); // Reset to page 1
     startTransition(() => {
-      router.replace(`${pathname}?${params.toString()}`);
+      router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+    });
+  };
+
+  const handlePageChange = (newPage: number) => {
+    const params = new URLSearchParams(searchParams);
+    if (newPage <= 1) {
+      params.delete('page');
+    } else {
+      params.set('page', newPage.toString());
+    }
+    startTransition(() => {
+      router.replace(`${pathname}?${params.toString()}#dispatches`, { scroll: true });
     });
   };
 
@@ -59,37 +57,54 @@ function NewsFeedContent({ articles }: { articles: (Article & {_id: any})[] }) {
       );
   }, [articles, selectedCategory, searchQuery]);
 
+  // Pagination calculation
+  const totalPages = Math.ceil(filteredArticles.length / ARTICLES_PER_PAGE) || 1;
+  const paginatedArticles = useMemo(() => {
+    const start = (currentPage - 1) * ARTICLES_PER_PAGE;
+    return filteredArticles.slice(start, start + ARTICLES_PER_PAGE);
+  }, [filteredArticles, currentPage]);
+
   const renderSkeletons = () => (
-    <div className="space-y-8">
-      <Skeleton className="h-[400px] w-full rounded-2xl" />
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {[...Array(6)].map((_, i) => (
-          <div key={i} className="space-y-3 rounded-xl border border-border/60 p-4">
-            <Skeleton className="h-[200px] w-full rounded-lg" />
-            <Skeleton className="h-4 w-1/4" />
-            <Skeleton className="h-6 w-3/4" />
-            <Skeleton className="h-10 w-full" />
-          </div>
-        ))}
-      </div>
+    <div className="grid gap-7 md:grid-cols-2 lg:grid-cols-3">
+      {[...Array(6)].map((_, i) => (
+        <div key={i} className="space-y-3 rounded-xl border border-border/70 p-4">
+          <Skeleton className="aspect-video w-full rounded-lg" />
+          <Skeleton className="h-4 w-1/4" />
+          <Skeleton className="h-6 w-3/4" />
+          <Skeleton className="h-12 w-full" />
+        </div>
+      ))}
     </div>
   );
 
   return (
-    <section className="space-y-8">
-      {/* Minimalist Category Tabs */}
-      <div className="flex items-center justify-between border-b border-border/60 pb-4">
-        <div className="flex items-center gap-1.5 overflow-x-auto py-1 scrollbar-none">
+    <section id="dispatches" className="space-y-8 scroll-mt-20">
+      {/* WPTuts Style Section Header with Accent Bar */}
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between border-b border-border/60 pb-6">
+        <div className="border-l-4 border-[#e95f3c] pl-4">
+          <div className="text-xs font-bold uppercase tracking-wider text-[#e95f3c]">
+            Continuous Intelligence
+          </div>
+          <h2 className="font-headline text-2xl font-extrabold tracking-tight sm:text-3xl text-[#152333] dark:text-white uppercase mt-0.5">
+            {selectedCategory === 'All' ? 'Latest Dispatches' : `${selectedCategory} Dispatches`}
+          </h2>
+          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1 max-w-xl">
+            In-depth reporting, sovereign debt tracking, and policy intelligence updated throughout the week.
+          </p>
+        </div>
+
+        {/* WPTuts Category Pills */}
+        <div className="flex flex-wrap items-center gap-1.5">
           {categories.map((cat) => {
             const isActive = selectedCategory === cat;
             return (
               <button
                 key={cat}
                 onClick={() => handleCategoryChange(cat)}
-                className={`rounded-full px-4 py-1.5 text-sm font-medium transition-all duration-200 ${
+                className={`rounded-full px-3.5 py-1 text-xs font-bold uppercase tracking-wider transition-all duration-200 ${
                   isActive
-                    ? "bg-orange-600 text-white shadow-sm dark:bg-orange-500 dark:text-slate-950"
-                    : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                    ? "bg-[#e95f3c] text-white shadow-md"
+                    : "bg-muted/60 text-slate-600 hover:bg-muted hover:text-foreground dark:text-slate-300"
                 }`}
               >
                 {cat}
@@ -97,113 +112,88 @@ function NewsFeedContent({ articles }: { articles: (Article & {_id: any})[] }) {
             );
           })}
         </div>
-        {searchQuery && (
-          <div className="text-xs text-muted-foreground">
-            Filter: <span className="font-semibold text-orange-600 dark:text-orange-400">"{searchQuery}"</span>
-          </div>
-        )}
       </div>
+
+      {searchQuery && (
+        <div className="flex items-center gap-2 rounded-lg bg-muted/40 p-3 text-xs text-muted-foreground border border-border/50">
+          <Filter className="h-4 w-4 text-[#e95f3c]" />
+          <span>Showing results for search term:</span>
+          <span className="font-bold text-[#e95f3c]">"{searchQuery}"</span>
+          <button
+            onClick={() => {
+              const params = new URLSearchParams(searchParams);
+              params.delete('search');
+              router.replace(`${pathname}?${params.toString()}`);
+            }}
+            className="ml-auto underline hover:text-foreground"
+          >
+            Clear Search
+          </button>
+        </div>
+      )}
 
       {isPending ? (
         renderSkeletons()
       ) : (
         <>
-          {/* Featured Hero Carousel */}
-          {!searchQuery && selectedCategory === 'All' && carouselArticles.length > 0 && (
-            <div className="relative mb-10">
-              <Carousel
-                className="w-full"
-                opts={{ loop: true }}
-                plugins={[Autoplay({ delay: 6000 })]}
+          {/* Article Enhanced Grid */}
+          {paginatedArticles.length > 0 ? (
+            <div className="grid grid-cols-1 gap-7 sm:grid-cols-2 lg:grid-cols-3">
+              {paginatedArticles.map((article) => (
+                <ArticleCard key={article._id.toString()} article={{...article, id: article._id.toString()}} />
+              ))}
+            </div>
+          ) : (
+            <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-border/80 bg-muted/20 py-20 text-center">
+              <div className="h-12 w-12 rounded-full bg-[#e95f3c]/10 p-3 text-[#e95f3c] mb-3 flex items-center justify-center font-bold text-lg">
+                !
+              </div>
+              <h3 className="font-headline text-lg font-bold text-foreground">No Dispatches Found</h3>
+              <p className="mt-1 text-xs sm:text-sm text-muted-foreground max-w-sm">
+                No articles matched your criteria. Try selecting another category or resetting the search.
+              </p>
+              <button
+                onClick={() => handleCategoryChange('All')}
+                className="mt-4 rounded bg-[#e95f3c] px-4 py-2 text-xs font-bold uppercase tracking-wide text-white hover:bg-[#ad3b1e]"
               >
-                <CarouselContent>
-                  {carouselArticles.map((article) => (
-                    <CarouselItem key={article._id.toString()}>
-                      <div className="group relative overflow-hidden rounded-2xl border border-border/60 bg-card shadow-sm transition-all duration-300">
-                        <Link href={`/articles/${article.slug}`}>
-                          <div className="relative h-72 sm:h-96 md:h-[440px] w-full">
-                            <Image
-                              src={article.imageUrl}
-                              alt={article.title}
-                              fill
-                              sizes="(max-width: 1280px) 100vw, 1200px"
-                              className="object-cover transition-transform duration-700 group-hover:scale-105"
-                              priority
-                              data-ai-hint={article.imageHint}
-                            />
-                            <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/40 to-transparent" />
-                          </div>
-                          
-                          <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-8 md:p-10 text-white">
-                            <div className="flex items-center gap-3 mb-3">
-                              <span className="inline-flex items-center rounded-md bg-orange-500 px-3 py-1 text-xs font-bold uppercase tracking-wider text-slate-950 shadow-sm">
-                                {article.category}
-                              </span>
-                              <span className="text-xs text-slate-300 flex items-center gap-1">
-                                <Calendar className="h-3.5 w-3.5" />
-                                {new Date(article.publishedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
-                              </span>
-                            </div>
-
-                            <h2 className="font-headline text-2xl font-extrabold sm:text-3xl md:text-4xl leading-tight text-white transition-colors group-hover:text-orange-300">
-                              {article.title}
-                            </h2>
-
-                            <p className="mt-3 line-clamp-2 max-w-3xl text-sm sm:text-base text-slate-200 leading-relaxed font-normal">
-                              {article.excerpt}
-                            </p>
-
-                            <div className="mt-5 flex items-center gap-2 font-semibold text-orange-400 text-sm group-hover:translate-x-1 transition-transform">
-                              <span>Read Full Article</span>
-                              <ArrowRight className="h-4 w-4" />
-                            </div>
-                          </div>
-                        </Link>
-                      </div>
-                    </CarouselItem>
-                  ))}
-                </CarouselContent>
-                <CarouselPrevious className="left-4 bg-background/80 border-border backdrop-blur hover:bg-background text-foreground" />
-                <CarouselNext className="right-4 bg-background/80 border-border backdrop-blur hover:bg-background text-foreground" />
-              </Carousel>
+                Show All Dispatches
+              </button>
             </div>
           )}
 
-          {/* Article Grid */}
-          <div>
-            <div className="mb-6 flex items-center justify-between">
-              <h2 className="font-headline text-xl font-bold tracking-tight text-foreground sm:text-2xl">
-                {selectedCategory === 'All' ? 'Latest Stories' : `${selectedCategory} Articles`}
-              </h2>
-              <span className="text-xs text-muted-foreground">
-                Showing {filteredArticles.length} {filteredArticles.length === 1 ? 'article' : 'articles'}
-              </span>
-            </div>
+          {/* WPTuts Style Numeric Pagination */}
+          {totalPages > 1 && (
+            <nav className="flex items-center justify-center gap-1.5 pt-8 border-t border-border/50" aria-label="Pagination">
+              {[...Array(totalPages)].map((_, i) => {
+                const pageNum = i + 1;
+                const isCurrent = pageNum === currentPage;
+                return (
+                  <button
+                    key={pageNum}
+                    onClick={() => handlePageChange(pageNum)}
+                    className={`flex h-9 w-9 items-center justify-center rounded text-xs font-bold transition-all ${
+                      isCurrent
+                        ? "bg-[#e95f3c] text-white shadow-sm"
+                        : "border border-border/70 bg-card text-foreground hover:border-[#e95f3c] hover:text-[#e95f3c]"
+                    }`}
+                    aria-current={isCurrent ? "page" : undefined}
+                  >
+                    {pageNum}
+                  </button>
+                );
+              })}
 
-            {filteredArticles.length > 0 ? (
-              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                {filteredArticles.map((article) => (
-                  <ArticleCard key={article._id.toString()} article={{...article, id: article._id.toString()}} />
-                ))}
-              </div>
-            ) : (
-              <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-border/80 bg-muted/30 py-20 text-center">
-                <div className="h-12 w-12 rounded-full bg-orange-500/10 p-3 text-orange-600 dark:text-orange-400 mb-3 flex items-center justify-center font-bold">
-                  !
-                </div>
-                <h4 className="font-headline text-lg font-semibold text-foreground">No articles found</h4>
-                <p className="mt-1 text-sm text-muted-foreground max-w-sm">
-                  We couldn't find any articles matching your search criteria. Try resetting filters.
-                </p>
+              {currentPage < totalPages && (
                 <button
-                  onClick={() => handleCategoryChange('All')}
-                  className="mt-4 rounded-md bg-orange-600 px-4 py-2 text-xs font-semibold text-white hover:bg-orange-700 dark:bg-orange-500 dark:text-slate-950 dark:hover:bg-orange-400"
+                  onClick={() => handlePageChange(currentPage + 1)}
+                  className="flex h-9 items-center gap-1 rounded border border-border/70 bg-card px-3 text-xs font-bold text-foreground transition-all hover:border-[#e95f3c] hover:text-[#e95f3c]"
                 >
-                  Show All Articles
+                  <span>Next</span>
+                  <ChevronRight className="h-3.5 w-3.5" />
                 </button>
-              </div>
-            )}
-          </div>
+              )}
+            </nav>
+          )}
         </>
       )}
     </section>

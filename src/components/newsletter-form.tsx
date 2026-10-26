@@ -46,7 +46,7 @@ export default function NewsletterForm() {
               <FormControl>
                 <Input
                   placeholder="Enter your email address"
-                  className="h-11 border-border/80 text-sm focus-visible:ring-emerald-500"
+                  className="h-11 border-border/80 text-sm focus-visible:ring-[#e95f3c]"
                   {...field}
                 />
               </FormControl>
@@ -57,7 +57,7 @@ export default function NewsletterForm() {
         <Button
           type="submit"
           disabled={isSubmitting}
-          className="h-11 bg-emerald-600 font-semibold text-white hover:bg-emerald-700 dark:bg-emerald-500 dark:text-slate-950 dark:hover:bg-emerald-400 sm:w-auto"
+          className="h-11 bg-[#e95f3c] font-bold uppercase tracking-wider text-white hover:bg-[#ad3b1e] sm:w-auto"
         >
           {isSubmitting ? (
             <>

@@ -4,82 +4,82 @@
 
 @layer base {
   :root {
-    --background: 46 41% 89%; /* #F0EAD6 Eggshell */
-    --foreground: 222 47% 11%; /* #0F172A */
+    --background: 210 20% 98%; /* #F8FAFC crisp modern background */
+    --foreground: 215 36% 14%; /* #152333 WPTuts dark headings & text */
     
-    --card: 46 30% 95%; /* Slightly lighter eggshell */
-    --card-foreground: 222 47% 11%;
+    --card: 0 0% 100%; /* Pure white boxed card */
+    --card-foreground: 215 36% 14%;
     
-    --popover: 46 30% 95%;
-    --popover-foreground: 222 47% 11%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 215 36% 14%;
 
-    --primary: 24 90% 53%; /* Orange #F97316 */
+    --primary: 12 79% 57%; /* WPTuts Coral Orange #E95F3C */
     --primary-foreground: 0 0% 100%;
     
-    --secondary: 224 64% 33%; /* Navy Blue #1E3A8A */
+    --secondary: 213 41% 15%; /* WPTuts Deep Slate Navy #162536 */
     --secondary-foreground: 0 0% 100%;
 
-    --muted: 46 20% 80%;
+    --muted: 210 20% 94%;
     --muted-foreground: 215 16% 47%;
 
-    --accent: 24 90% 53%;
+    --accent: 12 79% 57%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 46 20% 80%;
-    --input: 46 20% 80%;
-    --ring: 24 90% 53%;
+    --border: 214 20% 90%;
+    --input: 214 20% 90%;
+    --ring: 12 79% 57%;
     --radius: 0.5rem;
 
-    --sidebar-background: 46 41% 89%;
-    --sidebar-foreground: 222 47% 11%;
-    --sidebar-primary: 24 90% 53%;
+    --sidebar-background: 210 20% 98%;
+    --sidebar-foreground: 215 36% 14%;
+    --sidebar-primary: 12 79% 57%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 46 20% 80%;
-    --sidebar-accent-foreground: 222 47% 11%;
-    --sidebar-border: 46 20% 80%;
-    --sidebar-ring: 24 90% 53%;
+    --sidebar-accent: 210 20% 94%;
+    --sidebar-accent-foreground: 215 36% 14%;
+    --sidebar-border: 214 20% 90%;
+    --sidebar-ring: 12 79% 57%;
   }
 
   .dark {
-    --background: 222 47% 11%; /* #0F172A */
-    --foreground: 46 41% 89%; /* #F0EAD6 */
+    --background: 213 45% 10%; /* #0F1723 Darkest Navy */
+    --foreground: 210 20% 98%;
     
-    --card: 222 47% 15%; /* Slate 800 */
-    --card-foreground: 46 41% 89%;
+    --card: 213 41% 15%; /* #162536 Deep Slate Navy card */
+    --card-foreground: 210 20% 98%;
     
-    --popover: 222 47% 15%;
-    --popover-foreground: 46 41% 89%;
+    --popover: 213 41% 15%;
+    --popover-foreground: 210 20% 98%;
 
-    --primary: 24 90% 53%; /* Orange */
+    --primary: 12 79% 57%; /* Coral Orange #E95F3C */
     --primary-foreground: 0 0% 100%;
     
-    --secondary: 215 25% 27%; /* Slate 700 */
-    --secondary-foreground: 46 41% 89%;
+    --secondary: 213 30% 25%;
+    --secondary-foreground: 210 20% 98%;
 
-    --muted: 222 47% 18%;
+    --muted: 213 35% 18%;
     --muted-foreground: 215 20% 65%;
 
-    --accent: 24 90% 53%;
+    --accent: 12 79% 57%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 63% 31%;
     --destructive-foreground: 210 20% 98%;
 
-    --border: 217 33% 20%;
-    --input: 217 33% 20%;
-    --ring: 24 90% 53%;
+    --border: 213 30% 22%;
+    --input: 213 30% 22%;
+    --ring: 12 79% 57%;
 
-    --sidebar-background: 222 47% 11%;
-    --sidebar-foreground: 46 41% 89%;
-    --sidebar-primary: 24 90% 53%;
+    --sidebar-background: 213 45% 10%;
+    --sidebar-foreground: 210 20% 98%;
+    --sidebar-primary: 12 79% 57%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 222 47% 18%;
-    --sidebar-accent-foreground: 46 41% 89%;
-    --sidebar-border: 217 33% 20%;
-    --sidebar-ring: 24 90% 53%;
+    --sidebar-accent: 213 35% 18%;
+    --sidebar-accent-foreground: 210 20% 98%;
+    --sidebar-border: 213 30% 22%;
+    --sidebar-ring: 12 79% 57%;
   }
 }
 

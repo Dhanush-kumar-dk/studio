@@ -67,3 +67,34 @@ export function TikTokFavicon({ className = "h-4 w-4" }: { className?: string })
     </svg>
   );
 }
+
+export function YouTubeFavicon({ className = "h-4 w-4" }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      xmlns="http://www.w3.org/2000/svg"
+      className={`${className} shrink-0`}
+      aria-label="YouTube favicon"
+    >
+      <rect width="24" height="24" rx="5" fill="#FF0000" />
+      <path d="M10 8.5v7l6-3.5-6-3.5z" fill="#FFFFFF" />
+    </svg>
+  );
+}
+
+export function XFavicon({ className = "h-4 w-4" }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      xmlns="http://www.w3.org/2000/svg"
+      className={`${className} shrink-0`}
+      aria-label="X favicon"
+    >
+      <rect width="24" height="24" rx="5" fill="#000000" />
+      <path
+        d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"
+        fill="#FFFFFF"
+      />
+    </svg>
+  );
+}
