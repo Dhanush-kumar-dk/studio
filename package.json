@@ -4,10 +4,10 @@
   "private": true,
   "scripts": {
     "dev": "node node_modules/next/dist/bin/next dev -p 9002",
-    "build": "node node_modules/next/dist/bin/next build",
-    "start": "node node_modules/next/dist/bin/next start",
+    "build": "next build",
+    "start": "next start",
     "lint": "next lint",
-    "typecheck": "node node_modules/typescript/bin/tsc --noEmit"
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
