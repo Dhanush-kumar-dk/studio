@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import { getArticles } from '@/app/actions';
-import NewsFeed from '@/components/news-feed';
+import NewsFeed, { NewsFeedSkeleton } from '@/components/news-feed';
 import { Suspense } from 'react';
 import Header from '@/components/header';
 import Footer from '@/components/footer';
@@ -33,7 +33,7 @@ export default async function Home() {
       <WptutsHero />
       <main className="flex-1 bg-background">
         <div className="container mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-          <Suspense fallback={<div className="h-48 w-full animate-pulse rounded-xl bg-muted" />}>
+          <Suspense fallback={<NewsFeedSkeleton />}>
             <NewsFeed articles={articles} />
           </Suspense>
 

@@ -10,6 +10,42 @@ import { ChevronRight, Filter } from 'lucide-react';
 const categories = ['All', 'Politics', 'Sports', 'Technology', 'World'];
 const ARTICLES_PER_PAGE = 6;
 
+export function NewsFeedSkeleton() {
+  return (
+    <section className="space-y-8">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between border-b border-border/60 pb-6">
+        <div className="border-l-4 border-[#e95f3c] pl-4 space-y-2">
+          <Skeleton className="h-3.5 w-32 bg-muted/60" />
+          <Skeleton className="h-8 w-56 bg-muted/60" />
+          <Skeleton className="h-4 w-80 max-w-full bg-muted/40" />
+        </div>
+        <div className="flex flex-wrap gap-1.5">
+          {[...Array(5)].map((_, i) => (
+            <Skeleton key={i} className="h-7 w-20 rounded-full bg-muted/50" />
+          ))}
+        </div>
+      </div>
+      <div className="grid grid-cols-1 gap-7 sm:grid-cols-2 lg:grid-cols-3">
+        {[...Array(6)].map((_, i) => (
+          <div key={i} className="rounded-xl border border-border/70 overflow-hidden bg-card">
+            <Skeleton className="aspect-video w-full rounded-none bg-muted/60" />
+            <div className="p-5 space-y-3">
+              <Skeleton className="h-5 w-4/5 bg-muted/60" />
+              <Skeleton className="h-4 w-full bg-muted/40" />
+              <Skeleton className="h-4 w-2/3 bg-muted/40" />
+            </div>
+            <div className="mx-5 border-t border-border/50" />
+            <div className="p-5 pt-3.5 flex justify-between items-center">
+              <Skeleton className="h-3 w-32 bg-muted/50" />
+              <Skeleton className="h-3 w-12 bg-muted/50" />
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 function NewsFeedContent({ articles }: { articles: (Article & {_id: any})[] }) {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -63,19 +99,6 @@ function NewsFeedContent({ articles }: { articles: (Article & {_id: any})[] }) {
     const start = (currentPage - 1) * ARTICLES_PER_PAGE;
     return filteredArticles.slice(start, start + ARTICLES_PER_PAGE);
   }, [filteredArticles, currentPage]);
-
-  const renderSkeletons = () => (
-    <div className="grid gap-7 md:grid-cols-2 lg:grid-cols-3">
-      {[...Array(6)].map((_, i) => (
-        <div key={i} className="space-y-3 rounded-xl border border-border/70 p-4">
-          <Skeleton className="aspect-video w-full rounded-lg" />
-          <Skeleton className="h-4 w-1/4" />
-          <Skeleton className="h-6 w-3/4" />
-          <Skeleton className="h-12 w-full" />
-        </div>
-      ))}
-    </div>
-  );
 
   return (
     <section id="dispatches" className="space-y-8 scroll-mt-20">
@@ -133,7 +156,7 @@ function NewsFeedContent({ articles }: { articles: (Article & {_id: any})[] }) {
       )}
 
       {isPending ? (
-        renderSkeletons()
+        <NewsFeedSkeleton />
       ) : (
         <>
           {/* Article Enhanced Grid */}
@@ -202,7 +225,7 @@ function NewsFeedContent({ articles }: { articles: (Article & {_id: any})[] }) {
 
 export default function NewsFeed(props: { articles: (Article & {_id: any})[] }) {
   return (
-    <Suspense fallback={<div className="h-40 w-full animate-pulse rounded-xl bg-muted" />}>
+    <Suspense fallback={<NewsFeedSkeleton />}>
       <NewsFeedContent {...props} />
     </Suspense>
   );
