@@ -27,6 +27,9 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   metadataBase: new URL(baseUrl),
   manifest: '/manifest.json',
+  verification: {
+    google: 'fcw6VY0xM1E0RbMKD7j1_ljpqm9Je4rlCT8KLEqwiK4',
+  },
   title: {
     default: siteConfig.title,
     template: `%s | ${siteConfig.name}`,
@@ -108,6 +111,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
+        <meta name="google-site-verification" content="fcw6VY0xM1E0RbMKD7j1_ljpqm9Je4rlCT8KLEqwiK4" />
         <link rel="manifest" href="/manifest.json" />
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
