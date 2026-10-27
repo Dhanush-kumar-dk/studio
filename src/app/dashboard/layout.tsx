@@ -15,7 +15,7 @@ import {
   } from '@/components/ui/sidebar';
 import { Home, User, Cog, Newspaper, Settings, LayoutDashboard, Info } from 'lucide-react';
 import Link from 'next/link';
-import Image from 'next/image';
+import Logo from '@/Assest/signal-2025-09-01-172433.jpeg';
 import { useAuth } from '@/hooks/use-auth';
 import { useEffect, useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
@@ -93,15 +93,9 @@ import { checkAndCreateUser } from '@/app/actions';
       <SidebarProvider>
         <Sidebar>
           <SidebarHeader>
-            <Link href="/" className="flex items-center gap-2 transition-opacity hover:opacity-90">
-                <Image
-                  src="/title-logo.png"
-                  alt="Debt & Dominion"
-                  width={150}
-                  height={48}
-                  className="h-7 w-auto rounded-md object-contain"
-                />
-                <span className="sr-only">Debt & Dominion</span>
+            <Link href="/" className="flex items-center gap-2">
+                <img src={Logo.src} alt="Debt & Dominion" className="h-8 w-auto rounded-md pl-1" />
+                <span className="text-xl font-bold">Debt & Dominion</span>
             </Link>
           </SidebarHeader>
           <SidebarContent>

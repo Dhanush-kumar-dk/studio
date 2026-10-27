@@ -1,7 +1,6 @@
 "use client";
 
 import Link from 'next/link';
-import Image from 'next/image';
 import { Search, PlusCircle, Menu } from 'lucide-react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
@@ -9,6 +8,7 @@ import UserNav from './user-nav';
 import { ThemeToggle } from './theme-toggle';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { FormEvent, useState, useEffect, Suspense } from 'react';
+import Logo from '../Assest/signal-2025-09-01-172433.jpeg';
 import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from './ui/sheet';
 import { useAuth } from '@/hooks/use-auth';
@@ -69,16 +69,14 @@ function HeaderContent() {
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/60 bg-background/80 backdrop-blur-md transition-colors duration-200">
       <div className="container mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        <Link href="/" className="group flex items-center gap-2 transition-opacity hover:opacity-90">
-          <Image
-            src="/title-logo.png"
-            alt="Debt & Dominion"
-            width={180}
-            height={58}
-            priority
-            className="h-9 w-auto rounded-md object-contain shadow-xs"
-          />
-          <span className="sr-only">Debt & Dominion</span>
+        <Link href="/" className="group flex items-center gap-3 transition-opacity hover:opacity-90">
+          <img src={Logo.src} alt="Debt & Dominion" className="h-8 w-auto rounded-md object-contain" />
+          <div className="flex items-center gap-1.5">
+            <span className="font-headline text-xl font-bold tracking-tight text-foreground transition-colors group-hover:text-emerald-600 dark:group-hover:text-emerald-400">
+              Debt & Dominion
+            </span>
+            <span className="h-2 w-2 rounded-full bg-emerald-500" />
+          </div>
         </Link>
 
         {/* Desktop Navigation Links */}
@@ -161,14 +159,8 @@ function HeaderContent() {
             <SheetContent side="left" className="w-72 p-6">
               <SheetHeader className="text-left mb-6">
                 <SheetTitle className="flex items-center gap-2 font-headline text-lg font-bold">
-                  <Image
-                    src="/title-logo.png"
-                    alt="Debt & Dominion"
-                    width={140}
-                    height={45}
-                    className="h-7 w-auto rounded object-contain"
-                  />
-                  <span className="sr-only">Debt & Dominion</span>
+                  <img src={Logo.src} alt="Debt & Dominion" className="h-7 w-auto rounded" />
+                  <span>Debt & Dominion</span>
                 </SheetTitle>
               </SheetHeader>
               <nav className="flex flex-col gap-3.5 text-base font-medium">
@@ -239,15 +231,8 @@ export default function Header() {
       <header className="sticky top-0 z-50 w-full border-b border-border/60 bg-background/80 backdrop-blur-md">
         <div className="container mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
           <Link href="/" className="flex items-center gap-2">
-            <Image
-              src="/title-logo.png"
-              alt="Debt & Dominion"
-              width={180}
-              height={58}
-              priority
-              className="h-9 w-auto rounded-md object-contain"
-            />
-            <span className="sr-only">Debt & Dominion</span>
+            <img src={Logo.src} alt="Debt & Dominion" className="h-8 w-auto rounded-md" />
+            <span className="font-headline text-xl font-bold tracking-tight text-foreground">Debt & Dominion</span>
           </Link>
         </div>
       </header>
