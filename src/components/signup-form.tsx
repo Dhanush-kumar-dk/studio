@@ -72,10 +72,11 @@ export default function SignupForm() {
   async function handleGoogleSignIn() {
     setIsGoogleSubmitting(true);
     try {
+      const callbackUrl = new URL('/auth/callback', window.location.origin);
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${window.location.origin}/auth/callback`,
+          redirectTo: callbackUrl.toString(),
         }
       });
       if (error) throw error;

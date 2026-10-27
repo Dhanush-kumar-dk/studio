@@ -9,7 +9,7 @@ export async function GET(request: NextRequest) {
   const error_description = searchParams.get('error_description');
   const next = searchParams.get('next') ?? '/';
 
-  // Determine the correct public base URL (handling Vercel / reverse proxies)
+  // Determine the correct public base URL (handling Vercel / reverse proxies / local dev)
   const forwardedHost = request.headers.get('x-forwarded-host');
   const host = request.headers.get('host');
   const proto = request.headers.get('x-forwarded-proto') || 'https';
@@ -23,10 +23,14 @@ export async function GET(request: NextRequest) {
         ? `${proto}://${host}`
         : origin;
 
+  const cleanBaseUrl = baseUrl.replace(/\/$/, '');
+  const cleanNext = next.startsWith('/') ? next : `/${next}`;
+  const targetUrl = `${cleanBaseUrl}${cleanNext}`;
+
   if (error) {
     console.error('OAuth error from provider:', error, error_description);
     const errorMsg = error_description || error;
-    return NextResponse.redirect(`${baseUrl}/login?error=${encodeURIComponent(errorMsg)}`);
+    return NextResponse.redirect(`${cleanBaseUrl}/login?error=${encodeURIComponent(errorMsg)}`);
   }
 
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -34,12 +38,12 @@ export async function GET(request: NextRequest) {
 
   if (!supabaseUrl || !supabaseAnonKey) {
     console.error('Missing Supabase credentials in auth callback');
-    return NextResponse.redirect(`${baseUrl}/login?error=${encodeURIComponent('Supabase credentials not configured')}`);
+    return NextResponse.redirect(`${cleanBaseUrl}/login?error=${encodeURIComponent('Supabase credentials not configured')}`);
   }
 
   if (code) {
-    // Create the redirect response using baseUrl so the user returns to the actual domain
-    const response = NextResponse.redirect(`${baseUrl}${next}`);
+    // Create the redirect response using targetUrl so the user returns to the actual domain cleanly
+    const response = NextResponse.redirect(targetUrl);
 
     const supabase = createServerClient(
       supabaseUrl,
@@ -51,6 +55,7 @@ export async function GET(request: NextRequest) {
           },
           setAll(cookiesToSet) {
             cookiesToSet.forEach(({ name, value, options }) => {
+              request.cookies.set({ name, value, ...options });
               response.cookies.set(name, value, options);
             });
           },
@@ -89,15 +94,15 @@ export async function GET(request: NextRequest) {
         }
       }
 
-      console.log('Successfully exchanged code for session. Redirecting to:', `${baseUrl}${next}`);
+      console.log('Successfully exchanged code for session. Redirecting to:', targetUrl);
       return response;
     } else {
       console.error('Error exchanging code for session:', exchangeError);
       return NextResponse.redirect(
-        `${baseUrl}/login?error=${encodeURIComponent(exchangeError.message)}`
+        `${cleanBaseUrl}/login?error=${encodeURIComponent(exchangeError.message)}`
       );
     }
   }
 
-  return NextResponse.redirect(`${baseUrl}/login?error=auth_callback_failed`);
+  return NextResponse.redirect(`${cleanBaseUrl}/login?error=auth_callback_failed`);
 }

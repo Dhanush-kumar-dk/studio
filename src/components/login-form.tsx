@@ -132,10 +132,16 @@ export default function LoginForm() {
   async function handleGoogleSignIn() {
     setIsGoogleSubmitting(true);
     try {
+      const redirectUrl = searchParams.get('redirect') || searchParams.get('next') || '/';
+      const callbackUrl = new URL('/auth/callback', window.location.origin);
+      if (redirectUrl && redirectUrl !== '/') {
+        callbackUrl.searchParams.set('next', redirectUrl);
+      }
+
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${window.location.origin}/auth/callback`,
+          redirectTo: callbackUrl.toString(),
         }
       });
       if (error) throw error;
