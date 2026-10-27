@@ -1,5 +1,6 @@
 import { Card, CardContent } from '@/components/ui/card';
-import { Users } from 'lucide-react';
+import { Users, ArrowRight, ExternalLink } from 'lucide-react';
+import Link from 'next/link';
 
 const teamMembers = [
   {
@@ -35,6 +36,17 @@ export default function Team() {
                   <p className="text-xs font-semibold text-orange-600 dark:text-orange-400 mt-0.5">{member.role}</p>
                 </div>
                 <p className="text-sm leading-relaxed text-muted-foreground">{member.bio}</p>
+                <div className="pt-2">
+                  <a
+                    href="https://www.linkedin.com/company/debt-dominion/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 text-xs font-semibold text-orange-600 dark:text-orange-400 hover:underline"
+                  >
+                    <span>Connect on LinkedIn</span>
+                    <ExternalLink className="h-3 w-3" />
+                  </a>
+                </div>
               </CardContent>
             </Card>
           ))}
@@ -47,6 +59,15 @@ export default function Team() {
           <p className="mx-auto max-w-4xl text-xs sm:text-sm leading-relaxed text-muted-foreground">
             Rather than relying on traditional bureaus, we draw insights from individuals embedded directly in the cultural and economic environments of their regions.
           </p>
+          <div className="pt-2">
+            <Link
+              href="/about"
+              className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-orange-600 dark:text-orange-400 hover:underline"
+            >
+              <span>Learn more about our editorial mission, standards & team</span>
+              <ArrowRight className="h-3.5 w-3.5" />
+            </Link>
+          </div>
         </div>
       </div>
     </section>

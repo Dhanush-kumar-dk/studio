@@ -42,8 +42,18 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
+                <Link href="/#products" className="text-muted-foreground transition-colors hover:text-emerald-600 dark:hover:text-emerald-400">
+                  Research Products
+                </Link>
+              </li>
+              <li>
                 <Link href="/newsletter" className="text-muted-foreground transition-colors hover:text-emerald-600 dark:hover:text-emerald-400">
                   Newsletter Briefing
+                </Link>
+              </li>
+              <li>
+                <Link href="/about#standards" className="text-muted-foreground transition-colors hover:text-emerald-600 dark:hover:text-emerald-400">
+                  Editorial Standards
                 </Link>
               </li>
               <li>

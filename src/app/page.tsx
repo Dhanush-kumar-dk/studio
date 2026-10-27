@@ -7,6 +7,8 @@ import Footer from '@/components/footer';
 import Newsletter from '@/components/newsletter';
 import Team from '@/components/team';
 import AboutPublication from '@/components/about-publication';
+import EditorialProducts from '@/components/editorial-products';
+import { BreadcrumbJsonLd } from '@/components/schema-org';
 import { siteConfig } from '@/lib/site-config';
 
 export const metadata: Metadata = {
@@ -16,9 +18,26 @@ export const metadata: Metadata = {
     canonical: '/',
   },
   openGraph: {
+    type: 'website',
     title: siteConfig.title,
     description: siteConfig.description,
     url: siteConfig.url,
+    siteName: siteConfig.name,
+    images: [
+      {
+        url: `${siteConfig.url}/og.png`,
+        width: 1200,
+        height: 630,
+        alt: 'Debt & Dominion — Geopolitics, Finance & Global Power Intelligence',
+        type: 'image/png',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: siteConfig.title,
+    description: siteConfig.description,
+    images: [`${siteConfig.url}/og.png`],
   },
 };
 
@@ -26,6 +45,9 @@ export default async function Home() {
   const articles = await getArticles();
   return (
     <>
+      <BreadcrumbJsonLd
+        items={[{ name: 'Home', item: '/' }]}
+      />
       <Header />
       <main className="flex-1 bg-background">
         <div className="container mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
@@ -41,6 +63,7 @@ export default async function Home() {
             <NewsFeed articles={articles} />
           </Suspense>
         </div>
+        <EditorialProducts />
         <Team />
         <AboutPublication />
       </main>

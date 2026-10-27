@@ -1,3 +1,5 @@
+import Link from 'next/link';
+import { ArrowRight } from 'lucide-react';
 import Image from 'next/image';
 import { CheckCircle2, BookOpen } from 'lucide-react';
 
@@ -44,6 +46,16 @@ export default function AboutPublication() {
                   </li>
                 ))}
               </ul>
+            </div>
+
+            <div className="pt-1">
+              <Link
+                href="/about"
+                className="inline-flex items-center gap-2 text-sm font-semibold text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 transition-colors"
+              >
+                <span>Explore our full editorial mission, standards & leadership team</span>
+                <ArrowRight className="h-4 w-4" />
+              </Link>
             </div>
           </div>
 

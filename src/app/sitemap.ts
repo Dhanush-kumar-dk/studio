@@ -1,6 +1,6 @@
 import { MetadataRoute } from 'next';
 import { getArticles, getAuthorSlugs } from '@/app/actions';
-import { getBaseUrl } from '@/lib/site-config';
+import { getBaseUrl, siteConfig } from '@/lib/site-config';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = getBaseUrl();
@@ -16,16 +16,23 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     {
       url: `${baseUrl}/about`,
       lastModified: now,
-      changeFrequency: 'monthly',
-      priority: 0.7,
+      changeFrequency: 'weekly',
+      priority: 0.8,
     },
     {
       url: `${baseUrl}/newsletter`,
       lastModified: now,
       changeFrequency: 'weekly',
-      priority: 0.8,
+      priority: 0.9,
     },
   ];
+
+  const categoryRoutes: MetadataRoute.Sitemap = siteConfig.categories.map((cat) => ({
+    url: `${baseUrl}/?category=${encodeURIComponent(cat)}`,
+    lastModified: now,
+    changeFrequency: 'daily',
+    priority: 0.8,
+  }));
 
   try {
     const [articles, authorSlugs] = await Promise.all([
@@ -61,9 +68,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.6,
     }));
 
-    return [...staticRoutes, ...articleRoutes, ...authorRoutes];
+    return [...staticRoutes, ...categoryRoutes, ...articleRoutes, ...authorRoutes];
   } catch (error) {
     console.error('Error compiling dynamic sitemap entries:', error);
-    return staticRoutes;
+    return [...staticRoutes, ...categoryRoutes];
   }
 }

@@ -104,6 +104,9 @@ function HeaderContent() {
           <Link href="/about" className="transition-colors hover:text-emerald-600 dark:hover:text-emerald-400">
             About
           </Link>
+          <Link href="/#products" className="transition-colors hover:text-emerald-600 dark:hover:text-emerald-400">
+            Products
+          </Link>
           <Link href="/newsletter" className="transition-colors hover:text-emerald-600 dark:hover:text-emerald-400">
             Newsletter
           </Link>
@@ -222,6 +225,13 @@ function HeaderContent() {
                   className="transition-colors hover:text-emerald-600 dark:hover:text-emerald-400"
                 >
                   About Publication
+                </Link>
+                <Link
+                  href="/#products"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="transition-colors hover:text-emerald-600 dark:hover:text-emerald-400"
+                >
+                  Research Products
                 </Link>
                 <Link
                   href="/newsletter"

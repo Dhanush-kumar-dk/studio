@@ -50,6 +50,12 @@ export function OrganizationJsonLd() {
     logo: `${siteConfig.url}/logo.png`,
     description: siteConfig.description,
     email: siteConfig.links.email,
+    founder: {
+      '@type': 'Person',
+      name: 'Miss Vedika Joshi',
+      jobTitle: 'Founder & Editor-in-Chief',
+      description: 'Economics & Finance researcher at University of Winchester, Royal Navy Cadet, and Model UN Chair.',
+    },
     sameAs: [siteConfig.links.linkedin, siteConfig.links.tiktok],
     knowsAbout: [
       'Geopolitics',
@@ -58,6 +64,7 @@ export function OrganizationJsonLd() {
       'Sovereign Debt',
       'Artificial Intelligence & Technology',
       'Geopolitical Strategy',
+      'Development Diplomacy',
     ],
   };
 
@@ -181,6 +188,118 @@ export function AuthorJsonLd({
         name: siteConfig.name,
         url: siteConfig.url,
       },
+    },
+  };
+
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+    />
+  );
+}
+
+export function ProductsJsonLd() {
+  const schema = {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: 'Debt & Dominion Editorial & Research Offerings',
+    description: 'Flagship publications, intelligence digests, and macro dossiers by Debt & Dominion.',
+    itemListElement: [
+      {
+        '@type': 'Product',
+        position: 1,
+        name: 'Weekly Intelligence Briefing',
+        description: 'Comprehensive weekly analytical briefing on sovereign debt restructuring, central bank policies, and geopolitical power shifts.',
+        url: `${siteConfig.url}/newsletter`,
+        category: 'Publications > Periodicals > Newsletters',
+        image: `${siteConfig.url}/og.png`,
+        offers: {
+          '@type': 'Offer',
+          price: '0.00',
+          priceCurrency: 'USD',
+          availability: 'https://schema.org/InStock',
+        },
+      },
+      {
+        '@type': 'Product',
+        position: 2,
+        name: 'Sovereign Debt & Geopolitics Dossiers',
+        description: 'Original long-form investigative research uncovering how financial systems and credit agreements dictate international statecraft.',
+        url: `${siteConfig.url}/?category=Politics`,
+        category: 'Publications > Research Reports',
+        image: `${siteConfig.url}/og.png`,
+        offers: {
+          '@type': 'Offer',
+          price: '0.00',
+          priceCurrency: 'USD',
+          availability: 'https://schema.org/InStock',
+        },
+      },
+      {
+        '@type': 'Product',
+        position: 3,
+        name: 'AI & Technology Geopolitics Monitor',
+        description: 'Strategic intelligence on frontier AI governance, sovereign compute infrastructure, semiconductor supply chains, and export sanctions.',
+        url: `${siteConfig.url}/?category=Technology`,
+        category: 'Publications > Tech Intelligence',
+        image: `${siteConfig.url}/og.png`,
+        offers: {
+          '@type': 'Offer',
+          price: '0.00',
+          priceCurrency: 'USD',
+          availability: 'https://schema.org/InStock',
+        },
+      },
+      {
+        '@type': 'Product',
+        position: 4,
+        name: 'World Affairs & Emerging Market Dispatches',
+        description: 'Ground-level reporting and regional macroeconomic assessments powered by our international student and analyst network.',
+        url: `${siteConfig.url}/?category=World`,
+        category: 'Publications > International Affairs',
+        image: `${siteConfig.url}/og.png`,
+        offers: {
+          '@type': 'Offer',
+          price: '0.00',
+          priceCurrency: 'USD',
+          availability: 'https://schema.org/InStock',
+        },
+      },
+    ],
+  };
+
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+    />
+  );
+}
+
+export function AboutPageJsonLd() {
+  const schema = {
+    '@context': 'https://schema.org',
+    '@type': 'AboutPage',
+    name: 'About Debt & Dominion — Mission, Leadership & Editorial Standards',
+    description: 'Learn about Debt & Dominion, our editorial leadership, fact-checking methodology, and mission to decode global finance and geopolitics.',
+    url: `${siteConfig.url}/about`,
+    mainEntity: {
+      '@type': 'NewsMediaOrganization',
+      name: siteConfig.name,
+      legalName: 'Debt & Dominion Media',
+      url: siteConfig.url,
+      logo: `${siteConfig.url}/logo.png`,
+      founder: {
+        '@type': 'Person',
+        name: 'Miss Vedika Joshi',
+        jobTitle: 'Founder & Editor-in-Chief',
+        description: 'Economics & Finance researcher at University of Winchester, Royal Navy Cadet, and Model UN Chair.',
+        sameAs: siteConfig.links.linkedin,
+      },
+      publishingPrinciples: `${siteConfig.url}/about#standards`,
+      ethicsPolicy: `${siteConfig.url}/about#standards`,
+      sameAs: [siteConfig.links.linkedin, siteConfig.links.tiktok],
     },
   };
 
