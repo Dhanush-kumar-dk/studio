@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import Logo from "./logo";
+import Image from "next/image";
 import { GmailFavicon, LinkedInFavicon, TikTokFavicon } from "./icons/favicons";
 import {
   Dialog,
@@ -18,10 +18,15 @@ export default function Footer() {
       <div className="container mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 gap-10 md:grid-cols-4">
           <div className="space-y-4 md:col-span-1">
-            <Link href="/" className="flex items-center gap-2">
-              <Logo />
-              <span className="font-headline text-xl font-bold tracking-tight text-foreground">Debt & Dominion</span>
-              <span className="h-2 w-2 rounded-full bg-emerald-500" />
+            <Link href="/" className="inline-block overflow-hidden rounded-lg bg-[#002a5c] p-1 transition-opacity hover:opacity-90">
+              <Image
+                src="/title-logo.png"
+                alt="Debt & Dominion"
+                width={150}
+                height={48}
+                className="h-7 w-auto object-contain rounded"
+              />
+              <span className="sr-only">Debt & Dominion</span>
             </Link>
             <p className="text-sm leading-relaxed text-muted-foreground max-w-sm">
               Navigating the complex worlds of global finance, tech, and geopolitics with uncompromised clarity and strategic insight.
