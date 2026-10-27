@@ -1,6 +1,7 @@
 "use client";
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { Search, PlusCircle, Menu } from 'lucide-react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
@@ -30,7 +31,7 @@ function HeaderContent() {
   useEffect(() => {
     async function fetchUserRole() {
       if (user) {
-        const { data, error } = await supabase
+        const { data } = await supabase
           .from('users')
           .select('*')
           .eq('id', user.id)
@@ -68,14 +69,21 @@ function HeaderContent() {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/60 bg-background/80 backdrop-blur-md transition-colors duration-200">
-      <div className="container mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        <Link href="/" className="group flex items-center gap-3 transition-opacity hover:opacity-90">
-          <img src={Logo.src} alt="Debt & Dominion" className="h-8 w-auto rounded-md object-contain" />
+      <div className="container mx-auto flex h-16 max-w-7xl items-center justify-between px-3 sm:px-6 lg:px-8">
+        <Link href="/" className="group flex items-center gap-2 sm:gap-3 transition-opacity hover:opacity-90 shrink-0">
+          <Image
+            src={Logo}
+            alt="Debt & Dominion"
+            width={32}
+            height={32}
+            className="h-8 w-8 rounded-md object-contain shrink-0"
+            priority
+          />
           <div className="flex items-center gap-1.5">
-            <span className="font-headline text-xl font-bold tracking-tight text-foreground transition-colors group-hover:text-emerald-600 dark:group-hover:text-emerald-400">
+            <span className="font-headline text-lg sm:text-xl font-bold tracking-tight text-foreground transition-colors group-hover:text-emerald-600 dark:group-hover:text-emerald-400">
               Debt & Dominion
             </span>
-            <span className="h-2 w-2 rounded-full bg-emerald-500" />
+            <span className="h-2 w-2 rounded-full bg-emerald-500 shrink-0" />
           </div>
         </Link>
 
@@ -101,7 +109,7 @@ function HeaderContent() {
           </Link>
         </nav>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1 sm:gap-2 shrink-0">
           {/* Search Popover */}
           <Popover open={isSearchOpen} onOpenChange={setIsSearchOpen}>
             <PopoverTrigger asChild>
@@ -110,7 +118,7 @@ function HeaderContent() {
                 <span className="sr-only">Search</span>
               </Button>
             </PopoverTrigger>
-            <PopoverContent align="end" className="w-80 border border-border/80 p-2 shadow-lg">
+            <PopoverContent align="end" className="w-[calc(100vw-2rem)] sm:w-80 max-w-sm border border-border/80 p-2 shadow-lg">
               <form onSubmit={handleSearch}>
                 <div className="relative">
                   <Input
@@ -156,10 +164,16 @@ function HeaderContent() {
                 <Menu className="h-5 w-5" />
               </Button>
             </SheetTrigger>
-            <SheetContent side="left" className="w-72 p-6">
+            <SheetContent side="left" className="w-72 max-w-[calc(100vw-3rem)] p-6">
               <SheetHeader className="text-left mb-6">
                 <SheetTitle className="flex items-center gap-2 font-headline text-lg font-bold">
-                  <img src={Logo.src} alt="Debt & Dominion" className="h-7 w-auto rounded" />
+                  <Image
+                    src={Logo}
+                    alt="Debt & Dominion"
+                    width={28}
+                    height={28}
+                    className="h-7 w-7 rounded object-contain"
+                  />
                   <span>Debt & Dominion</span>
                 </SheetTitle>
               </SheetHeader>
@@ -229,10 +243,17 @@ export default function Header() {
   return (
     <Suspense fallback={
       <header className="sticky top-0 z-50 w-full border-b border-border/60 bg-background/80 backdrop-blur-md">
-        <div className="container mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+        <div className="container mx-auto flex h-16 max-w-7xl items-center justify-between px-3 sm:px-6 lg:px-8">
           <Link href="/" className="flex items-center gap-2">
-            <img src={Logo.src} alt="Debt & Dominion" className="h-8 w-auto rounded-md" />
-            <span className="font-headline text-xl font-bold tracking-tight text-foreground">Debt & Dominion</span>
+            <Image
+              src={Logo}
+              alt="Debt & Dominion"
+              width={32}
+              height={32}
+              className="h-8 w-8 rounded-md object-contain shrink-0"
+              priority
+            />
+            <span className="font-headline text-lg sm:text-xl font-bold tracking-tight text-foreground">Debt & Dominion</span>
           </Link>
         </div>
       </header>

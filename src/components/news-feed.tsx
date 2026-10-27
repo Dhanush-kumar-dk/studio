@@ -79,7 +79,7 @@ function NewsFeedContent({ articles }: { articles: (Article & {_id: any})[] }) {
     <section className="space-y-8">
       {/* Minimalist Category Tabs */}
       <div className="flex items-center justify-between border-b border-border/60 pb-4">
-        <div className="flex items-center gap-1.5 overflow-x-auto py-1 scrollbar-none">
+        <div className="flex items-center gap-1.5 overflow-x-auto py-1 scrollbar-none no-scrollbar touch-pan-x">
           {categories.map((cat) => {
             const isActive = selectedCategory === cat;
             return (
@@ -121,7 +121,7 @@ function NewsFeedContent({ articles }: { articles: (Article & {_id: any})[] }) {
                     <CarouselItem key={article._id.toString()}>
                       <div className="group relative overflow-hidden rounded-2xl border border-border/60 bg-card shadow-sm transition-all duration-300">
                         <Link href={`/articles/${article.slug}`}>
-                          <div className="relative h-72 sm:h-96 md:h-[440px] w-full">
+                          <div className="relative h-80 sm:h-96 md:h-[440px] w-full">
                             <Image
                               src={article.imageUrl}
                               alt={article.title}
@@ -134,9 +134,9 @@ function NewsFeedContent({ articles }: { articles: (Article & {_id: any})[] }) {
                             <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/40 to-transparent" />
                           </div>
                           
-                          <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-8 md:p-10 text-white">
-                            <div className="flex items-center gap-3 mb-3">
-                              <span className="inline-flex items-center rounded-md bg-orange-500 px-3 py-1 text-xs font-bold uppercase tracking-wider text-slate-950 shadow-sm">
+                          <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-8 md:p-10 text-white">
+                            <div className="flex items-center gap-3 mb-2 sm:mb-3">
+                              <span className="inline-flex items-center rounded-md bg-orange-500 px-2.5 py-0.5 sm:px-3 sm:py-1 text-xs font-bold uppercase tracking-wider text-slate-950 shadow-sm">
                                 {article.category}
                               </span>
                               <span className="text-xs text-slate-300 flex items-center gap-1">
@@ -145,15 +145,15 @@ function NewsFeedContent({ articles }: { articles: (Article & {_id: any})[] }) {
                               </span>
                             </div>
 
-                            <h2 className="font-headline text-2xl font-extrabold sm:text-3xl md:text-4xl leading-tight text-white transition-colors group-hover:text-orange-300">
+                            <h2 className="font-headline text-xl font-extrabold sm:text-3xl md:text-4xl leading-tight text-white transition-colors group-hover:text-orange-300 break-words">
                               {article.title}
                             </h2>
 
-                            <p className="mt-3 line-clamp-2 max-w-3xl text-sm sm:text-base text-slate-200 leading-relaxed font-normal">
+                            <p className="mt-2 sm:mt-3 line-clamp-2 max-w-3xl text-xs sm:text-base text-slate-200 leading-relaxed font-normal">
                               {article.excerpt}
                             </p>
 
-                            <div className="mt-5 flex items-center gap-2 font-semibold text-orange-400 text-sm group-hover:translate-x-1 transition-transform">
+                            <div className="mt-3 sm:mt-5 flex items-center gap-2 font-semibold text-orange-400 text-xs sm:text-sm group-hover:translate-x-1 transition-transform">
                               <span>Read Full Article</span>
                               <ArrowRight className="h-4 w-4" />
                             </div>
@@ -163,8 +163,8 @@ function NewsFeedContent({ articles }: { articles: (Article & {_id: any})[] }) {
                     </CarouselItem>
                   ))}
                 </CarouselContent>
-                <CarouselPrevious className="left-4 bg-background/80 border-border backdrop-blur hover:bg-background text-foreground" />
-                <CarouselNext className="right-4 bg-background/80 border-border backdrop-blur hover:bg-background text-foreground" />
+                <CarouselPrevious className="hidden sm:flex left-4 bg-background/80 border-border backdrop-blur hover:bg-background text-foreground" />
+                <CarouselNext className="hidden sm:flex right-4 bg-background/80 border-border backdrop-blur hover:bg-background text-foreground" />
               </Carousel>
             </div>
           )}

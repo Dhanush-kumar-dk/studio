@@ -43,3 +43,8 @@ next-env.d.ts
 # firebase
 firebase-debug.log
 firestore-debug.logstudio-5927375734-5754c-firebase-adminsdk-fbsvc-2bd192e29b.json
+
+# local tooling
+brag-output/
+skills-lock.json
+.agents/

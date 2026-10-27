@@ -120,12 +120,12 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
             <span className="inline-flex items-center rounded-md border border-orange-500/20 bg-orange-500/10 px-3 py-1 text-xs font-bold uppercase tracking-wider text-orange-700 dark:text-orange-300">
               {article.category}
             </span>
-            <h1 className="font-headline text-3xl font-extrabold tracking-tight text-foreground md:text-5xl leading-tight">
+            <h1 className="font-headline text-2xl sm:text-3xl md:text-5xl font-extrabold tracking-tight text-foreground leading-tight break-words">
               {article.title}
             </h1>
             
             <div className="flex flex-wrap items-center justify-between gap-4 border-b border-border/50 pb-6 text-sm text-muted-foreground">
-              <div className="flex items-center gap-4">
+              <div className="flex flex-wrap items-center gap-3 sm:gap-4">
                 <Link href={`/author/${article.authorSlug}`} className="group flex items-center gap-2 font-medium text-foreground hover:text-orange-600 dark:hover:text-orange-400 transition-colors">
                   <Avatar className="h-8 w-8 border border-border">
                     <AvatarImage src={article.authorImageUrl} alt={article.author} />
@@ -167,7 +167,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
             />
           </div>
 
-          <div className="relative mb-10 h-72 sm:h-96 md:h-[460px] w-full overflow-hidden rounded-2xl border border-border/60 bg-muted shadow-sm">
+          <div className="relative mb-10 h-60 sm:h-96 md:h-[460px] w-full overflow-hidden rounded-2xl border border-border/60 bg-muted shadow-sm">
             <Image
               src={article.imageUrl}
               alt={article.title}
@@ -179,7 +179,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
             />
           </div>
           
-          <div className="prose prose-lg dark:prose-invert max-w-none prose-headings:font-headline prose-headings:font-bold prose-p:leading-relaxed prose-a:text-orange-600 dark:prose-a:text-orange-400 hover:prose-a:underline">
+          <div className="prose prose-lg dark:prose-invert max-w-none break-words overflow-hidden prose-headings:font-headline prose-headings:font-bold prose-p:leading-relaxed prose-a:text-orange-600 dark:prose-a:text-orange-400 hover:prose-a:underline">
             <div className="whitespace-pre-wrap text-foreground/90 font-body leading-relaxed text-base sm:text-lg" dangerouslySetInnerHTML={{ __html: article.content }} />
           </div>
 

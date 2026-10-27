@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
 import { cn } from '@/lib/utils';
@@ -13,8 +13,20 @@ import { WebSiteJsonLd, OrganizationJsonLd } from '@/components/schema-org';
 
 const baseUrl = getBaseUrl();
 
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
+  viewportFit: 'cover',
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: '#F0EAD6' },
+    { media: '(prefers-color-scheme: dark)', color: '#0F172A' },
+  ],
+};
+
 export const metadata: Metadata = {
   metadataBase: new URL(baseUrl),
+  manifest: '/manifest.json',
   title: {
     default: siteConfig.title,
     template: `%s | ${siteConfig.name}`,
@@ -96,6 +108,10 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
+        <link rel="manifest" href="/manifest.json" />
+        <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://picsum.photos" crossOrigin="anonymous" />

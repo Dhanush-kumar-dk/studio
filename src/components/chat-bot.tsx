@@ -133,20 +133,20 @@ export default function ChatBot() {
   return (
     <>
       {/* Floating Chat Button */}
-      <div className="fixed bottom-6 right-6 z-50">
+      <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50">
         {!isOpen && (
           <Button
             onClick={() => setIsOpen(true)}
-            className="h-14 w-14 rounded-full bg-orange-600 hover:bg-orange-700 text-white shadow-xl shadow-orange-600/30 transition-transform hover:scale-105 active:scale-95"
+            className="h-12 w-12 sm:h-14 sm:w-14 rounded-full bg-orange-600 hover:bg-orange-700 text-white shadow-xl shadow-orange-600/30 transition-transform hover:scale-105 active:scale-95"
             title="Open Debt & Dominion News AI"
           >
-            <MessageCircle className="h-6 w-6" />
+            <MessageCircle className="h-5 w-5 sm:h-6 sm:w-6" />
           </Button>
         )}
 
         {/* Chat Window */}
         {isOpen && (
-          <div className="w-[360px] sm:w-[420px] h-[540px] bg-background border border-border/80 rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-in slide-in-from-bottom-5 fade-in duration-300">
+          <div className="w-[calc(100vw-2rem)] sm:w-[420px] max-w-[420px] h-[min(560px,calc(100dvh-6rem))] bg-background border border-border/80 rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-in slide-in-from-bottom-5 fade-in duration-300">
             {/* Header */}
             <div className="bg-gradient-to-r from-orange-600 to-amber-600 p-3.5 text-white flex justify-between items-center shadow-sm">
               <div className="flex items-center gap-2.5">
@@ -240,7 +240,7 @@ export default function ChatBot() {
                   placeholder="Ask about debt, geopolitics, articles..."
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
-                  className="rounded-full text-sm focus-visible:ring-orange-500"
+                  className="rounded-full text-base sm:text-sm focus-visible:ring-orange-500"
                   disabled={isLoading}
                 />
                 <Button

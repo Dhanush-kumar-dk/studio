@@ -1,4 +1,7 @@
 'use client';
+
+import Header from '@/components/header';
+import Footer from '@/components/footer';
 export const dynamic = 'force-dynamic';
 
 import { User, ArrowLeft, Loader2 } from 'lucide-react';
@@ -66,20 +69,26 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8 sm:px-6 lg:px-8">
-      <div className="mb-8 flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <Button variant="outline" size="icon" onClick={() => router.back()}>
-            <ArrowLeft className="h-4 w-4" />
-            <span className="sr-only">Back</span>
-          </Button>
-          <div className="rounded-md bg-muted p-2">
-            <User className="h-6 w-6 text-muted-foreground" />
+    <>
+      <Header />
+      <main className="flex-1">
+        <div className="container mx-auto px-4 py-8 sm:px-6 lg:px-8">
+          <div className="mb-8 flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <Button variant="outline" size="icon" onClick={() => router.back()}>
+                <ArrowLeft className="h-4 w-4" />
+                <span className="sr-only">Back</span>
+              </Button>
+              <div className="rounded-md bg-muted p-2">
+                <User className="h-6 w-6 text-muted-foreground" />
+              </div>
+              <h1 className="text-2xl font-bold">User Profile</h1>
+            </div>
           </div>
-          <h1 className="text-2xl font-bold">User Profile</h1>
+          <ProfileForm initialData={profileData} isCurrentUser={true} />
         </div>
-      </div>
-      <ProfileForm initialData={profileData} isCurrentUser={true} />
-    </div>
+      </main>
+      <Footer />
+    </>
   );
 }

@@ -19,7 +19,7 @@ export default function LoginPage() {
     <>
       <Header />
       <main className="flex-1">
-        <div className="container flex min-h-[calc(100vh-200px)] items-center justify-center py-12">
+        <div className="container flex min-h-[calc(100vh-200px)] items-center justify-center px-4 py-12">
           <Suspense
             fallback={
               <div className="flex justify-center items-center py-12">

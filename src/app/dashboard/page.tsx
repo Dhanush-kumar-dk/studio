@@ -1,5 +1,7 @@
-
 'use client';
+
+import Header from '@/components/header';
+import Footer from '@/components/footer';
 export const dynamic = 'force-dynamic';
 
 import { useState, useEffect, Suspense } from 'react';
@@ -311,15 +313,21 @@ function DashboardContent() {
 
 export default function DashboardPage() {
   return (
-    <Suspense
-      fallback={
-        <div className="flex h-screen items-center justify-center">
-          <Loader2 className="h-8 w-8 animate-spin text-emerald-600" />
-        </div>
-      }
-    >
-      <DashboardContent />
-    </Suspense>
+    <>
+      <Header />
+      <main className="flex-1">
+        <Suspense
+          fallback={
+            <div className="flex h-screen items-center justify-center">
+              <Loader2 className="h-8 w-8 animate-spin text-emerald-600" />
+            </div>
+          }
+        >
+          <DashboardContent />
+        </Suspense>
+      </main>
+      <Footer />
+    </>
   );
 }
 

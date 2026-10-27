@@ -21,7 +21,7 @@ const teamMembers = [
 
 export default function AboutTeamCarousel() {
   return (
-    <div className="mt-12 relative px-10">
+    <div className="mt-12 relative px-4 sm:px-10">
       <Carousel
         opts={{
           align: "start",
@@ -53,8 +53,8 @@ export default function AboutTeamCarousel() {
             </CarouselItem>
           ))}
         </CarouselContent>
-        <CarouselPrevious className="left-0 bg-background hover:bg-muted text-foreground" />
-        <CarouselNext className="right-0 bg-background hover:bg-muted text-foreground" />
+        <CarouselPrevious className="hidden sm:flex left-0 bg-background hover:bg-muted text-foreground" />
+        <CarouselNext className="hidden sm:flex right-0 bg-background hover:bg-muted text-foreground" />
       </Carousel>
     </div>
   );
