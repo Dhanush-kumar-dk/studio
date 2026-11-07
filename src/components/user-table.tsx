@@ -113,8 +113,8 @@ export default function UserTable({ users: initialUsers, searchQuery }: UserTabl
 
   return (
     <div className="w-full">
-      {/* Mobile Card List View (< 640px) */}
-      <div className="block sm:hidden space-y-3">
+      {/* Mobile Card List View (< 768px, phones & small screens) */}
+      <div className="block md:hidden space-y-3">
         {filteredUsers.map((u) => {
           const isCurrent = u.id === currentUser?.id;
           const isLoading = loadingId === u.id;
@@ -192,81 +192,83 @@ export default function UserTable({ users: initialUsers, searchQuery }: UserTabl
         })}
       </div>
 
-      {/* Desktop & Tablet Table View (>= 640px) */}
-      <div className="hidden sm:block rounded-lg border bg-card overflow-hidden">
-        <Table>
-          <TableHeader>
-            <TableRow className="bg-muted/40">
-              <TableHead className="w-[32%]">User</TableHead>
-              <TableHead className="w-[33%]">Email</TableHead>
-              <TableHead className="w-[15%]">Role</TableHead>
-              <TableHead className="w-[20%] text-right">Change Role</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {filteredUsers.map((u) => {
-              const isCurrent = u.id === currentUser?.id;
-              const isLoading = loadingId === u.id;
+      {/* Desktop & Tablet Table View (>= 768px) */}
+      <div className="hidden md:block rounded-lg border bg-card overflow-hidden">
+        <div className="overflow-x-auto">
+          <Table>
+            <TableHeader>
+              <TableRow className="bg-muted/40">
+                <TableHead className="w-[32%]">User</TableHead>
+                <TableHead className="w-[33%]">Email</TableHead>
+                <TableHead className="w-[15%]">Role</TableHead>
+                <TableHead className="w-[20%] text-right">Change Role</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {filteredUsers.map((u) => {
+                const isCurrent = u.id === currentUser?.id;
+                const isLoading = loadingId === u.id;
 
-              return (
-                <TableRow key={u.id} className="hover:bg-muted/40 transition-colors">
-                  <TableCell>
-                    <div className="flex items-center gap-3 min-w-0">
-                      <Avatar className="h-9 w-9 shrink-0 border border-border/50">
-                        <AvatarImage src={u.avatarUrl} alt={u.name} />
-                        <AvatarFallback className="text-xs font-semibold bg-muted">
-                          {getInitials(u.name)}
-                        </AvatarFallback>
-                      </Avatar>
-                      <div className="min-w-0">
-                        <p className="font-medium text-sm truncate text-foreground">
-                          {u.name}
-                          {isCurrent && (
-                            <span className="ml-1.5 text-xs text-muted-foreground font-normal">
-                              (You)
-                            </span>
-                          )}
-                        </p>
+                return (
+                  <TableRow key={u.id} className="hover:bg-muted/40 transition-colors">
+                    <TableCell>
+                      <div className="flex items-center gap-3 min-w-0">
+                        <Avatar className="h-9 w-9 shrink-0 border border-border/50">
+                          <AvatarImage src={u.avatarUrl} alt={u.name} />
+                          <AvatarFallback className="text-xs font-semibold bg-muted">
+                            {getInitials(u.name)}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div className="min-w-0">
+                          <p className="font-medium text-sm truncate text-foreground">
+                            {u.name}
+                            {isCurrent && (
+                              <span className="ml-1.5 text-xs text-muted-foreground font-normal">
+                                (You)
+                              </span>
+                            )}
+                          </p>
+                        </div>
                       </div>
-                    </div>
-                  </TableCell>
-                  <TableCell className="text-sm text-muted-foreground truncate max-w-[220px]">
-                    {u.email || 'N/A'}
-                  </TableCell>
-                  <TableCell>
-                    <Badge variant={ROLE_COLORS[u.role] || 'secondary'} className="capitalize">
-                      {u.role}
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <div className="flex items-center justify-end gap-2">
-                      {isLoading ? (
-                        <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
-                      ) : (
-                        <Select
-                          value={u.role}
-                          onValueChange={(val: UserRole) => handleRoleChange(u.id, val)}
-                          disabled={isCurrent}
-                        >
-                          <SelectTrigger className="w-[125px] h-8 text-xs bg-background">
-                            <SelectValue placeholder="Select role" />
-                          </SelectTrigger>
-                          <SelectContent align="end">
-                            <SelectItem value="Admin">Admin</SelectItem>
-                            <SelectItem value="Editor">Editor</SelectItem>
-                            <SelectItem value="Author">Author</SelectItem>
-                            <SelectItem value="Subscriber">Subscriber</SelectItem>
-                            <SelectItem value="User">User</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      )}
-                    </div>
-                  </TableCell>
-                </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
+                    </TableCell>
+                    <TableCell className="text-sm text-muted-foreground truncate max-w-[220px]">
+                      {u.email || 'N/A'}
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant={ROLE_COLORS[u.role] || 'secondary'} className="capitalize">
+                        {u.role}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <div className="flex items-center justify-end gap-2">
+                        {isLoading ? (
+                          <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+                        ) : (
+                          <Select
+                            value={u.role}
+                            onValueChange={(val: UserRole) => handleRoleChange(u.id, val)}
+                            disabled={isCurrent}
+                          >
+                            <SelectTrigger className="w-[125px] h-8 text-xs bg-background">
+                              <SelectValue placeholder="Select role" />
+                            </SelectTrigger>
+                            <SelectContent align="end">
+                              <SelectItem value="Admin">Admin</SelectItem>
+                              <SelectItem value="Editor">Editor</SelectItem>
+                              <SelectItem value="Author">Author</SelectItem>
+                              <SelectItem value="Subscriber">Subscriber</SelectItem>
+                              <SelectItem value="User">User</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        )}
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
+        </div>
       </div>
     </div>
   );
