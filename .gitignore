@@ -48,3 +48,5 @@ firestore-debug.logstudio-5927375734-5754c-firebase-adminsdk-fbsvc-2bd192e29b.js
 brag-output/
 skills-lock.json
 .agents/
+bin/
+

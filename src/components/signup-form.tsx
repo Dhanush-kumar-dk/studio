@@ -4,7 +4,7 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -25,6 +25,7 @@ const formSchema = z.object({
 
 export default function SignupForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isGoogleSubmitting, setIsGoogleSubmitting] = useState(false);
@@ -72,7 +73,12 @@ export default function SignupForm() {
   async function handleGoogleSignIn() {
     setIsGoogleSubmitting(true);
     try {
+      const redirectUrl = searchParams.get('redirect') || searchParams.get('next') || '/';
       const callbackUrl = new URL('/auth/callback', window.location.origin);
+      if (redirectUrl && redirectUrl !== '/') {
+        callbackUrl.searchParams.set('next', redirectUrl);
+      }
+
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {

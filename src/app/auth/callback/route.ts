@@ -1,9 +1,9 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { createServerClient } from '@supabase/ssr';
-import { createAdminClient } from '@/lib/supabase/server';
+import { checkAndCreateUser } from '@/app/actions';
 
 export async function GET(request: NextRequest) {
-  const { searchParams, origin } = new URL(request.url);
+  const searchParams = request.nextUrl.searchParams;
   const code = searchParams.get('code');
   const error = searchParams.get('error');
   const error_description = searchParams.get('error_description');
@@ -12,25 +12,19 @@ export async function GET(request: NextRequest) {
   // Determine the correct public base URL (handling Vercel / reverse proxies / local dev)
   const forwardedHost = request.headers.get('x-forwarded-host');
   const host = request.headers.get('host');
-  const proto = request.headers.get('x-forwarded-proto') || 'https';
-  const isLocalEnv = process.env.NODE_ENV === 'development';
+  const proto = request.headers.get('x-forwarded-proto') || (request.url.startsWith('https:') ? 'https' : 'http');
 
-  const baseUrl = isLocalEnv
-    ? origin
-    : forwardedHost
-      ? `${proto}://${forwardedHost}`
-      : host
-        ? `${proto}://${host}`
-        : origin;
+  const rawHost = forwardedHost || host || request.nextUrl.host || 'localhost:9002';
+  const cleanHost = rawHost.replace(/^0\.0\.0\.0/, 'localhost');
+  const baseUrl = `${proto}://${cleanHost}`;
 
-  const cleanBaseUrl = baseUrl.replace(/\/$/, '');
   const cleanNext = next.startsWith('/') ? next : `/${next}`;
-  const targetUrl = `${cleanBaseUrl}${cleanNext}`;
+  const targetUrl = new URL(cleanNext, baseUrl).toString();
 
   if (error) {
     console.error('OAuth error from provider:', error, error_description);
     const errorMsg = error_description || error;
-    return NextResponse.redirect(`${cleanBaseUrl}/login?error=${encodeURIComponent(errorMsg)}`);
+    return NextResponse.redirect(new URL(`/login?error=${encodeURIComponent(errorMsg)}`, baseUrl));
   }
 
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -38,11 +32,12 @@ export async function GET(request: NextRequest) {
 
   if (!supabaseUrl || !supabaseAnonKey) {
     console.error('Missing Supabase credentials in auth callback');
-    return NextResponse.redirect(`${cleanBaseUrl}/login?error=${encodeURIComponent('Supabase credentials not configured')}`);
+    return NextResponse.redirect(
+      new URL(`/login?error=${encodeURIComponent('Supabase credentials not configured')}`, baseUrl)
+    );
   }
 
   if (code) {
-    // Create the redirect response using targetUrl so the user returns to the actual domain cleanly
     const response = NextResponse.redirect(targetUrl);
 
     const supabase = createServerClient(
@@ -55,8 +50,12 @@ export async function GET(request: NextRequest) {
           },
           setAll(cookiesToSet) {
             cookiesToSet.forEach(({ name, value, options }) => {
-              request.cookies.set({ name, value, ...options });
-              response.cookies.set(name, value, options);
+              const cookieOptions = { ...options };
+              // Ensure plain HTTP (localhost or local network IP) accepts cookies
+              if (!baseUrl.startsWith('https://')) {
+                cookieOptions.secure = false;
+              }
+              response.cookies.set(name, value, cookieOptions);
             });
           },
         },
@@ -65,30 +64,10 @@ export async function GET(request: NextRequest) {
 
     const { data: sessionData, error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
 
-    if (!exchangeError) {
-      // Sync user profile into public.users if not already created
-      if (sessionData?.user) {
+    if (!exchangeError && sessionData?.session) {
+      if (sessionData.user) {
         try {
-          const adminClient = createAdminClient();
-          const { data: existingUser } = await adminClient
-            .from('users')
-            .select('id')
-            .eq('id', sessionData.user.id)
-            .maybeSingle();
-
-          if (!existingUser) {
-            const u = sessionData.user;
-            const name = u.user_metadata?.full_name || u.user_metadata?.name || u.email?.split('@')[0] || 'User';
-            const avatarUrl = u.user_metadata?.avatar_url || u.user_metadata?.picture || `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=random`;
-
-            await adminClient.from('users').insert({
-              id: u.id,
-              email: u.email,
-              name: name,
-              avatar_url: avatarUrl,
-              role: 'User',
-            });
-          }
+          await checkAndCreateUser(sessionData.user);
         } catch (syncError) {
           console.error('Error syncing user profile in callback:', syncError);
         }
@@ -97,12 +76,24 @@ export async function GET(request: NextRequest) {
       console.log('Successfully exchanged code for session. Redirecting to:', targetUrl);
       return response;
     } else {
-      console.error('Error exchanging code for session:', exchangeError);
+      console.warn('exchangeCodeForSession notice:', exchangeError?.message);
+
+      // Check if session is already active (e.g. repeated navigation or code already consumed)
+      try {
+        const { data: { session: currentSession } } = await supabase.auth.getSession();
+        if (currentSession?.user) {
+          return NextResponse.redirect(targetUrl);
+        }
+      } catch (sessErr) {
+        // Fall through to redirect
+      }
+
+      const errMsg = exchangeError?.message || 'Failed to exchange authorization code';
       return NextResponse.redirect(
-        `${cleanBaseUrl}/login?error=${encodeURIComponent(exchangeError.message)}`
+        new URL(`/login?error=${encodeURIComponent(errMsg)}`, baseUrl)
       );
     }
   }
 
-  return NextResponse.redirect(`${cleanBaseUrl}/login?error=auth_callback_failed`);
+  return NextResponse.redirect(new URL('/login?error=auth_callback_failed', baseUrl));
 }
